@@ -1,18 +1,12 @@
-import re
 import allure
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
+
+from constants.locators import LoginLocators
 from pages.base_page import BasePage
 
 
 class AccountPage(BasePage):
-
-    # -----------------------------------------------------------------------
-    # Locators
-    # -----------------------------------------------------------------------
-    EMAIL_PLACEHOLDER = "メールアドレス"        # <input id="mail_address" type="text">
-    PASSWORD_PLACEHOLDER = "パスワード"          # <input id="password" type="password">
-    LOGIN_BUTTON = "#login_button"              # type="button" — NOT type="submit"
-    PASSWORD_INPUT = 'input[type="password"]'
+    """ログイン画面 / Login screen."""
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -23,19 +17,15 @@ class AccountPage(BasePage):
 
     @allure.step("Enter email: {email}")
     def input_email(self, email: str):
-        self.page.get_by_placeholder(self.EMAIL_PLACEHOLDER).fill(email)
+        self.page.get_by_placeholder(LoginLocators.EMAIL_PLACEHOLDER).fill(email)
 
     @allure.step("Enter password")
     def input_password(self, password: str):
-        self.page.get_by_placeholder(self.PASSWORD_PLACEHOLDER).fill(password)
+        self.page.get_by_placeholder(LoginLocators.PASSWORD_PLACEHOLDER).fill(password)
 
     @allure.step("Click login button")
     def click_login(self):
-        self.page.locator(self.LOGIN_BUTTON).click()
-
-    @allure.step("Double-click login button")
-    def double_click_login(self):
-        self.page.locator(self.LOGIN_BUTTON).dblclick()
+        self.page.locator(LoginLocators.LOGIN_BUTTON).click()
 
     @allure.step("Login with email '{email}'")
     def login(self, email: str, password: str):
