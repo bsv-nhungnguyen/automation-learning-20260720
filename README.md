@@ -114,6 +114,18 @@ Leader tạo trước (merge trước vào nhánh chung Tầng 2 của team), th
 allure serve allure-results
 ```
 
+Hoặc dùng script chạy test + mở report một bước (hỏi keyword, tìm test theo
+`@allure.title`, generate report single-file rồi tự mở):
+
+```bash
+bash run_and_open_allure_report.sh
+```
+
+Script nhận nhiều keyword ngăn cách bằng dấu phẩy (VD: `ログイン_001, ログイン_002`).
+Nếu không khớp `@allure.title` nào thì fallback sang `pytest -k`. Cần cài `allure`
+(`brew install allure`) và Java; nếu allure không nằm trong PATH thì khai báo
+`ALLURE_PATH` trong `.env`.
+
 Screenshot (pass + fail) tự động đính kèm Allure report qua hook trong `conftest.py` — dùng
 làm bằng chứng đính kèm MR theo quy tắc mới, không cần tự chụp/tự viết lại.
 
