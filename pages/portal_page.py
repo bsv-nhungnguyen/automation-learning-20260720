@@ -17,7 +17,7 @@ ICON_GUIDE_LINES = (
 TOOLTIP_NAME_TEXT = "ポータルの管理用タイトルを入力します。"
 TOOLTIP_ICON_TEXT = "ポータルの管理用アイコンを指定します"
 
-
+ # create a class for portal page
 class PortalPage(BasePage):
     """ポータル画面 / Portal home screen.
 
