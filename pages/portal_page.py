@@ -3,7 +3,7 @@ import re
 import allure
 from playwright.sync_api import Locator, Page, expect
 
-from PortalPageLocators import PortalLocators as locators
+from pages.PortalPageLocators import PortalLocators as locators
 from pages.base_page import BasePage
 
 PORTAL_URL = "https://bsv-nhungnguyen.github.io/sample_UI/portal_home.html"
