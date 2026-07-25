@@ -1,6 +1,7 @@
 import allure
 from playwright.sync_api import Page
 
+from constants.locators import EventHomeLocators
 from pages.base_page import BasePage
 
 
@@ -9,36 +10,42 @@ class EventHomePage(BasePage):
 
     def __init__(self, page: Page):
         super().__init__(page)
-
-        self.navigationTabs = "//a[@class='navigation__item__name']"
-
-        self.eventTab = "//a[@href='./event_home.html']//div[text()='イベント']"
-        self.portalTab = "//a[@href='./portal_home.html']//div[text()='ポータル']"
-        self.memberTab = "//a[@href='./member_list.html']//div[text()='会員管理']"
-        self.mailTab = "//a[@href='./push_list/mail-send.html']//div[text()='配信する']"
-        self.reportTab = "//a[contains(@href,'./not_implemented.html')]//div[text()='レポート']"
+        self.locator = EventHomeLocators
 
     def get_navigation_tab_names(self):
-        return self.page.locator(self.navigationTabs).all_inner_texts()
+        return self.page.locator(self.locator.NAVIGATION_TABS).all_inner_texts()
 
-    def navigate_tabs_count(self):
-        return self.page.locator(self.navigationTabs).count()
-
-    def navigate_tab_render_correctly(self):
-        tabs = [
-            self.eventTab,
-            self.portalTab,
-            self.memberTab,
-            self.mailTab,
-            self.reportTab
+    def is_navigation_tab_order_correct(self):
+        return self.page.locator(self.locator.NAVIGATION_TABS).all_text_contents() == [
+            self.locator.EVENT_TAB,
+            self.locator.PORTAL_TAB,
+            self.locator.MEMBER_TAB,
+            self.locator.MAIL_TAB,
+            self.locator.REPORT_TAB,
         ]
-        return all(self.page.locator(tab).is_visible() for tab in tabs)
 
     def is_tab_active(self, tab_name):
-        active_class = self.page.locator(
-            f"//a[@class='navigation__item__name']//div[text()='{tab_name}']"
-        ).get_attribute("class")
-        return active_class is not None and "active" in active_class
+        tab = self.page.get_by_role('link', name=tab_name).locator('div')
+        return tab.get_attribute('class') == 'active'
 
-    
+    def is_section_title_displayed(self, title):
+        return self.page.get_by_role("heading", name=title).is_visible()
 
+    def get_usage_widget_label(self, label):
+        return self.page.get_by_text(label).is_visible()
+
+    def hover_tooltip_icon(self, label: str):
+        """Filter by widget label first, then hover its '?' icon."""
+        self.page.locator(self.locator.USAGE_LABEL).filter(
+            has_text=label
+        ).locator(self.locator.TOOLTIP_ICON).hover()
+
+    def is_tooltip_content_visible(self, label: str, tooltip_content: str) -> bool:
+        self.hover_tooltip_icon(label)
+        return (
+            self.page.locator(self.locator.USAGE_LABEL)
+            .filter(has_text=label)
+            .locator(self.locator.TOOLTIP_CONTENT)
+            .filter(has_text=tooltip_content)
+            .is_visible()
+        )
