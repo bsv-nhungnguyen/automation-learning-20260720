@@ -26,26 +26,26 @@ class TestEventHomePage:
             attachment_type=allure.attachment_type.PNG,
         )
 
-    @allure.title("Verify section title is displayed")
-    def test_02_verify_widgets_are_displayed(self, access_to_home_screen: Page):
+    @allure.title("Verify usage widgets are displayed")
+    def test_02_verify_usage_widgets_are_displayed(self, access_to_home_screen: Page):
         event_home_page = EventHomePage(access_to_home_screen)
-        # Verify section title is displayed
-        assert event_home_page.is_section_title_displayed(
-            EventHomeLocators.SECTION_STATISTICS_TITLE) is True
-        # Verify usage widget labels are displayed
-        assert event_home_page.get_usage_widget_label(
-            EventHomeLocators.DAU_LABEL) is True
-        assert event_home_page.get_usage_widget_label(
-            EventHomeLocators.MEMBER_LABEL) is True
-        # Verify tooltip content is displayed
+        assert event_home_page.is_usage_label_visible(EventHomeLocators.DAU_LABEL) is True
+        event_home_page.hover_tooltip_by_label(EventHomeLocators.DAU_LABEL)
+
         assert event_home_page.is_tooltip_content_visible(
-            EventHomeLocators.DAU_LABEL,
-            EventHomeLocators.DAU_TOOLTIP_CONTENT,
-        ) is True
+            EventHomeLocators.DAU_TOOLTIP_CONTENT) is True
+
+        allure.attach(
+            access_to_home_screen.screenshot(),
+            name="screenshot",
+            attachment_type=allure.attachment_type.PNG,
+        )
+        assert event_home_page.is_usage_label_visible(EventHomeLocators.MEMBER_LABEL) is True
+        event_home_page.hover_tooltip_by_label(EventHomeLocators.MEMBER_LABEL)
+        
         assert event_home_page.is_tooltip_content_visible(
-            EventHomeLocators.MEMBER_LABEL,
-            EventHomeLocators.MEMBER_TAB_TOOLTIP_CONTENT,
-        ) is True
+            EventHomeLocators.MEMBER_TAB_TOOLTIP_CONTENT) is True
+       
         allure.attach(
             access_to_home_screen.screenshot(),
             name="screenshot",

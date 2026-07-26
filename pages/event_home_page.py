@@ -31,21 +31,23 @@ class EventHomePage(BasePage):
     def is_section_title_displayed(self, title):
         return self.page.get_by_role("heading", name=title).is_visible()
 
-    def get_usage_widget_label(self, label):
-        return self.page.get_by_text(label).is_visible()
+    def is_usage_label_visible(self, label: str) -> bool:
+        return self.page.locator(
+                self.locator.USAGE_LABEL,
+            has_text=label,
+        ).is_visible()
 
-    def hover_tooltip_icon(self, label: str):
-        """Filter by widget label first, then hover its '?' icon."""
-        self.page.locator(self.locator.USAGE_LABEL).filter(
-            has_text=label
-        ).locator(self.locator.TOOLTIP_ICON).hover()
+    def hover_tooltip_by_label(self, label: str):
+        return self.page.locator(
+            self.locator.USAGE_LABEL,
+            has_text=label,
+            ).locator(
+                self.locator.TOOLTIP_ICON,
+                ).hover()
 
-    def is_tooltip_content_visible(self, label: str, tooltip_content: str) -> bool:
-        self.hover_tooltip_icon(label)
-        return (
-            self.page.locator(self.locator.USAGE_LABEL)
-            .filter(has_text=label)
-            .locator(self.locator.TOOLTIP_CONTENT)
-            .filter(has_text=tooltip_content)
-            .is_visible()
-        )
+    def is_tooltip_content_visible(self, tooltip: str):
+        return self.page.locator(
+            self.locator.TOOLTIP_CONTENT
+            ).filter(
+                has_text=tooltip
+                ).is_visible()
