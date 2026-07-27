@@ -176,10 +176,17 @@ def app_url() -> str:
     return url.rstrip("/")
 
 
+def _login_url(app_url: str) -> str:
+    """sample_UI uses login.html; console staging uses /login."""
+    if "sample_UI" in app_url:
+        return f"{app_url}/login.html"
+    return f"{app_url}/login"
+
+
 @pytest.fixture
 def access_to_login_screen(page: Page, app_url: str) -> AccountPage:
     """Mở trang login, trả về AccountPage."""
-    page.goto(f"{app_url}/login")
+    page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
     return AccountPage(page)
 
@@ -197,7 +204,7 @@ def access_to_home_screen(page: Page, app_url: str) -> Page:
     của mình trong file conftest.py con (vd tests/event_home/conftest.py) nếu
     cần, theo đúng pattern trong automation_rules.md.
     """
-    page.goto(f"{app_url}/login")
+    page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
     login = AccountPage(page)
     login.login(
