@@ -4,6 +4,14 @@ from playwright.sync_api import Page
 from helpers import description_md
 from pages.portal_page import PortalPage
 
+ICON_GUIDE_LINES = (
+    "推奨サイズ： 1024×1024(px)",
+    "最小サイズ： 100px × 100px",
+    "対応: PNG・JPG",
+)
+
+TOOLTIP_NAME_TEXT = "ポータルの管理用タイトルを入力します。"
+TOOLTIP_ICON_TEXT = "ポータルの管理用アイコンを指定します"
 
 @allure.feature("ポータル")
 @allure.story("ポータルホーム")
@@ -47,4 +55,42 @@ class Testポータル_ホーム:
         portal.open()
         portal.expect_save_button_disabled()
         with allure.step("[PASSED] Save button is disabled when form is empty"):
+            pass
+
+
+    # -------------------------------------------------------------------
+    # ポータル_005
+    # -------------------------------------------------------------------
+
+    @allure.title("ポータル_005: Portal icon section hiển thị đúng nội dung hướng dẫn")
+    @description_md(
+        """
+- **前提条件**: Đang ở màn hình portal
+- **テスト手順**: 1. Xác nhận khu vực ポータルアイコン
+- **期待する結果**: Hiển thị placeholder, nút ファイルを選択 và 3 dòng hướng dẫn kích thước/format
+        """
+    )
+    def test_portal_icon_section_content_is_displayed(self, page: Page):
+        portal = PortalPage(page)
+        portal.open()
+        portal.expect_icon_section_content(ICON_GUIDE_LINES)
+        with allure.step("[PASSED] Portal icon section content is displayed"):
+            pass
+
+    # -------------------------------------------------------------------
+    # ポータル_006
+    # -------------------------------------------------------------------
+    @allure.title("ポータル_006: File input chấp nhận PNG/JPG")
+    @description_md(
+        """
+- **前提条件**: Đang ở màn hình portal
+- **テスト手順**: 1. Kiểm tra thuộc tính của input #portal_icon
+- **期待する結果**: type=file và accept chứa .png, .jpg
+        """
+    )
+    def test_file_input_accepts_png_and_jpg(self, page: Page):
+        portal = PortalPage(page)
+        portal.open()
+        portal.expect_file_input_accepts_png_jpg()
+        with allure.step("[PASSED] File input accepts PNG and JPG"):
             pass
