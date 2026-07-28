@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import allure
 from playwright.sync_api import Page
 
@@ -12,6 +14,8 @@ ICON_GUIDE_LINES = (
 
 TOOLTIP_NAME_TEXT = "ポータルの管理用タイトルを入力します。"
 TOOLTIP_ICON_TEXT = "ポータルの管理用アイコンを指定します"
+
+PORTAL_ICON_PNG = Path(__file__).resolve().parents[1] / "testdata" / "portal_icon_100x100.png"
 
 @allure.feature("ポータル")
 @allure.story("ポータルホーム")
@@ -80,17 +84,19 @@ class Testポータル_ホーム:
     # -------------------------------------------------------------------
     # ポータル_006
     # -------------------------------------------------------------------
-    @allure.title("ポータル_006: File input chấp nhận PNG/JPG")
+    @allure.title("ポータル_006: File input tương tác được và accept PNG/JPG")
     @description_md(
         """
 - **前提条件**: Đang ở màn hình portal
-- **テスト手順**: 1. Kiểm tra thuộc tính của input #portal_icon
-- **期待する結果**: type=file và accept chứa .png, .jpg
+- **テスト手順**: 1. Kiểm tra input #portal_icon tồn tại / accept  2. Upload ảnh PNG
+- **期待する結果**: type=file, accept chứa .png/.jpg, upload thành công (preview + filename)
         """
     )
     def test_file_input_accepts_png_and_jpg(self, page: Page):
         portal = PortalPage(page)
         portal.open()
         portal.expect_file_input_accepts_png_jpg()
-        with allure.step("[PASSED] File input accepts PNG and JPG"):
+        portal.upload_portal_icon(str(PORTAL_ICON_PNG))
+        portal.expect_portal_icon_uploaded(PORTAL_ICON_PNG.name)
+        with allure.step("[PASSED] File input accepts PNG/JPG and upload works"):
             pass

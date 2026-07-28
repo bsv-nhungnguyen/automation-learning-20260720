@@ -62,6 +62,7 @@ class PortalPage(BasePage):
     @allure.step("Expect file input accepts PNG and JPG")
     def expect_file_input_accepts_png_jpg(self) -> None:
         file_input = self.file_input()
+        expect(file_input).to_be_attached()
         expect(file_input).to_have_attribute("type", "file")
         accept = file_input.get_attribute("accept") or ""
         assert ".png" in accept, f"accept missing .png: {accept}"
@@ -70,3 +71,9 @@ class PortalPage(BasePage):
     @allure.step("Upload portal icon: {file_path}")
     def upload_portal_icon(self, file_path: str) -> None:
         self.page.locator(locators.FILE_INPUT).set_input_files(file_path)
+
+    @allure.step("Expect portal icon uploaded: {file_name}")
+    def expect_portal_icon_uploaded(self, file_name: str) -> None:
+        expect(self.page.locator(locators.ICON_PREVIEW)).to_be_visible()
+        expect(self.page.locator(locators.ICON_FILENAME)).to_contain_text(file_name)
+        expect(self.page.locator(locators.REMOVE_FILE_BUTTON)).to_be_visible()
