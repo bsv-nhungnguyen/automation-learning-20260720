@@ -63,8 +63,6 @@ class TestEventHomePage:
 
         assert actual == expected, f"Headers mismatch.\nExpected: {expected}\nActual: {actual}"
 
-        with allure.step("[PASSED] Event table has 11 correct column headers"):
-            pass
 
     @allure.title("Event-home_008: Verify create button and grid/list toggle")
     @description_md(
@@ -86,6 +84,3 @@ class TestEventHomePage:
 
         event_home.click_list_view()
         event_home.expect_list_view_displayed()
-
-        with allure.step("[PASSED] Create opens form; grid/list toggle switches layout"):
-            pass
