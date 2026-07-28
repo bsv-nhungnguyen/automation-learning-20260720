@@ -1,5 +1,6 @@
+import re
 import allure
-from playwright.sync_api import Page
+from playwright.sync_api import Page ,expect
 
 from constants.locators import EventHomeLocators
 from pages.base_page import BasePage
@@ -51,3 +52,49 @@ class EventHomePage(BasePage):
             ).filter(
                 has_text=tooltip
                 ).is_visible()
+
+    def get_event_table_header_names(self) -> list[str]:
+        headers = self.page.locator(
+            f"{self.locator.EVENT_LIST_VIEW} {self.locator.EVENT_TABLE_HEADERS}"
+        ).all_inner_texts()
+
+        cleaned = []
+        for text in headers:
+            name = (
+                text.replace("arrow_upward", "")
+                .replace("help_outline", "")
+                .split("\n")[0]
+                .strip()
+            )
+            cleaned.append(name)
+        return cleaned
+
+
+    def click_create_event(self) -> None:
+        self.page.locator(self.locator.CREATE_EVENT_BUTTON).click()
+
+    def close_create_event_form(self) -> None:
+        self.page.locator(self.locator.CREATE_EVENT_CLOSE).click()
+
+    def expect_create_event_form_visible(self) -> None:
+        expect(self.page.get_by_text(self.locator.CREATE_EVENT_FORM_LABEL)).to_be_visible()
+
+    def click_grid_view(self) -> None:
+        self.page.locator(self.locator.GRID_VIEW_BUTTON).click()
+
+    def click_list_view(self) -> None:
+        self.page.locator(self.locator.LIST_VIEW_BUTTON).click()
+
+    def expect_grid_view_displayed(self) -> None:
+        expect(self.page.locator(self.locator.EVENT_GRID_VIEW)).to_be_visible()
+        expect(self.page.locator(self.locator.EVENT_LIST_VIEW)).to_be_hidden()
+        expect(self.page.locator(self.locator.GRID_VIEW_BUTTON)).to_have_class(
+            re.compile(self.locator.ACTIVE_BUTTON_CLASS)
+        )
+
+    def expect_list_view_displayed(self) -> None:
+        expect(self.page.locator(self.locator.EVENT_LIST_VIEW)).to_be_visible()
+        expect(self.page.locator(self.locator.EVENT_GRID_VIEW)).to_be_hidden()
+        expect(self.page.locator(self.locator.LIST_VIEW_BUTTON)).to_have_class(
+            re.compile(self.locator.ACTIVE_BUTTON_CLASS)
+        )

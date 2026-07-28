@@ -1,4 +1,6 @@
+import re
 import allure
+from helpers import description_md
 from playwright.sync_api import Page
 
 from constants.locators import EventHomeLocators
@@ -51,3 +53,39 @@ class TestEventHomePage:
             name="screenshot",
             attachment_type=allure.attachment_type.PNG,
         )
+
+    @allure.title("Event-home_007: Verify event table column headers")
+    def test_event_table_headers_are_displayed(self, access_to_home_screen: Page):
+        event_home = EventHomePage(access_to_home_screen)
+
+        actual = event_home.get_event_table_header_names()
+        expected = EventHomeLocators.EVENT_TABLE_COLUMN_HEADERS
+
+        assert actual == expected, f"Headers mismatch.\nExpected: {expected}\nActual: {actual}"
+
+        with allure.step("[PASSED] Event table has 11 correct column headers"):
+            pass
+
+    @allure.title("Event-home_008: Verify create button and grid/list toggle")
+    @description_md(
+        """
+- **前提条件**: Đã login, đang ở Event-home
+- **テスト手順**: 1. Click 新規イベント作成 2. Đóng form 3. Toggle grid/list
+- **期待する結果**: Form mở; layout đổi đúng
+        """
+    )
+    def test_create_button_and_view_toggle(self, access_to_home_screen: Page):
+        event_home = EventHomePage(access_to_home_screen)
+
+        event_home.click_create_event()
+        event_home.expect_create_event_form_visible()
+        event_home.close_create_event_form()
+
+        event_home.click_grid_view()
+        event_home.expect_grid_view_displayed()
+
+        event_home.click_list_view()
+        event_home.expect_list_view_displayed()
+
+        with allure.step("[PASSED] Create opens form; grid/list toggle switches layout"):
+            pass
