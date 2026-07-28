@@ -11,7 +11,6 @@ class LoginLocators:
 class EventHomeLocators:
     # Navigation tabs
     NAVIGATION_TABS = "a.navigation__item__name"  # ナビゲーションタブ一覧
-    NAVIGATION_TAB_ROLE = "link"
     EVENT_TAB = 'イベント'
     PORTAL_TAB = 'ポータル'
     MEMBER_TAB = '会員管理'
@@ -19,9 +18,6 @@ class EventHomeLocators:
     REPORT_TAB = 'レポート'
 
     # Widgets
-    SECTION_HEAD = "h2.section-head"
-    SECTION_STATISTICS_TITLE = "今月の利用状況"
-
     USAGE_LABEL = ".usage__label"
     DAU_LABEL = "1日ごと利用者（DAU）の合計"
     MEMBER_LABEL = "累計会員数（増加数）"
