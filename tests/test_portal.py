@@ -1,8 +1,10 @@
 import allure
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from helpers import description_md
 from pages.portal_page import PortalPage
+
+REQUIRED_MARK_COLOR = "rgb(229, 57, 53)"  # #e53935 — màu đỏ ※必須 trên sample UI
 
 
 @allure.feature("ポータル")
@@ -28,7 +30,8 @@ class Testポータル_ホーム:
         portal = PortalPage(page)
         portal.open()
         portal.expect_required_mark_visible()
-        with allure.step("[PASSED] Required mark ※必須 is displayed next to ポータル名"):
+        expect(portal.required_mark()).to_have_css("color", REQUIRED_MARK_COLOR)
+        with allure.step("[PASSED] Required mark ※必須 is displayed in red next to ポータル名"):
             pass
 
     # -------------------------------------------------------------------
