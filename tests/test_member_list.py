@@ -94,3 +94,60 @@ class Test会員管理_会員リスト:
             f"[PASSED] 会員リスト table shows 7 headers in the expected order: {REQUIRED_MEMBER_LIST_COLUMNS}"
         ):
             pass
+        # -------------------------------------------------------------
+    # 会員リスト_003
+    # -------------------------------------------------------------
+    @allure.title(
+        "会員リスト_003: Verify sắp xếp theo 会員ID sau khi click header"
+    )
+    @description_md(
+        """
+        - **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+        - **テスト手順**: 1. Click header 会員ID (có mũi tên ↑)
+        - **期待する結果**: Dữ liệu bảng được sắp xếp tăng dần theo 会員ID
+        """
+    )
+    def test_member_id_column_sorted_ascending_after_clicking_header(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        member_list = MemberListPage(access_to_home_screen)
+        member_list.open_member_list_screen(app_url)
+
+        member_list.sort_by_member_id()
+
+        member_ids = member_list.get_member_id_values()
+        assert member_ids == sorted(member_ids), (
+            f"会員ID column is not sorted ascending: {member_ids}"
+        )
+
+        with allure.step(
+            f"[PASSED] 会員ID column sorted ascending: {member_ids}"
+        ):
+            pass
+
+    # -------------------------------------------------------------
+    # 会員リスト_004
+    # -------------------------------------------------------------
+    @allure.title(
+        "会員リスト_004: Verify nút 検索 mở panel tìm kiếm"
+    )
+    @description_md(
+        """
+        - **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+        - **テスト手順**: 1. Click nút 検索 (màu đen)
+        - **期待する結果**: Panel tìm kiếm xuất hiện với các trường lọc: 会員ID, ログインID, 状態
+        """
+    )
+    def test_search_panel_opens_with_filter_fields_after_clicking_search_button(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        member_list = MemberListPage(access_to_home_screen)
+        member_list.open_member_list_screen(app_url)
+
+        member_list.open_search_panel()
+        member_list.expect_search_panel_visible_with_filters()
+
+        with allure.step(
+            "[PASSED] Search panel opened with all filter fields visible"
+        ):
+            pass
