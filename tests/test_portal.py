@@ -17,6 +17,8 @@ TOOLTIP_ICON_TEXT = "ポータルの管理用アイコンを指定します"
 
 PORTAL_ICON_PNG = Path(__file__).resolve().parents[1] / "testdata" / "portal_icon_100x100.png"
 
+REQUIRED_MARK_COLOR = "rgb(229, 57, 53)"  # #e53935 — màu đỏ ※必須 trên sample UI
+
 @allure.feature("ポータル")
 @allure.story("ポータルホーム")
 @description_md(
