@@ -96,7 +96,7 @@ class MemberListPage(BasePage):
         assert self.get_member_count() == expected_count, (
             f"Heading count is not {expected_count}"
         )
-        
+
     @allure.step("Expect search panel is visible with filter fields")
     def expect_search_panel_visible_with_filters(self) -> None:
         """Assert panel tìm kiếm và các trường lọc chính đều hiển thị."""
@@ -104,3 +104,10 @@ class MemberListPage(BasePage):
         expect(self.page.locator(locators.FILTER_MEMBER_ID_INPUT)).to_be_visible()
         expect(self.page.locator(locators.FILTER_LOGIN_ID_INPUT)).to_be_visible()
         expect(self.page.locator(locators.FILTER_STATUS_SELECT)).to_be_visible()
+
+    def is_member_id_header_sorted_ascending(self) -> bool:
+        """Kiểm tra header 会員ID có đang ở trạng thái sort ascending (aria-sort) không."""
+        return (
+            self.page.locator(locators.MEMBER_ID_HEADER).get_attribute("aria-sort")
+            == "ascending"
+        )

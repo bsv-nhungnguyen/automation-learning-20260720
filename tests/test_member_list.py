@@ -20,7 +20,7 @@ REQUIRED_MEMBER_LIST_COLUMNS = [
 @allure.feature("会員管理")
 @allure.story("会員リスト")
 @description_md(
-    "Test cases 会員リスト_001 – 会員リスト_002"
+    "Test cases 会員リスト_001 – 会員リスト_004"
 )
 class Test会員管理_会員リスト:
 
@@ -94,7 +94,8 @@ class Test会員管理_会員リスト:
             f"[PASSED] 会員リスト table shows 7 headers in the expected order: {REQUIRED_MEMBER_LIST_COLUMNS}"
         ):
             pass
-        # -------------------------------------------------------------
+        
+    # -------------------------------------------------------------
     # 会員リスト_003
     # -------------------------------------------------------------
     @allure.title(
@@ -113,15 +114,21 @@ class Test会員管理_会員リスト:
         member_list = MemberListPage(access_to_home_screen)
         member_list.open_member_list_screen(app_url)
 
+        member_ids_before = member_list.get_member_id_values()
+
         member_list.sort_by_member_id()
 
-        member_ids = member_list.get_member_id_values()
-        assert member_ids == sorted(member_ids), (
-            f"会員ID column is not sorted ascending: {member_ids}"
+        member_ids_after = member_list.get_member_id_values()
+        assert member_ids_after == sorted(member_ids_before), (
+            f"会員ID column is not sorted ascending after clicking header: "
+            f"before={member_ids_before}, after={member_ids_after}"
+        )
+        assert member_list.is_member_id_header_sorted_ascending(), (
+            "会員ID header aria-sort attribute is not 'ascending' after clicking"
         )
 
         with allure.step(
-            f"[PASSED] 会員ID column sorted ascending: {member_ids}"
+            f"[PASSED] 会員ID column sorted ascending: {member_ids_after}"
         ):
             pass
 
