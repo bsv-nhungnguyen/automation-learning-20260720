@@ -57,3 +57,11 @@ class EventHomeLocators:
     EVENT_GRID_VIEW = "#event_grid_view"              # グリッドエリア
     EVENT_LIST_VIEW = "#event_list_view"              # リストエリア
     ACTIVE_BUTTON_CLASS = "v-btn--active"
+
+    # Announcements / お知らせ
+    ANNOUNCEMENT_LIST = "ul.information__list"
+    ANNOUNCEMENT_ITEM = "ul.information__list > li.information__item"
+    ANNOUNCEMENT_DATE = "span.information__date"
+    ANNOUNCEMENT_TAG = "span.information__tag"
+    ANNOUNCEMENT_TITLE = "a.information__title"
+    ANNOUNCEMENT_NEW_BADGE = "span.information__new"

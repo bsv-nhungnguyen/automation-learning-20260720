@@ -98,3 +98,43 @@ class EventHomePage(BasePage):
         expect(self.page.locator(self.locator.LIST_VIEW_BUTTON)).to_have_class(
             re.compile(self.locator.ACTIVE_BUTTON_CLASS)
         )
+
+    @allure.step("Get announcement list")
+    def get_announcement_list(self):
+        return self.page.locator(self.locator.ANNOUNCEMENT_LIST)
+
+    @allure.step("Get announcement rows")
+    def get_announcement_rows(self):
+        return self.page.locator(self.locator.ANNOUNCEMENT_ITEM)
+
+    @allure.step("Get announcement row count")
+    def get_announcement_row_count(self) -> int:
+        return self.get_announcement_rows().count()
+
+    @allure.step("Expect announcement list visible")
+    def expect_announcement_list_visible(self) -> None:
+        expect(self.get_announcement_list()).to_be_visible()
+
+    @allure.step("Get announcement date")
+    def get_announcement_date(self, index: int) -> str:
+        return self.get_announcement_rows().nth(index).locator(
+            self.locator.ANNOUNCEMENT_DATE
+        ).inner_text().strip()
+
+    @allure.step("Get announcement tag")
+    def get_announcement_tag(self, index: int) -> str:
+        return self.get_announcement_rows().nth(index).locator(
+            self.locator.ANNOUNCEMENT_TAG
+        ).inner_text().strip()
+
+    @allure.step("Get announcement title")
+    def get_announcement_title(self, index: int) -> str:
+        return self.get_announcement_rows().nth(index).locator(
+            self.locator.ANNOUNCEMENT_TITLE
+        ).inner_text().strip()
+
+    @allure.step("Check if announcement row has NEW badge")
+    def has_new_badge(self, index: int) -> bool:
+        row = self.get_announcement_rows().nth(index)
+        badge = row.locator(self.locator.ANNOUNCEMENT_NEW_BADGE)
+        return badge.count() > 0 and badge.is_visible()
