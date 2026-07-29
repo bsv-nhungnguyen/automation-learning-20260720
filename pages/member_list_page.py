@@ -96,3 +96,11 @@ class MemberListPage(BasePage):
         assert self.get_member_count() == expected_count, (
             f"Heading count is not {expected_count}"
         )
+        
+    @allure.step("Expect search panel is visible with filter fields")
+    def expect_search_panel_visible_with_filters(self) -> None:
+        """Assert panel tìm kiếm và các trường lọc chính đều hiển thị."""
+        expect(self.page.locator(locators.SEARCH_PANEL)).to_be_visible()
+        expect(self.page.locator(locators.FILTER_MEMBER_ID_INPUT)).to_be_visible()
+        expect(self.page.locator(locators.FILTER_LOGIN_ID_INPUT)).to_be_visible()
+        expect(self.page.locator(locators.FILTER_STATUS_SELECT)).to_be_visible()
