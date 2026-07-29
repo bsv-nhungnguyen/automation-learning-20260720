@@ -27,6 +27,9 @@ class PortalLocators:
     SELECT_FILE_BUTTON = "#btn_select_file"  # ファイルを選択ボタン
     SELECT_FILE_BUTTON_NAME = "ファイルを選択"  # ファイルを選択（role name）
     FILE_INPUT = "#portal_icon"  # ファイルinput（accept=.png,.jpg,.jpeg）
+    ICON_FILENAME = "#portal_icon_filename"  # アップロード後のファイル名表示
+    REMOVE_FILE_BUTTON = "#btn_remove_file"  # 画像を削除ボタン
+    ICON_PREVIEW = "#portal_icon_placeholder img"  # アップロード後のプレビュー画像
     ICON_GUIDE_TEXT = ".submit__icon .text__size"  # サイズ案内テキスト
 
     # --- ツールチップ (?) ---
