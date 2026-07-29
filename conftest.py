@@ -27,7 +27,11 @@ def _extract_page_from_item(item) -> "Page | None":
     # Moi team them ten fixture rieng cua man hinh minh vao tuple duoi day
     # (vi du "event_home", "portal_home", "push_list") de hook nay van chup
     # duoc screenshot/video dung cho fixture cua team.
-    for name in ("access_to_login_screen", "access_to_home_screen"):
+    for name in (
+        "access_to_login_screen",
+        "access_to_home_screen",
+        "access_to_member_list_screen"
+    ):
         fixture = item.funcargs.get(name)
         if fixture and hasattr(fixture, "page"):
             return fixture.page
@@ -177,7 +181,7 @@ def app_url() -> str:
 
 
 def _login_url(app_url: str) -> str:
-    """sample_UI uses login.html; console staging uses /login."""
+    """Sample UI dùng login.html; console thật dùng /login."""
     if "sample_UI" in app_url:
         return f"{app_url}/login.html"
     return f"{app_url}/login"
@@ -207,8 +211,11 @@ def access_to_home_screen(page: Page, app_url: str) -> Page:
     page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
     login = AccountPage(page)
-    login.login(
-        os.getenv("VALID_EMAIL"),
-        os.getenv("VALID_PASSWORD"),
-    )
+    email = os.getenv("VALID_EMAIL")
+    password = os.getenv("VALID_PASSWORD")
+    if not email or not password:
+        raise RuntimeError(
+            "VALID_EMAIL / VALID_PASSWORD chưa được set — thêm vào file .env (xem .env.example)."
+        )
+    login.login(email, password)
     return page
