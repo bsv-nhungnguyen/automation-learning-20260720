@@ -1,7 +1,7 @@
 import allure
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
-from constants.locators import MemberListPageLocators
+from constants.locators import MemberListPageLocators as locators
 from pages.base_page import BasePage
 
 
@@ -13,66 +13,86 @@ class MemberListPage(BasePage):
 
     # -----------------------------------------------------------------------
     # Actions
-    # -----------------------------------------------------------------------      
+    # -----------------------------------------------------------------------
+
+    @allure.step("Open 会員リスト screen")
+    def open_member_list_screen(self, app_url: str) -> None:
+        self.page.goto(f"{app_url.rstrip('/')}/member_list.html")
+        self.page.wait_for_load_state("networkidle")
 
     @allure.step("Open member search panel")
     def open_search_panel(self) -> None:
-        self.click(MemberListPageLocators.SEARCH_BUTTON)
-    
+        self.click(locators.SEARCH_BUTTON)
+
     @allure.step("Sort member list by member ID")
     def sort_by_member_id(self) -> None:
-        self.click(MemberListPageLocators.MEMBER_ID_HEADER)
+        self.click(locators.MEMBER_ID_HEADER)
 
     @allure.step("Select the first member row")
     def select_first_member(self) -> None:
-        first_row = self.page.locator(MemberListPageLocators.TABLE_ROWS).first
-        first_row.locator(MemberListPageLocators.ROW_CHECKBOX).check()
+        # UI intentionally repeats rows; test targets the first visible data row.
+        first_row = self.page.locator(locators.TABLE_ROWS).first
+        first_row.locator(locators.ROW_CHECKBOX).check()
 
     @allure.step("Navigate to new member registration")
     def navigate_to_new_member_registration(self) -> None:
-        self.click(MemberListPageLocators.NEW_MEMBER_REGISTRATION_BUTTON)
+        self.click(locators.NEW_MEMBER_REGISTRATION_BUTTON)
         self.page.wait_for_load_state("networkidle")
-
-    SUB_TAB_LOCATORS = {
-    "会員リスト": MemberListPageLocators.MEMBER_LIST_TAB,
-    "会員属性の設定": MemberListPageLocators.MEMBER_ATTRIBUTE_SETTINGS_TAB,
-    "会員登録フォーム": MemberListPageLocators.MEMBER_REGISTRATION_FORM_TAB,
-    "アプリ利用者": MemberListPageLocators.APP_USERS_TAB,
-    "会員退会設定": MemberListPageLocators.MEMBER_WITHDRAWAL_SETTINGS_TAB,
-    }
 
     @allure.step("Navigate to member sub-tab: {tab_name}")
     def navigate_to_tab(self, tab_name: str) -> None:
-        """指定した会員管理サブタブへ遷移する。"""
-        try:
-            tab_locator = self.SUB_TAB_LOCATORS[tab_name]
-        except KeyError as exc:
-            raise ValueError(f"Unsupported member sub-tab: {tab_name}") from exc
+        self.page.get_by_role("link", name=tab_name, exact=True).click()
 
-        self.click(tab_locator)
-    
     # -----------------------------------------------------------------------
     # Boolean / data helpers
     # -----------------------------------------------------------------------
-    @allure.step("get number of members")
+
+    @allure.step("Check whether 会員リスト tab is active")
+    def is_member_list_tab_active(self) -> bool:
+        tab_class = self.page.locator(locators.MEMBER_LIST_TAB_LINK).get_attribute("class") or ""
+        return locators.MEMBER_LIST_TAB_ACTIVE_CLASS in tab_class.split()
+
+    @allure.step("Get member count from heading")
     def get_member_count(self) -> int:
-        text = self.page.locator(MemberListPageLocators.MEMBER_COUNT).inner_text()
-        parsed_text = "".join(filter(str.isdigit, text))
-        return int(parsed_text) if parsed_text else 0
+        return int(self.page.locator(locators.MEMBER_COUNT).inner_text().strip())
 
-    @allure.step("get member table header names")
+    @allure.step("Get visible member row count")
+    def get_visible_member_row_count(self) -> int:
+        return self.page.locator(locators.TABLE_ROWS).count()
+
+    @allure.step("Get member table header names")
     def get_member_table_header_names(self) -> list[str]:
-        all_headers = self.page.locator(
-            MemberListPageLocators.TABLE_COLUMN_HEADERS
-        ).all_inner_texts()
-        return [header.strip() for header in all_headers[1:]]
+        """Return data-column header labels in display order (skip checkbox column)."""
+        headers = self.page.locator(locators.TABLE_COLUMN_HEADERS)
+        names: list[str] = []
+        # Index 0 is the select-all checkbox column — not a data header.
+        for index in range(1, headers.count()):
+            name = headers.nth(index).evaluate(
+                """(el) => {
+                    const clone = el.cloneNode(true);
+                    clone.querySelectorAll('.tooltip-description, .v-icon').forEach((n) => n.remove());
+                    return (clone.textContent || '').replace(/\\s+/g, ' ').trim();
+                }"""
+            )
+            names.append(name)
+        return names
 
-    @allure.step("get member id values")
+    @allure.step("Get member id values")
     def get_member_id_values(self) -> list[int]:
         """Lấy danh sách 会員ID của các dòng đang hiển thị."""
-        member_ids = self.page.locator(
-            MemberListPageLocators.TABLE_ROWS
-        ).locator(MemberListPageLocators.MEMBER_ID_CELL_IN_ROW).all_inner_texts()
+        member_ids = self.page.locator(locators.TABLE_ROWS).locator(
+            locators.MEMBER_ID_CELL_IN_ROW
+        ).all_inner_texts()
         return [int(member_id.strip()) for member_id in member_ids]
 
-    
+    # -----------------------------------------------------------------------
+    # Expectations
+    # -----------------------------------------------------------------------
+
+    @allure.step("Expect member list heading shows count: {expected_count}")
+    def expect_member_list_heading_with_count(self, expected_count: int) -> None:
+        expected_text = f"会員リスト（{expected_count}）"
+        expect(self.page.locator(locators.MEMBER_LIST_TITLE)).to_contain_text(expected_text)
+        assert self.get_member_count() == expected_count, (
+            f"Heading count is not {expected_count}"
+        )

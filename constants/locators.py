@@ -9,13 +9,17 @@ class LoginLocators:
     LOGIN_BUTTON = "#login_button"          # ログインボタン
 
 
-class MemberListPageLocators: 
+class MemberListPageLocators:
     # サブタブ（page.get_by_role("link", name=..., exact=True) で使用）
     MEMBER_LIST_TAB = "会員リスト"  # 会員リストタブ
     MEMBER_ATTRIBUTE_SETTINGS_TAB = "会員属性の設定"  # 会員属性の設定タブ
     MEMBER_REGISTRATION_FORM_TAB = "会員登録フォーム"  # 会員登録フォームタブ
     APP_USERS_TAB = "アプリ利用者"  # アプリ利用者タブ
     MEMBER_WITHDRAWAL_SETTINGS_TAB = "会員退会設定"  # 会員退会設定タブ
+
+    # サブタブリンク（active 判定用）
+    MEMBER_LIST_TAB_LINK = ".member-list__tabs a[data-panel='list']"  # 会員リストタブリンク
+    MEMBER_LIST_TAB_ACTIVE_CLASS = "v-tabs__item--active"  # タブアクティブ状態クラス
 
     # サブタブの表示パネル
     MEMBER_LIST_PANEL = "#panel_list"  # 会員リストパネル
@@ -25,8 +29,8 @@ class MemberListPageLocators:
     MEMBER_WITHDRAWAL_SETTINGS_PANEL = "#panel_withdraw"  # 会員退会設定パネル
 
     # 会員リスト上部
-    MEMBER_LIST_TITLE = "#panel_list .section-head"  # 会員リスト見出し
-    MEMBER_COUNT = ".member-list__count"  # 会員数
+    MEMBER_LIST_TITLE = "#panel_list .section-head"  # 会員リスト見出し（会員リスト（N））
+    MEMBER_COUNT = "#panel_list .member-list__count"  # 会員数（見出し内）
     MEMBER_LIST_SUMMARY = ".member-list__summary"  # 表示件数サマリー
     MEMBERS_PER_PAGE_SELECT = "#member_per_page"  # 表示件数セレクトボックス
     SEARCH_BUTTON = "#btn_search"  # 検索ボタン
@@ -43,8 +47,8 @@ class MemberListPageLocators:
     # 会員一覧テーブル
     MEMBER_TABLE = "#member_table"  # 会員一覧テーブル
     TABLE_COLUMN_HEADERS = "#member_table thead th[role='columnheader']"  # 列ヘッダー
-    MEMBER_ID_HEADER = '#member_table th[data-col="1"]'# 会員ID列ヘッダー
     TABLE_ROWS = "#member_table tbody tr"  # 会員データ行
+    MEMBER_ID_HEADER = "#member_table thead th[data-col='1']"  # 会員ID列ヘッダー
     MEMBER_ID_CELL_IN_ROW = "td:nth-child(2)"  # 会員IDセル
     LOGIN_ID_CELL_IN_ROW = "td:nth-child(5)"  # ログインIDセル
     STATUS_CELL_IN_ROW = "td:nth-child(7) .v-chip"  # 状態セル
@@ -53,4 +57,4 @@ class MemberListPageLocators:
 
     # テーブル下部の一括操作
     MAIL_DELIVERY_BUTTON = "#btn_mail_send"  # メール配信ボタン
-    BULK_ACTION_BUTTON = "#btn_bulk_action"  # 詳しい操作ボタン 
+    BULK_ACTION_BUTTON = "#btn_bulk_action"  # 詳しい操作ボタン
