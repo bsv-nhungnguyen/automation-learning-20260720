@@ -91,8 +91,6 @@ def pytest_runtest_makereport(item, call):  # `call` is required by pytest hook 
         setattr(item, "rep_call", result)
 
     if result.when == "call" and result.failed:
-        if not hasattr(item, "first_fail"):
-            setattr(item, "first_fail", True)
         page = _extract_page_from_item(item)
         if page and _is_rerun_enabled():
             try:
@@ -101,7 +99,7 @@ def pytest_runtest_makereport(item, call):  # `call` is required by pytest hook 
                 pass
 
     # ── Screenshot on every call (pass + fail) — dùng làm bằng chứng đính kèm MR ──
-    if result.when == "call" and not getattr(item, "custom_screenshot_taken", False):
+    if result.when == "call":
         page = _extract_page_from_item(item)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         status = "FAILED" if result.failed else "PASSED"
@@ -176,16 +174,27 @@ def app_url() -> str:
     return url.rstrip("/")
 
 
+@pytest.fixture(scope="session")
+def login_url(app_url: str) -> str:
+    """URL man hinh login. APP_URL co the tro thang vao trang login
+    (vd .../login.html) hoac chi la base URL — truong hop sau thi them '/login'.
+    """
+    last_segment = app_url.rsplit("/", 1)[-1]
+    if "." in last_segment or last_segment.startswith("login"):
+        return app_url
+    return f"{app_url}/login"
+
+
 @pytest.fixture
-def access_to_login_screen(page: Page, app_url: str) -> AccountPage:
+def access_to_login_screen(page: Page, login_url: str) -> AccountPage:
     """Mở trang login, trả về AccountPage."""
-    page.goto(f"{app_url}/login")
+    page.goto(login_url)
     page.wait_for_load_state("networkidle")
     return AccountPage(page)
 
 
 @pytest.fixture
-def access_to_home_screen(page: Page, app_url: str) -> Page:
+def access_to_home_screen(page: Page, login_url: str) -> Page:
     """Login thành công, dừng lại ở event-home. Trả về raw Page - mỗi team tự
     bọc lại bằng Page Object của màn hình mình (kế thừa BasePage), ví dụ:
 
@@ -197,7 +206,7 @@ def access_to_home_screen(page: Page, app_url: str) -> Page:
     của mình trong file conftest.py con (vd tests/event_home/conftest.py) nếu
     cần, theo đúng pattern trong automation_rules.md.
     """
-    page.goto(f"{app_url}/login")
+    page.goto(login_url)
     page.wait_for_load_state("networkidle")
     login = AccountPage(page)
     login.login(
