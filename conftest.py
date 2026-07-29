@@ -30,7 +30,7 @@ def _extract_page_from_item(item) -> "Page | None":
     for name in (
         "access_to_login_screen",
         "access_to_home_screen",
-        "access_to_member_list_screen",
+        "access_to_member_list_screen"
     ):
         fixture = item.funcargs.get(name)
         if fixture and hasattr(fixture, "page"):
@@ -180,10 +180,17 @@ def app_url() -> str:
     return url.rstrip("/")
 
 
+def _login_url(app_url: str) -> str:
+    """Sample UI dùng login.html; console thật dùng /login."""
+    if "sample_UI" in app_url:
+        return f"{app_url}/login.html"
+    return f"{app_url}/login"
+
+
 @pytest.fixture
 def access_to_login_screen(page: Page, app_url: str) -> AccountPage:
     """Mở trang login, trả về AccountPage."""
-    page.goto(f"{app_url}/login")
+    page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
     return AccountPage(page)
 
@@ -201,7 +208,7 @@ def access_to_home_screen(page: Page, app_url: str) -> Page:
     của mình trong file conftest.py con (vd tests/event_home/conftest.py) nếu
     cần, theo đúng pattern trong automation_rules.md.
     """
-    page.goto(f"{app_url}/login")
+    page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
     login = AccountPage(page)
     email = os.getenv("VALID_EMAIL")

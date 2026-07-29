@@ -15,6 +15,11 @@ class MemberListPage(BasePage):
     # Actions
     # -----------------------------------------------------------------------
 
+    @allure.step("Open 会員リスト screen")
+    def open_member_list_screen(self, app_url: str) -> None:
+        self.page.goto(f"{app_url.rstrip('/')}/member_list.html")
+        self.page.wait_for_load_state("networkidle")
+
     @allure.step("Open member search panel")
     def open_search_panel(self) -> None:
         self.click(locators.SEARCH_BUTTON)
