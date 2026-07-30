@@ -21,3 +21,10 @@ class PushListLocators:
 
     TARGET_SEGMENT_RADIO_LABEL = "セグメントルールから選ぶ"  # 配信する対象の作成方法: ラジオ（デフォルト選択）
     SEND_IMMEDIATE_RADIO_LABEL = "即時配信する"              # 配信タイプ: ラジオ（デフォルト選択）
+    
+    # --- Thêm cho 配信する_003 / 配信する_004 (TC03-04) ---
+    TITLE_PLACEHOLDER = "管理用タイトルを入力してください（ユーザーには送信されません）"
+    MESSAGE_PLACEHOLDER = "配信内容を入力してください"
+    SEGMENT_SELECT = "#segment_select"
+    SUBMIT_BUTTON = "#push_drawer #push_submit"
+    SEGMENT_RULE_OPTION_1_LABEL = "セグメントタイトル_001"

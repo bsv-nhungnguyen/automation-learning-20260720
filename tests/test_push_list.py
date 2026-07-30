@@ -73,3 +73,57 @@ class Testプッシュ配信_配信する:
             "[PASSED] Default radios are セグメントルールから選ぶ and 即時配信する"
         ):
             pass
+
+    # -------------------------------------------------------------------
+    # 配信する_003 (TC03)
+    # -------------------------------------------------------------------
+    @allure.title("配信する_003: Verify submit button (配信する) is disabled when required fields are empty")
+    @description_md(
+        """
+- **前提条件**: プッシュ配信作成ドロワーを表示中（各入力欄は空の状態）
+- **テスト手順**: 1. 何も入力せず、配信するボタンの状態を確認する
+- **期待する結果**: 配信するボタンがdisabled状態であること
+        """
+    )
+    def test_submit_button_form_empty_disabled(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
+
+        push_list.expect_submit_button_disabled()
+
+        with allure.step("[PASSED] Submit button is disabled when form is empty"):
+            pass
+
+    # -------------------------------------------------------------------
+    # 配信する_004 (TC04)
+    # -------------------------------------------------------------------
+    @allure.title("配信する_004: Verify submit button (配信する) becomes enabled after required fields are filled")
+    @description_md(
+        """
+- **前提条件**: プッシュ配信作成ドロワーを表示中（フォームは空の状態）
+- **テスト手順**:
+  1. 配信管理用タイトルを入力する
+  2. セグメントルールを選択する
+  3. メッセージを入力する
+- **期待する結果**: 配信するボタンがenabled状態に変わること
+        """
+    )
+    def test_submit_button_required_fields_filled_enabled(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
+
+        push_list.fill_required_fields(
+            title="Automation Push Test",
+            segment_rule_label=locators.SEGMENT_RULE_OPTION_1_LABEL,
+            message="Nội dung tin nhắn test automation",
+        )
+        push_list.expect_submit_button_enabled()
+
+        with allure.step("[PASSED] Submit button enabled after required fields filled"):
+            pass

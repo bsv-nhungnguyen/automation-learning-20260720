@@ -51,3 +51,36 @@ class PushListPage(BasePage):
         expect(
             self.page.get_by_role("radio", name=locators.SEND_IMMEDIATE_RADIO_LABEL)
         ).to_be_checked()
+
+    # -----------------------------------------------------------------------
+    # Actions — bổ sung cho TC03-04
+    # -----------------------------------------------------------------------
+
+    def submit_button(self):
+        return self.page.locator(locators.SUBMIT_BUTTON)
+
+    def fill_title(self, title: str):
+        self.fill_by_placeholder(locators.TITLE_PLACEHOLDER, title)
+
+    def select_segment_rule(self, option_label: str):
+        self.page.locator(locators.SEGMENT_SELECT).select_option(label=option_label)
+
+    def fill_message(self, message: str):
+        self.fill_by_placeholder(locators.MESSAGE_PLACEHOLDER, message)
+
+    def fill_required_fields(self, title: str, segment_rule_label: str, message: str):
+        self.fill_title(title)
+        self.select_segment_rule(segment_rule_label)
+        self.fill_message(message)
+
+    # -----------------------------------------------------------------------
+    # Assertions — bổ sung cho TC03-04
+    # -----------------------------------------------------------------------
+
+    @allure.step("Expect submit button disabled")
+    def expect_submit_button_disabled(self):
+        expect(self.submit_button()).to_be_disabled()
+
+    @allure.step("Expect submit button enabled")
+    def expect_submit_button_enabled(self):
+        expect(self.submit_button()).to_be_enabled()
