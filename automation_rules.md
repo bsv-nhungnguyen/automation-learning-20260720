@@ -238,6 +238,7 @@ self.fill(self.INPUT, self.random_chars(length=255))
 | Fixture | Purpose |
 |---|---|
 | `access_to_login_screen` | Opens the browser to the Login page. |
+| `access_to_login_screen_with_valid_login_teardown` | Same as above; after the test, teardown runs a successful login with `VALID_EMAIL`/`VALID_PASSWORD` to reduce lockout after failed-login attempts. Appears under **fixture tear down** in Allure — prefer this over `try`/`finally` in the test body when cleanup is needed. |
 | `access_to_home_screen` | Logs in and navigates to the home page. |
 
 Fixtures manage page initialization and navigation; test code should never set up browser state
