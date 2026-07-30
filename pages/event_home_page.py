@@ -138,3 +138,56 @@ class EventHomePage(BasePage):
         row = self.get_announcement_rows().nth(index)
         badge = row.locator(self.locator.ANNOUNCEMENT_NEW_BADGE)
         return badge.count() > 0 and badge.is_visible()
+
+    # -----------------------------------------------------------------------
+    # イベント一覧 — キーワード検索 / Keyword search
+    # -----------------------------------------------------------------------
+
+    @allure.step("Search event by keyword: {keyword}")
+    def search_event_by_keyword(self, keyword: str) -> None:
+        """Nhap keyword vao o 'キーワードを入力' va nhan Enter de loc danh sach."""
+        search_input = self.page.get_by_placeholder(self.locator.SEARCH_PLACEHOLDER)
+        search_input.fill(keyword)
+        search_input.press("Enter")
+
+    @allure.step("Get event name of the first row")
+    def get_first_event_name(self) -> str:
+        """Ten event o dong dau tien — dung lam keyword search.
+
+        Ten hien thi co the bi cat ngan ("Automation test...") nen phai bo
+        phan duoi cham thi keyword moi khop voi du lieu that.
+        """
+        name = (self.page.locator(self.locator.EVENT_NAME_CELL).first.inner_text() or "").strip()
+        for suffix in self.locator.TRUNCATION_SUFFIXES:
+            if name.endswith(suffix):
+                return name[: -len(suffix)].strip()
+        return name
+
+    def get_visible_event_row_texts(self) -> list[str]:
+        """Text cua cac dong dang hien thi — dung de assert ket qua loc."""
+        return self.page.locator(self.locator.EVENT_TABLE_ROW_VISIBLE).all_inner_texts()
+
+    @allure.step("Expect the event table still shows at least one row")
+    def expect_has_visible_event_rows(self) -> None:
+        """Cho den khi bang loc xong va van con it nhat 1 dong ket qua."""
+        expect(self.page.locator(self.locator.EVENT_TABLE_ROW_VISIBLE).first).to_be_visible()
+
+    # -----------------------------------------------------------------------
+    # イベント一覧 — ページャー / Pagination
+    # -----------------------------------------------------------------------
+
+    def _pagination(self):
+        """Pager cua bang イベント一覧 (pager con lai tren trang khong co 表示件数)."""
+        return self.page.locator(self.locator.PAGINATION_WRAPPER)
+
+    def get_pagination_summary_text(self) -> str:
+        return self._pagination().locator(self.locator.PAGINATION_SUMMARY).inner_text()
+
+    @allure.step("Expect pagination button '{button_name}' is disabled")
+    def expect_pagination_button_disabled(self, button_name: str) -> None:
+        expect(
+            self._pagination().get_by_role("button", name=button_name)
+        ).to_be_disabled()
+
+    def get_selected_per_page(self) -> str:
+        return self._pagination().locator(self.locator.PER_PAGE_SELECT).input_value()
