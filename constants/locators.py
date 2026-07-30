@@ -32,6 +32,13 @@ class MemberListPageLocators:
     APP_USERS_PANEL = "#panel_app"  # アプリ利用者パネル
     MEMBER_WITHDRAWAL_SETTINGS_PANEL = "#panel_withdraw"  # 会員退会設定パネル
     PANEL_PREFIX = "#panel_"                          # サブタブパネル id 接頭辞 (panel_*)
+    # tab_name → (URL hash, panel selector)
+    MEMBER_SUB_TABS = {
+        "会員属性の設定": ("#attribute", "#panel_attribute"),
+        "会員登録フォーム": ("#form", "#panel_form"),
+        "アプリ利用者": ("#app", "#panel_app"),
+        "会員退会設定": ("#withdraw", "#panel_withdraw"),
+    }
 
     # 会員リスト上部
     MEMBER_LIST_TITLE = "#panel_list .section-head"  # 会員リスト見出し（会員リスト（N））
@@ -53,6 +60,7 @@ class MemberListPageLocators:
     MEMBER_TABLE = "#member_table"  # 会員一覧テーブル
     TABLE_HEADER = "#member_table thead th"           # テーブルヘッダー（列名）
     TABLE_BODY_ROW = "#member_table tbody tr"         # テーブル本文の各行
+    TABLE_CELLS = "td"
     STATUS_COLUMN_HEADER = "状態"                     # 状態列のヘッダー文言
     TABLE_COLUMN_HEADERS = "#member_table thead th[role='columnheader']"  # 列ヘッダー
     TABLE_ROWS = "#member_table tbody tr"  # 会員データ行
