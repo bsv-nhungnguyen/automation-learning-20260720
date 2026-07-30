@@ -209,3 +209,52 @@ class Test会員管理_会員リスト:
             "[PASSED] Search panel opened with all filter fields visible"
         ):
             pass
+    # -------------------------------------------------------------------
+    # 会員リスト_005
+    # -------------------------------------------------------------------
+    @allure.title("会員リスト_005: Verify first member row checkbox is selected")
+    @description_md(
+        """
+        - **前提条件**: Đã đăng nhập và đang hiển thị màn hình danh sách thành viên
+        - **テスト手順**: 1. Chọn checkbox ở dòng thành viên đầu tiên
+        - **期待する結果**: Checkbox chuyển sang trạng thái đã chọn (checked)
+        """
+    )
+    def test_first_member_row_checkbox_is_selected(
+        self,
+        access_to_home_screen: Page,
+        app_url: str,
+    ) -> None:
+        member_list = MemberListPage(access_to_home_screen)
+        member_list.open_member_list_screen(app_url)
+
+        member_list.select_first_member()
+        member_list.expect_first_member_selected()
+
+        with allure.step("[PASSED] First member row checkbox is checked"):
+            pass
+
+    # -------------------------------------------------------------------
+    # 会員リスト_006
+    # -------------------------------------------------------------------
+    @allure.title("会員リスト_006: Verify new member registration navigation")
+    @description_md(
+        """
+        - **前提条件**: Đã đăng nhập và đang hiển thị màn hình danh sách thành viên
+        - **テスト手順**: 1. Nhấn nút "Đăng ký thành viên mới" (新規会員登録)
+        - **期待する結果**: Chuyển hướng sang màn hình đăng ký thành viên mới
+        """
+    )
+    def test_new_member_registration_button_navigates_to_registration_screen(
+        self,
+        access_to_home_screen: Page,
+        app_url: str,
+    ) -> None:
+        member_list = MemberListPage(access_to_home_screen)
+        member_list.open_member_list_screen(app_url)
+
+        member_list.navigate_to_new_member_registration()
+        member_list.expect_new_member_registration_url()
+
+        with allure.step("[PASSED] New member registration screen is displayed"):
+            pass

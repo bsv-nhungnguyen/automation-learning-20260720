@@ -203,3 +203,14 @@ class MemberListPage(BasePage):
             self.page.locator(locators.MEMBER_ID_HEADER).get_attribute("aria-sort")
             == "ascending"
         )
+    @allure.step("Expect first member row checkbox is checked")
+    def expect_first_member_selected(self) -> None:
+        """check row đầu tiên to_be_checked。"""
+        first_row = self.page.locator(locators.TABLE_ROWS).first
+        expect(first_row.locator(locators.ROW_CHECKBOX)).to_be_checked()
+
+
+    @allure.step("Expect new member registration URL")
+    def expect_new_member_registration_url(self) -> None:
+        """check url màn hình đăng ký mới member."""
+        expect(self.page).to_have_url(re.compile(r".*/member_create\.html$"))
