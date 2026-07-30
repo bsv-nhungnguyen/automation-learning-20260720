@@ -57,7 +57,15 @@ class EventHomeLocators:
     EVENT_GRID_VIEW = "#event_grid_view"              # グリッドエリア
     EVENT_LIST_VIEW = "#event_list_view"              # リストエリア
     ACTIVE_BUTTON_CLASS = "v-btn--active"
-    
+
+    # Announcements / お知らせ
+    ANNOUNCEMENT_LIST = "ul.information__list"
+    ANNOUNCEMENT_ITEM = "ul.information__list > li.information__item"
+    ANNOUNCEMENT_DATE = "span.information__date"
+    ANNOUNCEMENT_TAG = "span.information__tag"
+    ANNOUNCEMENT_TITLE = "a.information__title"
+    ANNOUNCEMENT_NEW_BADGE = "span.information__new"
+
     # イベント一覧 — キーワード検索
     SEARCH_PLACEHOLDER = "キーワードを入力"                  # キーワード検索入力欄 <input id="event_search_input">
     EVENT_TABLE_ROW = "#event_table tbody tr"                # イベント一覧の行（非表示行も含む）
