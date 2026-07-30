@@ -20,7 +20,7 @@ REQUIRED_MEMBER_LIST_COLUMNS = [
 @allure.feature("会員管理")
 @allure.story("会員リスト")
 @description_md(
-    "Test cases 会員リスト_001 – 会員リスト_002"
+    "Test cases 会員リスト_001 – 会員リスト_004"
 )
 class Test会員管理_会員リスト:
 
@@ -144,4 +144,67 @@ class Test会員管理_会員リスト:
         for tab_name in MEMBER_SUB_TABS:
             member.navigate_and_verify_tab(tab_name)
         with allure.step("[PASSED] All member sub-tabs navigate and activate correctly"):
+        
+    # -------------------------------------------------------------
+    # 会員リスト_003
+    # -------------------------------------------------------------
+    @allure.title(
+        "会員リスト_003: Verify sắp xếp theo 会員ID sau khi click header"
+    )
+    @description_md(
+        """
+        - **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+        - **テスト手順**: 1. Click header 会員ID (có mũi tên ↑)
+        - **期待する結果**: Dữ liệu bảng được sắp xếp tăng dần theo 会員ID
+        """
+    )
+    def test_member_id_column_sorted_ascending_after_clicking_header(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        member_list = MemberListPage(access_to_home_screen)
+        member_list.open_member_list_screen(app_url)
+
+        member_ids_before = member_list.get_member_id_values()
+
+        member_list.sort_by_member_id()
+
+        member_ids_after = member_list.get_member_id_values()
+        assert member_ids_after == sorted(member_ids_before), (
+            f"会員ID column is not sorted ascending after clicking header: "
+            f"before={member_ids_before}, after={member_ids_after}"
+        )
+        assert member_list.is_member_id_header_sorted_ascending(), (
+            "会員ID header aria-sort attribute is not 'ascending' after clicking"
+        )
+
+        with allure.step(
+            f"[PASSED] 会員ID column sorted ascending: {member_ids_after}"
+        ):
+            pass
+
+    # -------------------------------------------------------------
+    # 会員リスト_004
+    # -------------------------------------------------------------
+    @allure.title(
+        "会員リスト_004: Verify nút 検索 mở panel tìm kiếm"
+    )
+    @description_md(
+        """
+        - **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+        - **テスト手順**: 1. Click nút 検索 (màu đen)
+        - **期待する結果**: Panel tìm kiếm xuất hiện với các trường lọc: 会員ID, ログインID, 状態
+        """
+    )
+    def test_search_panel_opens_with_filter_fields_after_clicking_search_button(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        member_list = MemberListPage(access_to_home_screen)
+        member_list.open_member_list_screen(app_url)
+
+        member_list.open_search_panel()
+        member_list.expect_search_panel_visible_with_filters()
+
+        with allure.step(
+            "[PASSED] Search panel opened with all filter fields visible"
+        ):
             pass

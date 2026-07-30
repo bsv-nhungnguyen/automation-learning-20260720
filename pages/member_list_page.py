@@ -188,3 +188,18 @@ class MemberListPage(BasePage):
         panel = self.page.locator(f"{locators.PANEL_PREFIX}{panel_key}")
         expect(panel, MSG_MEMBER_TAB_PANEL_NOT_VISIBLE).to_be_visible()
         expect(panel.get_by_role("heading", name=tab_name)).to_be_visible()
+
+    @allure.step("Expect search panel is visible with filter fields")
+    def expect_search_panel_visible_with_filters(self) -> None:
+        """Assert panel tìm kiếm và các trường lọc chính đều hiển thị."""
+        expect(self.page.locator(locators.SEARCH_PANEL)).to_be_visible()
+        expect(self.page.locator(locators.FILTER_MEMBER_ID_INPUT)).to_be_visible()
+        expect(self.page.locator(locators.FILTER_LOGIN_ID_INPUT)).to_be_visible()
+        expect(self.page.locator(locators.FILTER_STATUS_SELECT)).to_be_visible()
+
+    def is_member_id_header_sorted_ascending(self) -> bool:
+        """Kiểm tra header 会員ID có đang ở trạng thái sort ascending (aria-sort) không."""
+        return (
+            self.page.locator(locators.MEMBER_ID_HEADER).get_attribute("aria-sort")
+            == "ascending"
+        )
