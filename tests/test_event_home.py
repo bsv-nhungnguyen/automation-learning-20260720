@@ -63,8 +63,6 @@ class TestEventHomePage:
 
         assert actual == expected, f"Headers mismatch.\nExpected: {expected}\nActual: {actual}"
 
-        with allure.step("[PASSED] Event table has 11 correct column headers"):
-            pass
 
     @allure.title("Event-home_008: Verify create button and grid/list toggle")
     def test_create_button_and_view_toggle(self, access_to_home_screen: Page):
@@ -84,16 +82,6 @@ class TestEventHomePage:
             pass
 
     @allure.title("TC05: Search event by keyword shows only matching events")
-    @description_md(
-        """
-- **前提条件**: ホーム画面のイベント一覧を表示中（イベントが1件以上存在すること）
-- **テスト手順**:
-  1. イベント一覧の1行目の「イベント名」を取得する
-  2. 「キーワードを入力」欄に取得したイベント名を入力する
-  3. Enterキーを押下する
-- **期待する結果**: 検索結果が1件以上表示され、表示されるイベントはすべてキーワードに一致すること
-        """
-    )
     def test_05_search_event_by_keyword_shows_only_matching_events(
         self, access_to_home_screen: Page
     ):
