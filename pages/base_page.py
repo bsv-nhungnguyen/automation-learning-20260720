@@ -65,6 +65,10 @@ class BasePage:
     def fill_by_placeholder(self, placeholder: str, value: str):
         self.page.get_by_placeholder(placeholder).fill(value)
 
+    @allure.step("Click by text '{text}'")
+    def click_by_text(self, text: str, exact: bool = True):
+        self.page.get_by_text(text, exact=exact).click()
+
     # -----------------------------------------------------------------------
     # Assertions
     # -----------------------------------------------------------------------
@@ -80,6 +84,11 @@ class BasePage:
     @allure.step("Expect element '{selector}' contains text '{text}'")
     def expect_text(self, selector: str, text: str):
         expect(self.page.locator(selector)).to_contain_text(text)
+
+    @allure.step("Expect input '{placeholder}' is empty")
+    def expect_empty_placeholder(self, placeholder: str):
+        expect(self.page.get_by_placeholder(placeholder)).to_have_value("")
+
 
     # -----------------------------------------------------------------------
     # Helpers
