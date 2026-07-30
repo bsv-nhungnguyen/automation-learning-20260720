@@ -112,8 +112,7 @@ class TestEventHomePage:
                 f"Announcement row {index + 1} is missing a title"
             )
 
-        with allure.step("[PASSED] Announcement list shows exactly 3 rows with date/tag/title"):
-            pass
+
 
     @allure.title("Event-home_004: Verify NEW badge visibility")
     @description_md(
@@ -144,8 +143,6 @@ class TestEventHomePage:
                     f"NEW badge should not exist on announcement row {index + 1}"
                 )
 
-        with allure.step("[PASSED] NEW badge visibility is correct for all announcement rows"):
-            pass
 
     @allure.title("TC05: Search event by keyword shows only matching events")
     def test_05_search_event_by_keyword_shows_only_matching_events(
