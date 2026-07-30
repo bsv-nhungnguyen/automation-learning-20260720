@@ -144,6 +144,7 @@ class Test会員管理_会員リスト:
         for tab_name in MEMBER_SUB_TABS:
             member.navigate_and_verify_tab(tab_name)
         with allure.step("[PASSED] All member sub-tabs navigate and activate correctly"):
+            pass
         
     # -------------------------------------------------------------
     # 会員リスト_003
