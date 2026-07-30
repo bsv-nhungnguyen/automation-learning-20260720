@@ -14,13 +14,6 @@ from constants.messages import (
     MSG_MEMBER_TAB_URL_MISMATCH,
 )
 from pages.base_page import BasePage
-# tab_name → (URL hash, panel data-panel / panel_* suffix)
-MEMBER_SUB_TABS: dict[str, tuple[str, str]] = {
-    "会員属性の設定": ("#attribute", "attribute"),
-    "会員登録フォーム": ("#form", "form"),
-    "アプリ利用者": ("#app", "app"),
-    "会員退会設定": ("#withdraw", "withdraw"),
-}
 
 
 class MemberListPage(BasePage):
@@ -149,7 +142,7 @@ class MemberListPage(BasePage):
 
         values: list[str] = []
         for row_index in range(row_count):
-            cell_text = rows.nth(row_index).locator("td").nth(status_idx).inner_text().strip()
+            cell_text = rows.nth(row_index).locator(locators.TABLE_CELLS).nth(status_idx).inner_text().strip()
             values.append(cell_text)
         return values
 
@@ -170,10 +163,10 @@ class MemberListPage(BasePage):
 
     @allure.step("Navigate to sub-tab '{tab_name}' and verify URL / active / panel")
     def navigate_and_verify_tab(self, tab_name: str) -> None:
-        if tab_name not in MEMBER_SUB_TABS:
+        if tab_name not in locators.MEMBER_SUB_TABS:
             raise ValueError(f"Unknown member sub-tab: {tab_name!r}")
 
-        expected_hash, panel_key = MEMBER_SUB_TABS[tab_name]
+        expected_hash, panel_selector = locators.MEMBER_SUB_TABS[tab_name]
         tab = self._tab_locator(tab_name)
         tab.click()
         self.page.wait_for_load_state("networkidle")
@@ -185,7 +178,7 @@ class MemberListPage(BasePage):
             re.compile(re.escape(expected_hash))
         )
 
-        panel = self.page.locator(f"{locators.PANEL_PREFIX}{panel_key}")
+        panel = self.page.locator(panel_selector)
         expect(panel, MSG_MEMBER_TAB_PANEL_NOT_VISIBLE).to_be_visible()
         expect(panel.get_by_role("heading", name=tab_name)).to_be_visible()
 
@@ -203,6 +196,7 @@ class MemberListPage(BasePage):
             self.page.locator(locators.MEMBER_ID_HEADER).get_attribute("aria-sort")
             == "ascending"
         )
+
     @allure.step("Expect first member row checkbox is checked")
     def expect_first_member_selected(self) -> None:
         """check row đầu tiên to_be_checked。"""

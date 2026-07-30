@@ -2,7 +2,8 @@ import allure
 from playwright.sync_api import Page
 
 from helpers import description_md
-from pages.member_list_page import MemberListPage, MEMBER_SUB_TABS
+from pages.member_list_page import MemberListPage
+from constants.locators import MemberListPageLocators as locators
 
 # Expected UI text for 会員リスト
 MEMBER_LIST_HEADING_WITH_COUNT = "会員リスト（{count}）"
@@ -108,15 +109,15 @@ class Test会員管理_会員リスト:
         """
     )
     def test_member_list_status_column_values_are_valid(
-        self, access_to_home_screen
+        self, access_to_home_screen: Page, app_url: str
     ):
         member = MemberListPage(access_to_home_screen)
-        member.open()
+        member.open_member_list_screen(app_url)
         member.expect_all_status_values_valid()
         with allure.step("[PASSED] All 状態 column values are 有効 or 無効"):
             pass
 
-        # -------------------------------------------------------------------
+    # -------------------------------------------------------------------
     # 会員リスト_008
     # -------------------------------------------------------------------
     @allure.title(
@@ -137,11 +138,11 @@ class Test会員管理_会員リスト:
         """
     )
     def test_member_list_sub_tabs_navigation_updates_url_and_active_state(
-        self, access_to_home_screen
+        self, access_to_home_screen: Page, app_url: str
     ):
         member = MemberListPage(access_to_home_screen)
-        member.open()
-        for tab_name in MEMBER_SUB_TABS:
+        member.open_member_list_screen(app_url)
+        for tab_name in locators.MEMBER_SUB_TABS:
             member.navigate_and_verify_tab(tab_name)
         with allure.step("[PASSED] All member sub-tabs navigate and activate correctly"):
             pass
