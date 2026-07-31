@@ -24,6 +24,7 @@ class PushListPage(BasePage):
     @allure.step("Open create push modal")
     def open_create_push_modal(self):
         self.click_by_role("button",PushListLocators.CREATE_BUTTON,)
+        self.page.locator(PushListLocators.MODAL).wait_for(state="visible")
 
     @allure.step("Select scheduled delivery")
     def select_scheduled_delivery(self):

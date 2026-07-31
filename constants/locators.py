@@ -11,7 +11,6 @@ class LoginLocators:
 class PushListLocators:
 
     # Radio
-    IMMEDIATE_DELIVERY_RADIO = "即時配信する"
     SCHEDULE_DELIVERY_RADIO = "予約配信する"
 
     # DateTime
