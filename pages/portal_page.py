@@ -1,12 +1,20 @@
+import os
 import re
 
 import allure
 from playwright.sync_api import Locator, Page, expect
 
 from constants.locators import PortalLocators as locators
+from constants.messages import (
+    ICON_GUIDE_LINES,
+    MSG_ACCEPT_MISSING_JPG,
+    MSG_ACCEPT_MISSING_PNG,
+    MSG_PORTAL_URL_MISSING,
+    PORTAL_NAME_LABEL,
+    REQUIRED_MARK_COLOR,
+    REQUIRED_MARK_TEXT,
+)
 from pages.base_page import BasePage
-
-PORTAL_URL = "https://bsv-nhungnguyen.github.io/sample_UI/portal_home.html"
 
 
 class PortalPage(BasePage):
@@ -35,13 +43,20 @@ class PortalPage(BasePage):
 
     @allure.step("Open portal home page")
     def open(self) -> None:
-        self.navigate_to(PORTAL_URL)
+        url = os.getenv("PORTAL_URL")
+        if not url:
+            raise RuntimeError(MSG_PORTAL_URL_MISSING)
+        self.navigate_to(url.rstrip("/"))
 
     @allure.step("Expect required mark ※必須 visible on portal name")
     def expect_required_mark_visible(self) -> None:
         self.expect_visible(locators.REQUIRED_MARK)
-        self.expect_text(locators.REQUIRED_MARK, "※必須")
-        self.expect_text(locators.PORTAL_NAME_TITLE, "ポータル名")
+        self.expect_text(locators.REQUIRED_MARK, REQUIRED_MARK_TEXT)
+        self.expect_text(locators.PORTAL_NAME_TITLE, PORTAL_NAME_LABEL)
+
+    @allure.step("Expect required mark ※必須 has red color")
+    def expect_required_mark_color(self) -> None:
+        expect(self.required_mark()).to_have_css("color", REQUIRED_MARK_COLOR)
 
     @allure.step("Expect save button disabled")
     def expect_save_button_disabled(self) -> None:
@@ -52,11 +67,14 @@ class PortalPage(BasePage):
         )
 
     @allure.step("Expect portal icon section content displayed")
-    def expect_icon_section_content(self, guide_lines: tuple[str, ...] | list[str]) -> None:
+    def expect_icon_section_content(
+        self, guide_lines: tuple[str, ...] | list[str] | None = None
+    ) -> None:
+        lines = ICON_GUIDE_LINES if guide_lines is None else guide_lines
         self.expect_visible(locators.ICON_PLACEHOLDER)
-        self.expect_visible(locators.SELECT_FILE_BUTTON)
+        expect(self.select_file_button()).to_be_visible()
         expect(self.select_file_button()).to_contain_text(locators.SELECT_FILE_BUTTON_NAME)
-        for line in guide_lines:
+        for line in lines:
             self.expect_text(locators.ICON_SECTION, line)
 
     @allure.step("Expect file input accepts PNG and JPG")
@@ -65,12 +83,12 @@ class PortalPage(BasePage):
         expect(file_input).to_be_attached()
         expect(file_input).to_have_attribute("type", "file")
         accept = file_input.get_attribute("accept") or ""
-        assert ".png" in accept, f"accept missing .png: {accept}"
-        assert ".jpg" in accept, f"accept missing .jpg: {accept}"
+        assert ".png" in accept, f"{MSG_ACCEPT_MISSING_PNG}: {accept}"
+        assert ".jpg" in accept, f"{MSG_ACCEPT_MISSING_JPG}: {accept}"
 
     @allure.step("Upload portal icon: {file_path}")
     def upload_portal_icon(self, file_path: str) -> None:
-        self.page.locator(locators.FILE_INPUT).set_input_files(file_path)
+        self.file_input().set_input_files(file_path)
 
     @allure.step("Expect portal icon uploaded: {file_name}")
     def expect_portal_icon_uploaded(self, file_name: str) -> None:
