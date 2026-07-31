@@ -13,11 +13,16 @@ class PushListLocators:
     # Radio
     IMMEDIATE_DELIVERY_RADIO = "即時配信する"
     SCHEDULE_DELIVERY_RADIO = "予約配信する"
+    CSV_UPLOAD_RADIO = "CSVからアップロードする"
 
     # DateTime
     SCHEDULE_AREA = "#schedule_area"
     SCHEDULE_DATE = "#schedule_date"
     SCHEDULE_TIME = "#schedule_time"
+
+    # Areas / Inputs
+    SEGMENT_RULE_DROPDOWN = "#segment_rule_dropdown"
+    CSV_UPLOAD_AREA = "#csv_upload_area"
 
     # Button
     CREATE_BUTTON = "新規作成"
@@ -33,3 +38,9 @@ class PushListLocators:
     # Input
     TITLE_PLACEHOLDER = "管理用タイトルを入力してください（ユーザーには送信されません）"
     MESSAGE_PLACEHOLDER = "配信内容を入力してください"
+    
+    # CSV
+    CSV_UPLOAD_RADIO = "CSVからアップロードする"
+    SEGMENT_AREA = "#segment_area"
+    CSV_AREA = "#csv_area"
+    TITLE_INPUT = "#push_title"

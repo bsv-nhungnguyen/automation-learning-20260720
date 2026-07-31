@@ -44,6 +44,10 @@ class PushListPage(BasePage):
     @allure.step("Input message")
     def input_message(self, message: str):
         self.fill_by_placeholder(PushListLocators.MESSAGE_PLACEHOLDER,message)
+        
+    @allure.step("Select CSV upload")
+    def select_csv_upload(self):
+        self.click_by_role("radio", PushListLocators.CSV_UPLOAD_RADIO)
 
     # -----------------------------------------------------------------------
     # Assertions
@@ -72,3 +76,16 @@ class PushListPage(BasePage):
     @allure.step("Verify message is cleared")
     def verify_message_cleared(self):
         self.expect_empty_placeholder(PushListLocators.MESSAGE_PLACEHOLDER)
+        
+    @allure.step("Verify segment area hidden")
+    def verify_segment_area_hidden(self):
+        self.expect_not_visible(PushListLocators.SEGMENT_AREA)
+
+    @allure.step("Verify CSV area displayed")
+    def verify_csv_area_displayed(self):
+        self.expect_visible(PushListLocators.CSV_AREA)
+
+    @allure.step("Verify title maxlength is 255")
+    def verify_title_maxlength(self):
+        value = self.page.locator(PushListLocators.TITLE_INPUT).input_value()
+        assert len(value) == 255
