@@ -1,6 +1,7 @@
 import allure
 from playwright.sync_api import Page
 
+from constants.locators import PushListLocators as locators
 from helpers import description_md
 from pages.push_list_page import PushListPage
 
