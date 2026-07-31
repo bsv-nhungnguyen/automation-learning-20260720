@@ -1,5 +1,4 @@
 import allure
-from playwright.sync_api import Page
 
 from constants.locators import PushListLocators as locators
 from helpers import description_md
@@ -31,11 +30,9 @@ class Testプッシュ配信_配信する:
         """
     )
     def test_push_create_form_required_fields_show_asterisk(
-        self, access_to_home_screen: Page, app_url: str
+        self, access_to_push_list_drawer: PushListPage
     ):
-        push_list = PushListPage(access_to_home_screen)
-        push_list.navigate_to_push_list(app_url)
-        push_list.open_create_drawer()
+        push_list = access_to_push_list_drawer
 
         push_list.expect_title_required_mark_visible()
         push_list.expect_segment_required_mark_visible()
@@ -61,11 +58,9 @@ class Testプッシュ配信_配信する:
         """
     )
     def test_push_create_form_default_radios_are_preselected(
-        self, access_to_home_screen: Page, app_url: str
+        self, access_to_push_list_drawer: PushListPage
     ):
-        push_list = PushListPage(access_to_home_screen)
-        push_list.navigate_to_push_list(app_url)
-        push_list.open_create_drawer()
+        push_list = access_to_push_list_drawer
 
         push_list.expect_target_method_defaults_to_segment()
         push_list.expect_send_type_defaults_to_immediate()
@@ -87,11 +82,9 @@ class Testプッシュ配信_配信する:
         """
     )
     def test_submit_button_form_empty_disabled(
-        self, access_to_home_screen: Page, app_url: str
+        self, access_to_push_list_drawer: PushListPage
     ):
-        push_list = PushListPage(access_to_home_screen)
-        push_list.navigate_to_push_list(app_url)
-        push_list.open_create_drawer()
+        push_list = access_to_push_list_drawer
 
         push_list.expect_submit_button_disabled()
 
@@ -113,11 +106,9 @@ class Testプッシュ配信_配信する:
         """
     )
     def test_submit_button_required_fields_filled_enabled(
-        self, access_to_home_screen: Page, app_url: str
+        self, access_to_push_list_drawer: PushListPage
     ):
-        push_list = PushListPage(access_to_home_screen)
-        push_list.navigate_to_push_list(app_url)
-        push_list.open_create_drawer()
+        push_list = access_to_push_list_drawer
 
         push_list.fill_required_fields(
             title="Automation Push Test",
