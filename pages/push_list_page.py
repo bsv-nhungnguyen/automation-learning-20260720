@@ -1,11 +1,12 @@
 import allure
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
-from constants.locators import PushListLocators
+from constants.locators import PushListLocators as locators
 from pages.base_page import BasePage
 
 
 class PushListPage(BasePage):
+    """プッシュ配信一覧画面 / プッシュ配信新規作成ドロワー."""
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -13,79 +14,115 @@ class PushListPage(BasePage):
     # -----------------------------------------------------------------------
     # Actions
     # -----------------------------------------------------------------------
-    @allure.step("Click delivery button")
-    def click_delivery_button(self):
-        self.click_by_text(PushListLocators.DELIVERY_BUTTON)
 
-    @allure.step("Click delivery list")
-    def click_delivery_list(self):
-        self.page.locator(PushListLocators.DELIVERY_LIST).click()
-    
-    @allure.step("Open create push modal")
-    def open_create_push_modal(self):
-        self.click_by_role("button",PushListLocators.CREATE_BUTTON,)
+    @allure.step("Navigate to push notification list screen")
+    def navigate_to_push_list(self, app_url: str):
+        self.navigate_to(f"{app_url}/push_list/push_list.html")
 
-    @allure.step("Select scheduled delivery")
-    def select_scheduled_delivery(self):
-        self.click_by_role("radio",PushListLocators.SCHEDULE_DELIVERY_RADIO)
-
-    @allure.step("Click cancel button")
-    def click_cancel(self):
-        self.click_by_role("button",PushListLocators.CANCEL_BUTTON)
-
-    @allure.step("Click close button")
-    def click_close(self):
-        self.click_by_role("button",PushListLocators.CLOSE_BUTTON)
-
-    @allure.step("Input title")
-    def input_title(self, title: str):
-        self.fill_by_placeholder(PushListLocators.TITLE_PLACEHOLDER,title)
-
-    @allure.step("Input message")
-    def input_message(self, message: str):
-        self.fill_by_placeholder(PushListLocators.MESSAGE_PLACEHOLDER,message)
-        
-    @allure.step("Select CSV upload")
-    def select_csv_upload(self):
-        self.click_by_role("radio", PushListLocators.CSV_UPLOAD_RADIO)
+    @allure.step("Open push notification create drawer")
+    def open_create_drawer(self):
+        self.click(locators.CREATE_BUTTON)
+        expect(self.page.locator(locators.DRAWER)).to_be_visible()
 
     # -----------------------------------------------------------------------
     # Assertions
     # -----------------------------------------------------------------------
 
-    @allure.step("Verify schedule area displayed")
-    def verify_schedule_area_displayed(self):
-        self.expect_visible(PushListLocators.SCHEDULE_AREA)
+    @allure.step("Expect required mark visible next to 配信管理用タイトル")
+    def expect_title_required_mark_visible(self):
+        expect(self.page.locator(locators.TITLE_REQUIRED_MARK)).to_be_visible()
 
-    @allure.step("Verify schedule date displayed")
-    def verify_schedule_date_displayed(self):
-        self.expect_visible(PushListLocators.SCHEDULE_DATE)
+    @allure.step("Expect required mark visible next to セグメントルールを選択する")
+    def expect_segment_required_mark_visible(self):
+        expect(self.page.locator(locators.SEGMENT_REQUIRED_MARK)).to_be_visible()
 
-    @allure.step("Verify schedule time displayed")
-    def verify_schedule_time_displayed(self):
-        self.expect_visible(PushListLocators.SCHEDULE_TIME)
+    @allure.step("Expect required mark visible next to メッセージ")
+    def expect_message_required_mark_visible(self):
+        expect(self.page.locator(locators.MESSAGE_REQUIRED_MARK)).to_be_visible()
 
-    @allure.step("Verify modal closed")
-    def verify_modal_closed(self):
-        self.expect_not_visible(PushListLocators.MODAL)
+    @allure.step("Expect 配信する対象の作成方法 defaults to セグメントルールから選ぶ")
+    def expect_target_method_defaults_to_segment(self):
+        expect(
+            self.page.get_by_role("radio", name=locators.TARGET_SEGMENT_RADIO_LABEL)
+        ).to_be_checked()
 
-    @allure.step("Verify title is cleared")
-    def verify_title_cleared(self):
-        self.expect_empty_placeholder(PushListLocators.TITLE_PLACEHOLDER)
+    @allure.step("Expect 配信タイプ defaults to 即時配信する")
+    def expect_send_type_defaults_to_immediate(self):
+        expect(
+            self.page.get_by_role("radio", name=locators.SEND_IMMEDIATE_RADIO_LABEL)
+        ).to_be_checked()
 
-    @allure.step("Verify message is cleared")
-    def verify_message_cleared(self):
-        self.expect_empty_placeholder(PushListLocators.MESSAGE_PLACEHOLDER)
+    # -----------------------------------------------------------------------
+    # Actions — bổ sung cho TC03-04
+    # -----------------------------------------------------------------------
+
+    def submit_button(self):
+        return self.page.locator(locators.SUBMIT_BUTTON)
+
+    def fill_title(self, title: str):
+        self.fill_by_placeholder(locators.TITLE_PLACEHOLDER, title)
+
+    def select_segment_rule(self, option_label: str):
+        self.page.locator(locators.SEGMENT_SELECT).select_option(label=option_label)
+
+    def fill_message(self, message: str):
+        self.fill_by_placeholder(locators.MESSAGE_PLACEHOLDER, message)
+
+    def fill_required_fields(self, title: str, segment_rule_label: str, message: str):
+        self.fill_title(title)
+        self.select_segment_rule(segment_rule_label)
+        self.fill_message(message)
+
+    # -----------------------------------------------------------------------
+    # Assertions — bổ sung cho TC03-04
+    # -----------------------------------------------------------------------
+
+    @allure.step("Expect submit button disabled")
+    def expect_submit_button_disabled(self):
+        expect(self.submit_button()).to_be_disabled()
+
+    @allure.step("Expect submit button enabled")
+    def expect_submit_button_enabled(self):
+        expect(self.submit_button()).to_be_enabled()
         
+    # -----------------------------------------------------------------------
+    # Actions — Bổ sung cho TC05-06
+    # -----------------------------------------------------------------------
+
+    @allure.step("Select CSV upload")
+    def select_csv_upload(self):
+        self.page.get_by_role(
+            "radio",
+            name=locators.CSV_UPLOAD_RADIO
+        ).click()
+
+    @allure.step("Input title")
+    def input_title(self, title: str):
+        self.fill_by_placeholder(
+            locators.TITLE_PLACEHOLDER,
+            title
+        )
+
+    # -----------------------------------------------------------------------
+    # Assertions — Bổ sung cho TC05-06
+    # -----------------------------------------------------------------------
+
     @allure.step("Verify segment area hidden")
     def verify_segment_area_hidden(self):
-        self.expect_not_visible(PushListLocators.SEGMENT_AREA)
+        expect(
+            self.page.locator(locators.SEGMENT_AREA)
+        ).not_to_be_visible()
 
     @allure.step("Verify CSV area displayed")
     def verify_csv_area_displayed(self):
-        self.expect_visible(PushListLocators.CSV_AREA)
+        expect(
+            self.page.locator(locators.CSV_AREA)
+        ).to_be_visible()
 
     @allure.step("Verify title maxlength is 255")
     def verify_title_maxlength(self):
-        value = self.page.locator(PushListLocators.TITLE_INPUT).input_value()
+        value = self.page.locator(
+            locators.TITLE_INPUT
+        ).input_value()
+
         assert len(value) == 255
