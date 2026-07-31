@@ -167,7 +167,9 @@ class Test会員管理_会員リスト:
         member_list.open_member_list_screen(app_url)
 
         member_ids_before = member_list.get_member_id_values()
-
+        with allure.step(f"会員ID before sort: {member_ids_before}"):
+            pass
+        
         member_list.sort_by_member_id()
 
         member_ids_after = member_list.get_member_id_values()
