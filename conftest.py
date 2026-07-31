@@ -9,6 +9,7 @@ import allure
 load_dotenv()
 
 from pages.account_page import AccountPage
+from pages.portal_page import PortalPage
 
 # Globals — updated by pytest_configure before any test runs
 _MAX_RERUNS: int = 0
@@ -27,7 +28,11 @@ def _extract_page_from_item(item) -> "Page | None":
     # Moi team them ten fixture rieng cua man hinh minh vao tuple duoi day
     # (vi du "event_home", "portal_home", "push_list") de hook nay van chup
     # duoc screenshot/video dung cho fixture cua team.
-    for name in ("access_to_login_screen", "access_to_home_screen"):
+    for name in (
+        "access_to_login_screen",
+        "access_to_home_screen",
+        "access_to_portal_screen",
+    ):
         fixture = item.funcargs.get(name)
         if fixture and hasattr(fixture, "page"):
             return fixture.page
@@ -182,6 +187,24 @@ def access_to_login_screen(page: Page, app_url: str) -> AccountPage:
     page.goto(f"{app_url}/login")
     page.wait_for_load_state("networkidle")
     return AccountPage(page)
+
+
+@pytest.fixture
+def portal_url() -> str:
+    url = os.getenv("PORTAL_URL")
+    if not url:
+        raise RuntimeError(
+            "PORTAL_URL chưa được set — thêm vào file .env (xem .env.example)."
+        )
+    return url.rstrip("/")
+
+
+@pytest.fixture
+def access_to_portal_screen(page: Page, portal_url: str) -> PortalPage:
+    """Mở trang portal home, trả về PortalPage."""
+    page.goto(portal_url)
+    page.wait_for_load_state("networkidle")
+    return PortalPage(page)
 
 
 @pytest.fixture

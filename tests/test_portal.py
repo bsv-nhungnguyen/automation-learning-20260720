@@ -1,29 +1,20 @@
+import os
 from pathlib import Path
 
 import allure
-from playwright.sync_api import Page, expect
 
 from helpers import description_md
 from pages.portal_page import PortalPage
 
-ICON_GUIDE_LINES = (
-    "推奨サイズ： 1024×1024(px)",
-    "最小サイズ： 100px × 100px",
-    "対応: PNG・JPG",
-)
-
-TOOLTIP_NAME_TEXT = "ポータルの管理用タイトルを入力します。"
-TOOLTIP_ICON_TEXT = "ポータルの管理用アイコンを指定します"
-
 PORTAL_ICON_PNG = Path(__file__).resolve().parents[1] / "testdata" / "portal_icon_100x100.png"
 
-REQUIRED_MARK_COLOR = "rgb(229, 57, 53)"  # #e53935 — màu đỏ ※必須 trên sample UI
 
 @allure.feature("ポータル")
 @allure.story("ポータルホーム")
+@allure.link(os.getenv("PORTAL_URL") or "", name="Portal home")
 @description_md(
-    "Test cases ポータル_001 – ポータル_002 - verify required label and "
-    "save button disabled when portal form is empty."
+    "Test cases ポータル_001 – ポータル_006 in file portal home — "
+    "verify portal name validation and portal icon upload section."
 )
 class Testポータル_ホーム:
 
@@ -38,11 +29,12 @@ class Testポータル_ホーム:
 - **期待する結果**: Dấu ※必須 màu đỏ hiển thị đúng cạnh label ポータル名
         """
     )
-    def test_portal_name_required_mark_is_displayed(self, page: Page):
-        portal = PortalPage(page)
-        portal.open()
+    def test_portal_name_required_mark_is_displayed(
+        self, access_to_portal_screen: PortalPage
+    ):
+        portal = access_to_portal_screen
         portal.expect_required_mark_visible()
-        expect(portal.required_mark()).to_have_css("color", REQUIRED_MARK_COLOR)
+        portal.expect_required_mark_color()
         with allure.step("[PASSED] Required mark ※必須 is displayed in red next to ポータル名"):
             pass
 
@@ -57,9 +49,10 @@ class Testポータル_ホーム:
 - **期待する結果**: Nút 保存する ở trạng thái disabled (màu xám)
         """
     )
-    def test_save_button_is_disabled_when_form_empty(self, page: Page):
-        portal = PortalPage(page)
-        portal.open()
+    def test_save_button_is_disabled_when_form_empty(
+        self, access_to_portal_screen: PortalPage
+    ):
+        portal = access_to_portal_screen
         portal.expect_save_button_disabled()
         with allure.step("[PASSED] Save button is disabled when form is empty"):
             pass
@@ -80,10 +73,9 @@ class Testポータル_ホーム:
         """
     )
     def test_save_button_is_enabled_after_entering_portal_name(
-        self, page: Page
+        self, access_to_portal_screen: PortalPage
     ):
-        portal = PortalPage(page)
-        portal.open()
+        portal = access_to_portal_screen
 
         portal.expect_save_button_disabled()
         portal.enter_portal_name("Automation Portal Test")
@@ -109,9 +101,10 @@ class Testポータル_ホーム:
 - **期待する結果**: Giá trị được giữ nguyên, không bị cắt hoặc sai encoding
         """
     )
-    def test_portal_name_value_is_preserved(self, page: Page):
-        portal = PortalPage(page)
-        portal.open()
+    def test_portal_name_value_is_preserved(
+        self, access_to_portal_screen: PortalPage
+    ):
+        portal = access_to_portal_screen
 
         portal_name = "自動化テスト Cổng thông tin"
         portal.enter_portal_name(portal_name)
@@ -122,11 +115,9 @@ class Testポータル_ホーム:
         ):
             pass
 
-
     # -------------------------------------------------------------------
     # ポータル_005
     # -------------------------------------------------------------------
-
     @allure.title("ポータル_005: Portal icon section hiển thị đúng nội dung hướng dẫn")
     @description_md(
         """
@@ -135,10 +126,11 @@ class Testポータル_ホーム:
 - **期待する結果**: Hiển thị placeholder, nút ファイルを選択 và 3 dòng hướng dẫn kích thước/format
         """
     )
-    def test_portal_icon_section_content_is_displayed(self, page: Page):
-        portal = PortalPage(page)
-        portal.open()
-        portal.expect_icon_section_content(ICON_GUIDE_LINES)
+    def test_portal_icon_section_content_is_displayed(
+        self, access_to_portal_screen: PortalPage
+    ):
+        portal = access_to_portal_screen
+        portal.expect_icon_section_content()
         with allure.step("[PASSED] Portal icon section content is displayed"):
             pass
 
@@ -153,9 +145,10 @@ class Testポータル_ホーム:
 - **期待する結果**: type=file, accept chứa .png/.jpg, upload thành công (preview + filename)
         """
     )
-    def test_file_input_accepts_png_and_jpg(self, page: Page):
-        portal = PortalPage(page)
-        portal.open()
+    def test_file_input_accepts_png_and_jpg(
+        self, access_to_portal_screen: PortalPage
+    ):
+        portal = access_to_portal_screen
         portal.expect_file_input_accepts_png_jpg()
         portal.upload_portal_icon(str(PORTAL_ICON_PNG))
         portal.expect_portal_icon_uploaded(PORTAL_ICON_PNG.name)
