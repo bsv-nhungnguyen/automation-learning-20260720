@@ -1,6 +1,5 @@
 import allure
 from helpers import description_md
-
 from pages.push_list_page import PushListPage
 
 
@@ -20,8 +19,8 @@ class Testプッシュ配信一覧:
     - Hiển thị trường 配信時刻
         """)
     
-    def test_verify_schedule_delivery_show_datetime_fields(self, access_to_push_list: PushListPage):
-        push_list = access_to_push_list
+    def test_verify_schedule_delivery_show_datetime_fields(self, access_to_push_list_drawer: PushListPage):
+        push_list = access_to_push_list_drawer
         push_list.select_scheduled_delivery()
         push_list.verify_schedule_area_displayed()
         push_list.verify_schedule_date_displayed()
@@ -45,28 +44,28 @@ class Testプッシュ配信一覧:
     - Không lưu dữ liệu
         """)
     
-    def test_verify_cancel_button_close_modal_without_saving(self, access_to_push_list: PushListPage):
-        push_list = access_to_push_list
-        push_list.input_title("Automation Test")
-        push_list.input_message("Automation Message")
+    def test_verify_cancel_button_close_drawer_without_saving(self, access_to_push_list_drawer: PushListPage):
+        push_list = access_to_push_list_drawer
+        push_list.fill_title("Automation Test")
+        push_list.fill_message("Automation Message")
         push_list.click_cancel()
         push_list.verify_modal_closed()
 
-        push_list.open_create_push_modal()
+        push_list.open_create_drawer()
         push_list.verify_title_cleared()
         push_list.verify_message_cleared()
 
         with allure.step("[PASSED] Cancel closes drawer without saving data"):
             pass
 
-    def test_verify_close_button_close_modal_without_saving(self, access_to_push_list: PushListPage):
-        push_list = access_to_push_list
-        push_list.input_title("Automation Test")
-        push_list.input_message("Automation Message")
+    def test_verify_close_button_close_drawer_without_saving(self, access_to_push_list_drawer: PushListPage):
+        push_list = access_to_push_list_drawer
+        push_list.fill_title("Automation Test")
+        push_list.fill_message("Automation Message")
         push_list.click_close()
         push_list.verify_modal_closed()
     
-        push_list.open_create_push_modal()
+        push_list.open_create_drawer()
         push_list.verify_title_cleared()
         push_list.verify_message_cleared()
     
