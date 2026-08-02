@@ -50,9 +50,6 @@ class MemberListPage(BasePage):
         self.click(locators.NEW_MEMBER_REGISTRATION_BUTTON)
         self.page.wait_for_load_state("networkidle")
 
-    @allure.step("Navigate to member sub-tab: {tab_name}")
-    def navigate_to_tab(self, tab_name: str) -> None:
-        self.page.get_by_role("link", name=tab_name, exact=True).click()
 
     # -----------------------------------------------------------------------
     # Boolean / data helpers
@@ -107,7 +104,7 @@ class MemberListPage(BasePage):
         assert self.get_member_count() == expected_count, (
             f"Heading count is not {expected_count}"
         )
-# -----------------------------------------------------------------------
+
     # -----------------------------------------------------------------------
     # Navigation (from header nav)
     # -----------------------------------------------------------------------

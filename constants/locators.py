@@ -26,12 +26,7 @@ class MemberListPageLocators:
     TAB_ACTIVE_CLASS = "v-tabs__item--active"         # アクティブなサブタブのクラス
 
     # サブタブの表示パネル
-    MEMBER_LIST_PANEL = "#panel_list"  # 会員リストパネル
-    MEMBER_ATTRIBUTE_SETTINGS_PANEL = "#panel_attribute"  # 会員属性の設定パネル
-    MEMBER_REGISTRATION_FORM_PANEL = "#panel_form"  # 会員登録フォームパネル
-    APP_USERS_PANEL = "#panel_app"  # アプリ利用者パネル
     MEMBER_WITHDRAWAL_SETTINGS_PANEL = "#panel_withdraw"  # 会員退会設定パネル
-    PANEL_PREFIX = "#panel_"                          # サブタブパネル id 接頭辞 (panel_*)
     # tab_name → (URL hash, panel selector)
     MEMBER_SUB_TABS = {
         "会員属性の設定": ("#attribute", "#panel_attribute"),
