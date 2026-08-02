@@ -105,15 +105,7 @@ class MemberListPage(BasePage):
             f"Heading count is not {expected_count}"
         )
 
-    # -----------------------------------------------------------------------
-    # Navigation (from header nav)
-    # -----------------------------------------------------------------------
 
-    @allure.step("Open 会員リスト from home via 会員管理")
-    def open(self) -> None:
-        """From event-home (access_to_home_screen), open 会員リスト via header nav."""
-        self.page.get_by_role("link", name=locators.NAV_MEMBER).click()
-        self.page.wait_for_load_state("networkidle")
 
     # -----------------------------------------------------------------------
     # Table helpers (TC07)
