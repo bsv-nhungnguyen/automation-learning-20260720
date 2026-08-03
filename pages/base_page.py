@@ -12,7 +12,7 @@ class BasePage:
     chi day len day khi that su dung chung >= 2 man hinh.
     """
 
-    def __init__(self, page: Page):
+    def __init__(self, page: Page) -> None:
         self.page = page
 
     def wait_until(
@@ -41,7 +41,7 @@ class BasePage:
     # -----------------------------------------------------------------------
 
     @allure.step("Navigate to URL: {url}")
-    def navigate_to(self, url: str):
+    def navigate_to(self, url: str) -> None:
         self.page.goto(url)
         self.page.wait_for_load_state("networkidle")
 
@@ -50,19 +50,19 @@ class BasePage:
     # -----------------------------------------------------------------------
 
     @allure.step("Click element: {selector}")
-    def click(self, selector: str):
+    def click(self, selector: str) -> None:
         self.page.locator(selector).click()
 
     @allure.step("Fill '{selector}' with value")
-    def fill(self, selector: str, value: str):
+    def fill(self, selector: str, value: str) -> None:
         self.page.locator(selector).fill(value)
 
     @allure.step("Click by role '{role}' with name '{name}'")
-    def click_by_role(self, role: str, name: str):
+    def click_by_role(self, role: str, name: str) -> None:
         self.page.get_by_role(role, name=name).click()
 
     @allure.step("Fill placeholder '{placeholder}' with value")
-    def fill_by_placeholder(self, placeholder: str, value: str):
+    def fill_by_placeholder(self, placeholder: str, value: str) -> None:
         self.page.get_by_placeholder(placeholder).fill(value)
 
     # -----------------------------------------------------------------------
@@ -70,15 +70,15 @@ class BasePage:
     # -----------------------------------------------------------------------
 
     @allure.step("Expect element visible: {selector}")
-    def expect_visible(self, selector: str):
+    def expect_visible(self, selector: str) -> None:
         expect(self.page.locator(selector)).to_be_visible()
 
     @allure.step("Expect element NOT visible: {selector}")
-    def expect_not_visible(self, selector: str):
+    def expect_not_visible(self, selector: str) -> None:
         expect(self.page.locator(selector)).not_to_be_visible()
 
     @allure.step("Expect element '{selector}' contains text '{text}'")
-    def expect_text(self, selector: str, text: str):
+    def expect_text(self, selector: str, text: str) -> None:
         expect(self.page.locator(selector)).to_contain_text(text)
 
     # -----------------------------------------------------------------------
