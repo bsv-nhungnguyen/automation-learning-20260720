@@ -83,11 +83,11 @@ class Testプッシュ配信_配信する:
     def test_submit_button_form_empty_disabled(
     self, access_to_push_list_drawer: PushListPage
     ):
-         push_list = access_to_push_list_drawer
+        push_list = access_to_push_list_drawer
 
-         push_list.expect_submit_button_disabled()
+        push_list.expect_submit_button_disabled()
 
-    with allure.step("[PASSED] Submit button is disabled when form is empty"):
+        with allure.step("[PASSED] Submit button is disabled when form is empty"):
             pass
 
 # -------------------------------------------------------------------
@@ -107,17 +107,17 @@ class Testプッシュ配信_配信する:
     def test_submit_button_required_fields_filled_enabled(
     self, access_to_push_list_drawer: PushListPage
     ):
-         push_list = access_to_push_list_drawer
+        push_list = access_to_push_list_drawer
 
-         push_list.fill_required_fields(
+        push_list.fill_required_fields(
         title="Automation Push Test",
         segment_rule_label=locators.SEGMENT_RULE_OPTION_1_LABEL,
         message="Nội dung tin nhắn test automation",
         )
-         push_list.expect_submit_button_enabled()
+        push_list.expect_submit_button_enabled()
 
-    with allure.step("[PASSED] Submit button enabled after required fields filled"):
-        pass
+        with allure.step("[PASSED] Submit button enabled after required fields filled"):
+            pass
     
     # -------------------------------------------------------------------
     # TC05
