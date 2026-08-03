@@ -3,8 +3,19 @@ from constants.locators import PushListLocators as locators
 from helpers import description_md
 from pages.push_list_page import PushListPage
 
+@allure.feature("プッシュ配信")
+@allure.story("配信する")
+@description_md(
+    "Test cases 配信する_001 - 配信する_002 trong file "
+    "'Training_Automation_Sprint1 - 04_Push-list.csv' (TC01-02, phu trach: Phi) - "
+    "verify cac truong bat buoc (*) va gia tri mac dinh cua 2 nhom radio button "
+    "trong form/drawer tao chien dich day tin (プッシュ配信新規作成)."
+)
+class Testプッシュ配信_配信する:
 
-class Testプッシュ配信一覧:
+    # -------------------------------------------------------------------
+    # 配信する_001 (TC01)
+    # -------------------------------------------------------------------
 
     @allure.title("配信する_001: Verify required fields are marked with (*) in push creation form")
     @description_md(
