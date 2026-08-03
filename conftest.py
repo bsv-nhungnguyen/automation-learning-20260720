@@ -9,6 +9,7 @@ import allure
 load_dotenv()
 
 from pages.account_page import AccountPage
+from pages.push_list_page import PushListPage
 
 # Globals — updated by pytest_configure before any test runs
 _MAX_RERUNS: int = 0
@@ -205,3 +206,12 @@ def access_to_home_screen(page: Page, app_url: str) -> Page:
         os.getenv("VALID_PASSWORD"),
     )
     return page
+
+# ログイン＞配信一覧>新規作成画面を開く
+@pytest.fixture
+def access_to_push_list_drawer(access_to_home_screen: Page, app_url: str) -> PushListPage:
+    """Login, vào màn プッシュ配信一覧, mở drawer 新規作成. Trả về PushListPage."""
+    push_list = PushListPage(access_to_home_screen)
+    push_list.navigate_to_push_list(app_url)
+    push_list.open_create_drawer()
+    return push_list
