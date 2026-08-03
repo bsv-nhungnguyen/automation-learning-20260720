@@ -6,7 +6,6 @@ from pages.member_list_page import MemberListPage
 from constants.locators import MemberListPageLocators as locators
 
 # Expected UI text for 会員リスト
-MEMBER_LIST_HEADING_WITH_COUNT = "会員リスト（{count}）"
 REQUIRED_MEMBER_LIST_COLUMNS = [
     "会員ID",
     "ユーザーID",
@@ -31,11 +30,11 @@ class Test会員管理_会員リスト:
     @allure.title("会員リスト_001: Verify tab '会員リスト' active mặc định và đúng số lượng")
     @description_md(
         """
-- **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
-- **テスト手順**: 1. Quan sát tab 会員リスト và số lượng 会員
-- **期待する結果**:
-  - Tab 会員リスト đang active mặc định
-  - Text 会員リスト（3） hiển thị đúng số lượng 会員 hiện tại
+        - **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+        - **テスト手順**: 1. Quan sát tab 会員リスト và số lượng 会員
+        - **期待する結果**:
+            - Tab 会員リスト đang active mặc định
+            - Text 会員リスト（3） hiển thị đúng số lượng 会員 hiện tại
         """
     )
     def test_member_list_tab_is_active_by_default_and_shows_correct_count(
@@ -47,16 +46,11 @@ class Test会員管理_会員リスト:
         assert member_list.is_member_list_tab_active(), (
             "会員リスト tab is not active by default"
         )
-
-        expected_count = member_list.get_member_count()
-        member_list.expect_member_list_heading_with_count(expected_count)
-        assert expected_count == member_list.get_visible_member_row_count(), (
-            "Heading member count does not match visible table rows: "
-            f"heading={expected_count}, rows={member_list.get_visible_member_row_count()}"
-        )
+        row_count = member_list.get_visible_member_row_count()
+        member_list.expect_member_list_heading_with_count(row_count)
 
         with allure.step(
-            f"[PASSED] 会員リスト tab is active and heading shows {expected_count}"
+            f"[PASSED] 会員リスト tab is active and heading matches {row_count} table rows"
         ):
             pass
 
@@ -66,10 +60,10 @@ class Test会員管理_会員リスト:
     @allure.title("会員リスト_002: Verify header cột của bảng 会員リスト")
     @description_md(
         """
-- **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
-- **テスト手順**: 1. Quan sát header các cột của bảng 会員リスト
-- **期待する結果**: Hiển thị đúng 7 cột theo thứ tự
-  会員ID / ユーザーID / 外部連携用ユーザーID / ログインID / 管理用メモ / 状態 / 登録日
+    - **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+    - **テスト手順**: 1. Quan sát header các cột của bảng 会員リスト
+    - **期待する結果**: Hiển thị đúng 7 cột theo thứ tự
+        会員ID / ユーザーID / 外部連携用ユーザーID / ログインID / 管理用メモ / 状態 / 登録日
         """
     )
     def test_member_list_table_headers_are_displayed_in_correct_order(
