@@ -28,3 +28,11 @@ class PushListLocators:
     SEGMENT_SELECT = "#segment_select"
     SUBMIT_BUTTON = "#push_drawer #push_submit"
     SEGMENT_RULE_OPTION_1_LABEL = "セグメントタイトル_001"
+    
+    # --- Thêm cho TC05-06 ---
+    CSV_UPLOAD_RADIO = "CSVからアップロードする"
+    SEGMENT_AREA = "#segment_area"
+    CSV_AREA = "#csv_area"
+    TITLE_INPUT = "#push_title"
+    SEGMENT_RULE_OPTION_1_LABEL = "セグメントタイトル_001"
+    

@@ -84,3 +84,47 @@ class PushListPage(BasePage):
     @allure.step("Expect submit button enabled")
     def expect_submit_button_enabled(self):
         expect(self.submit_button()).to_be_enabled()
+        
+    # -----------------------------------------------------------------------
+    # Actions — Bổ sung cho TC05-06
+    # -----------------------------------------------------------------------
+
+    @allure.step("Select CSV upload")
+    def select_csv_upload(self):
+        self.page.get_by_role(
+            "radio",
+            name=locators.CSV_UPLOAD_RADIO
+        ).click()
+
+    @allure.step("Input title")
+    def input_title(self, title: str):
+        self.fill_by_placeholder(
+            locators.TITLE_PLACEHOLDER,
+            title
+        )
+
+    # -----------------------------------------------------------------------
+    # Assertions — Bổ sung cho TC05-06
+    # -----------------------------------------------------------------------
+
+    @allure.step("Verify segment area hidden")
+    def verify_segment_area_hidden(self):
+        expect(
+            self.page.locator(locators.SEGMENT_AREA)
+        ).not_to_be_visible()
+
+    @allure.step("Verify CSV area displayed")
+    def verify_csv_area_displayed(self):
+        expect(
+            self.page.locator(locators.CSV_AREA)
+        ).to_be_visible()
+
+    @allure.step("Verify title maxlength is 255")
+    def verify_title_maxlength(self):
+        value = self.page.locator(
+            locators.TITLE_INPUT
+        ).input_value()
+
+        assert len(value) == 255
+        
+
