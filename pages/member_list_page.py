@@ -19,9 +19,6 @@ from pages.base_page import BasePage
 class MemberListPage(BasePage):
     """会員一覧ページ / Member list page."""
 
-    def __init__(self, page: Page):
-        super().__init__(page)
-
     # -----------------------------------------------------------------------
     # Actions
     # -----------------------------------------------------------------------
