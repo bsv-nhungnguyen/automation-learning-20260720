@@ -18,7 +18,7 @@ from pages.base_page import BasePage
 
 
 class PortalPage(BasePage):
-    """ポータル画面 / Portal home screen (TC01–TC02, TC05–TC06)."""
+    """ポータル画面 / Portal home screen (TC01–TC06)."""
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -28,6 +28,9 @@ class PortalPage(BasePage):
 
     def portal_name_title(self) -> Locator:
         return self.page.locator(locators.PORTAL_NAME_TITLE)
+
+    def portal_name_input(self) -> Locator:
+        return self.page.locator(locators.PORTAL_NAME_INPUT)
 
     def save_button(self) -> Locator:
         return self.page.locator(locators.SAVE_BUTTON)
@@ -64,6 +67,22 @@ class PortalPage(BasePage):
         expect(btn).to_be_disabled()
         expect(btn).to_have_class(
             re.compile(rf"\b{re.escape(locators.DISABLED_BUTTON_CLASS)}\b")
+        )
+
+    @allure.step("Enter portal name: {portal_name}")
+    def enter_portal_name(self, portal_name: str) -> None:
+        self.portal_name_input().fill(portal_name)
+
+    @allure.step("Expect save button enabled")
+    def expect_save_button_enabled(self) -> None:
+        expect(self.save_button()).to_be_enabled()
+
+    @allure.step("Expect portal name value: {portal_name}")
+    def expect_portal_name_value(self, portal_name: str) -> None:
+        actual_value = self.portal_name_input().input_value()
+        assert actual_value == portal_name, (
+            f"Portal name value mismatch: expected {portal_name!r}, "
+            f"got {actual_value!r}"
         )
 
     @allure.step("Expect portal icon section content displayed")

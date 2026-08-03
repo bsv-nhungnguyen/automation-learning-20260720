@@ -13,8 +13,8 @@ PORTAL_ICON_PNG = Path(__file__).resolve().parents[1] / "testdata" / "portal_ico
 @allure.story("ポータルホーム")
 @allure.link(os.getenv("PORTAL_URL") or "", name="Portal home")
 @description_md(
-    "Test cases ポータル_001 – ポータル_002, ポータル_005 – ポータル_006 in file "
-    "portal home — verify required mark, disabled save, icon guide, and file upload."
+    "Test cases ポータル_001 – ポータル_006 in file portal home — "
+    "verify portal name validation and portal icon upload section."
 )
 class Testポータル_ホーム:
 
@@ -55,6 +55,64 @@ class Testポータル_ホーム:
         portal = access_to_portal_screen
         portal.expect_save_button_disabled()
         with allure.step("[PASSED] Save button is disabled when form is empty"):
+            pass
+
+    # -------------------------------------------------------------------
+    # ポータル_003
+    # -------------------------------------------------------------------
+    @allure.title(
+        "ポータル_003: Verify nhập ポータル名 hợp lệ làm enable nút 保存する"
+    )
+    @description_md(
+        """
+- **前提条件**: Mở trang portal home, ô ポータル名 đang trống
+- **テスト手順**:
+  1. Kiểm tra nút 保存する đang disabled
+  2. Nhập「Automation Portal Test」vào ô ポータル名
+- **期待する結果**: Nút 保存する chuyển từ disabled sang enabled
+        """
+    )
+    def test_save_button_is_enabled_after_entering_portal_name(
+        self, access_to_portal_screen: PortalPage
+    ):
+        portal = access_to_portal_screen
+
+        portal.expect_save_button_disabled()
+        portal.enter_portal_name("Automation Portal Test")
+        portal.expect_save_button_enabled()
+
+        with allure.step(
+            "[PASSED] Save button is enabled after entering portal name"
+        ):
+            pass
+
+    # -------------------------------------------------------------------
+    # ポータル_004
+    # -------------------------------------------------------------------
+    @allure.title(
+        "ポータル_004: Verify giá trị nhập vào ô ポータル名 được giữ đúng"
+    )
+    @description_md(
+        """
+- **前提条件**: Mở trang portal home
+- **テスト手順**:
+  1. Nhập chuỗi có tiếng Nhật, tiếng Việt và khoảng trắng vào ô ポータル名
+  2. Lấy giá trị thực tế của input bằng input_value()
+- **期待する結果**: Giá trị được giữ nguyên, không bị cắt hoặc sai encoding
+        """
+    )
+    def test_portal_name_value_is_preserved(
+        self, access_to_portal_screen: PortalPage
+    ):
+        portal = access_to_portal_screen
+
+        portal_name = "自動化テスト Cổng thông tin"
+        portal.enter_portal_name(portal_name)
+        portal.expect_portal_name_value(portal_name)
+
+        with allure.step(
+            "[PASSED] Portal name value is preserved correctly"
+        ):
             pass
 
     # -------------------------------------------------------------------
