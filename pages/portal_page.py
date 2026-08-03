@@ -13,12 +13,18 @@ from constants.messages import (
     PORTAL_NAME_LABEL,
     REQUIRED_MARK_COLOR,
     REQUIRED_MARK_TEXT,
+    TOOLTIP_PORTAL_ICON_TEXT,
+    TOOLTIP_PORTAL_NAME_TEXT,
+    NAV_OTHER_TABS,
+    NAV_TAB_ACTIVE_CLASS,
+    NAV_TAB_ACTIVE_COLOR,
+    NAV_TAB_PORTAL,
 )
 from pages.base_page import BasePage
 
 
 class PortalPage(BasePage):
-    """ポータル画面 / Portal home screen (TC01–TC06)."""
+    """ポータル画面 / Portal home screen (TC01–TC08)."""
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -114,3 +120,33 @@ class PortalPage(BasePage):
         expect(self.page.locator(locators.ICON_PREVIEW)).to_be_visible()
         expect(self.page.locator(locators.ICON_FILENAME)).to_contain_text(file_name)
         expect(self.page.locator(locators.REMOVE_FILE_BUTTON)).to_be_visible()
+
+    @allure.step("Expect portal name tooltip content on hover")
+    def expect_portal_name_tooltip_on_hover(self) -> None:
+        self.page.get_by_role("button", name=locators.TOOLTIP_NAME_ARIA).hover()
+        tooltip = self.page.locator(locators.TOOLTIP_MESSAGE)
+        expect(tooltip).to_be_visible()
+        expect(tooltip).to_contain_text(TOOLTIP_PORTAL_NAME_TEXT)
+
+    @allure.step("Expect portal icon tooltip content on hover")
+    def expect_portal_icon_tooltip_on_hover(self) -> None:
+        self.page.get_by_role("button", name=locators.TOOLTIP_ICON_ARIA).hover()
+        tooltip = self.page.locator(locators.TOOLTIP_MESSAGE)
+        expect(tooltip).to_be_visible()
+        expect(tooltip).to_contain_text(TOOLTIP_PORTAL_ICON_TEXT)
+
+    @allure.step("Expect nav tab ポータル is active (orange underline)")
+    def expect_portal_tab_active(self) -> None:
+        active = self.page.locator(locators.NAV_ACTIVE_TAB)
+        expect(active).to_be_visible()
+        expect(active).to_have_text(NAV_TAB_PORTAL)
+        expect(active).to_have_class(NAV_TAB_ACTIVE_CLASS)
+        expect(active).to_have_css("color", NAV_TAB_ACTIVE_COLOR)
+        expect(active).to_have_css("border-bottom-color", NAV_TAB_ACTIVE_COLOR)
+
+        tabs = self.page.locator(locators.NAV_TABS)
+        expect(tabs.filter(has_text=NAV_TAB_PORTAL)).to_have_class(NAV_TAB_ACTIVE_CLASS)
+        for tab_name in NAV_OTHER_TABS:
+            other = tabs.filter(has_text=tab_name)
+            expect(other).to_be_visible()
+            expect(other).not_to_have_class(NAV_TAB_ACTIVE_CLASS)

@@ -154,3 +154,52 @@ class Testポータル_ホーム:
         portal.expect_portal_icon_uploaded(PORTAL_ICON_PNG.name)
         with allure.step("[PASSED] File input accepts PNG/JPG and upload works"):
             pass
+
+        # -------------------------------------------------------------------
+    # ポータル_007
+    # -------------------------------------------------------------------
+    @allure.title(
+        "ポータル_007: Verify icon tooltip (?) hiển thị nội dung khi hover/click"
+    )
+    @description_md(
+        """
+- **前提条件**: Mở trang portal home
+- **テスト手順**:
+  1. Hover (hoặc click) icon (?) cạnh ポータル名
+  2. Hover (hoặc click) icon (?) cạnh ポータルアイコン
+- **期待する結果**: Tooltip/popup xuất hiện với nội dung hướng dẫn tương ứng
+        """
+    )
+    def test_portal_help_tooltips_show_guide_content_on_hover(
+        self, access_to_portal_screen: PortalPage
+    ):
+        portal = access_to_portal_screen
+        portal.expect_portal_name_tooltip_on_hover()
+        portal.expect_portal_icon_tooltip_on_hover()
+        with allure.step(
+            "[PASSED] Portal name and icon tooltips show guide content on hover"
+        ):
+            pass
+
+    # -------------------------------------------------------------------
+    # ポータル_008
+    # -------------------------------------------------------------------
+    @allure.title(
+        "ポータル_008: Verify tab 'ポータル' ở trạng thái active khi đang ở trang này"
+    )
+    @description_md(
+        """
+- **前提条件**: Điều hướng tới trang portal-home
+- **テスト手順**: 1. Kiểm tra tab navigation trên header
+- **期待する結果**: Tab ポータル có class/màu active (gạch cam); các tab khác không active
+        """
+    )
+    def test_portal_nav_tab_is_active_on_portal_home(
+        self, access_to_portal_screen: PortalPage
+    ):
+        portal = access_to_portal_screen
+        portal.expect_portal_tab_active()
+        with allure.step(
+            "[PASSED] ポータル tab is active with orange underline; other tabs are not"
+        ):
+            pass
