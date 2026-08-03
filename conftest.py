@@ -215,4 +215,3 @@ def access_to_push_list_drawer(access_to_home_screen: Page, app_url: str) -> Pus
     push_list.navigate_to_push_list(app_url)
     push_list.open_create_drawer()
     return push_list
-

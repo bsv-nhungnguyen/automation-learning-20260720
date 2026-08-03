@@ -34,4 +34,5 @@ class PushListLocators:
     SEGMENT_AREA = "#segment_area"
     CSV_AREA = "#csv_area"
     TITLE_INPUT = "#push_title"
-
+    SEGMENT_RULE_OPTION_1_LABEL = "セグメントタイトル_001"
+    
