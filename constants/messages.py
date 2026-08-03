@@ -21,3 +21,12 @@ MSG_ACCEPT_MISSING_JPG = "File input accept is missing .jpg"
 MSG_PORTAL_URL_MISSING = (
     "PORTAL_URL chưa được set — thêm vào file .env (xem .env.example)."
 )
+
+TOOLTIP_PORTAL_NAME_TEXT = (
+    "ポータルの管理用タイトルを入力します。アプリやWEBサイトには表示されません"
+)
+TOOLTIP_PORTAL_ICON_TEXT = "ポータルの管理用アイコンを指定します"
+NAV_TAB_PORTAL = "ポータル"
+NAV_TAB_ACTIVE_CLASS = "active"
+NAV_TAB_ACTIVE_COLOR = "rgb(238, 120, 0)"
+NAV_OTHER_TABS = ("イベント", "会員管理", "配信する", "レポート")
