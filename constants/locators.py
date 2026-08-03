@@ -18,14 +18,23 @@ class MemberListPageLocators:
     MEMBER_LIST_TAB_ACTIVE_CLASS = "v-tabs__item--active"  # タブアクティブ状態クラス
     SUB_TABS = ".member-list__tabs .v-tabs__item"     # 会員管理のサブタブ群
 
-    # サブタブの表示パネル
-    # tab_name → (URL hash, panel selector)
-    MEMBER_SUB_TABS = {
-        "会員属性の設定": ("#attribute", "#panel_attribute"),
-        "会員登録フォーム": ("#form", "#panel_form"),
-        "アプリ利用者": ("#app", "#panel_app"),
-        "会員退会設定": ("#withdraw", "#panel_withdraw"),
-    }
+    # サブタブ名
+    MEMBER_ATTRIBUTE_SETTINGS_TAB = "会員属性の設定"
+    MEMBER_REGISTRATION_FORM_TAB = "会員登録フォーム"
+    APP_USERS_TAB = "アプリ利用者"
+    MEMBER_WITHDRAWAL_SETTINGS_TAB = "会員退会設定"
+
+    # サブタブ URL hash
+    MEMBER_ATTRIBUTE_SETTINGS_HASH = "#attribute"
+    MEMBER_REGISTRATION_FORM_HASH = "#form"
+    APP_USERS_HASH = "#app"
+    MEMBER_WITHDRAWAL_SETTINGS_HASH = "#withdraw"
+
+    # サブタブパネル
+    MEMBER_ATTRIBUTE_SETTINGS_PANEL = "#panel_attribute"
+    MEMBER_REGISTRATION_FORM_PANEL = "#panel_form"
+    APP_USERS_PANEL = "#panel_app"
+    MEMBER_WITHDRAWAL_SETTINGS_PANEL = "#panel_withdraw"
 
     # 会員リスト上部
     MEMBER_LIST_TITLE = "#panel_list .section-head"  # 会員リスト見出し（会員リスト（N））

@@ -241,7 +241,29 @@ class Test会員管理_会員リスト:
     ):
         member = MemberListPage(access_to_home_screen)
         member.open_member_list_screen(app_url)
-        for tab_name in locators.MEMBER_SUB_TABS:
-            member.navigate_and_verify_tab(tab_name)
+        member.navigate_to_tab(locators.MEMBER_ATTRIBUTE_SETTINGS_TAB)
+        member.verify_tab(
+            locators.MEMBER_ATTRIBUTE_SETTINGS_TAB,
+            locators.MEMBER_ATTRIBUTE_SETTINGS_HASH,
+            locators.MEMBER_ATTRIBUTE_SETTINGS_PANEL,
+        )
+        member.navigate_to_tab(locators.MEMBER_REGISTRATION_FORM_TAB)
+        member.verify_tab(
+            locators.MEMBER_REGISTRATION_FORM_TAB,
+            locators.MEMBER_REGISTRATION_FORM_HASH,
+            locators.MEMBER_REGISTRATION_FORM_PANEL,
+        )
+        member.navigate_to_tab(locators.APP_USERS_TAB)
+        member.verify_tab(
+            locators.APP_USERS_TAB,
+            locators.APP_USERS_HASH,
+            locators.APP_USERS_PANEL,
+        )
+        member.navigate_to_tab(locators.MEMBER_WITHDRAWAL_SETTINGS_TAB)
+        member.verify_tab(
+            locators.MEMBER_WITHDRAWAL_SETTINGS_TAB,
+            locators.MEMBER_WITHDRAWAL_SETTINGS_HASH,
+            locators.MEMBER_WITHDRAWAL_SETTINGS_PANEL,
+        )
         with allure.step("[PASSED] All member sub-tabs navigate and activate correctly"):
             pass
