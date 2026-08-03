@@ -1,12 +1,10 @@
 import allure
 from playwright.sync_api import Page, expect
-
 from constants.locators import PushListLocators as locators
 from pages.base_page import BasePage
 
 
 class PushListPage(BasePage):
-    """プッシュ配信一覧画面 / プッシュ配信新規作成ドロワー."""
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -15,18 +13,16 @@ class PushListPage(BasePage):
     # Actions
     # -----------------------------------------------------------------------
 
-    @allure.step("Navigate to push notification list screen")
-    def navigate_to_push_list(self, app_url: str):
-        self.navigate_to(f"{app_url}/push_list/push_list.html")
-
     @allure.step("Open push notification create drawer")
     def open_create_drawer(self):
         self.click(locators.CREATE_BUTTON)
         expect(self.page.locator(locators.DRAWER)).to_be_visible()
 
+
     # -----------------------------------------------------------------------
     # Assertions
     # -----------------------------------------------------------------------
+
 
     @allure.step("Expect required mark visible next to 配信管理用タイトル")
     def expect_title_required_mark_visible(self):
@@ -35,6 +31,10 @@ class PushListPage(BasePage):
     @allure.step("Expect required mark visible next to セグメントルールを選択する")
     def expect_segment_required_mark_visible(self):
         expect(self.page.locator(locators.SEGMENT_REQUIRED_MARK)).to_be_visible()
+
+    @allure.step("Navigate to push notification list screen")
+    def navigate_to_push_list(self, app_url: str):
+        self.navigate_to(f"{app_url}/push_list/push_list.html")
 
     @allure.step("Expect required mark visible next to メッセージ")
     def expect_message_required_mark_visible(self):
@@ -126,5 +126,43 @@ class PushListPage(BasePage):
         ).input_value()
 
         assert len(value) == 255
-        
 
+    # -----------------------------------------------------------------------
+    # Actions — Bổ sung cho TC07-08
+    # -----------------------------------------------------------------------
+    
+
+    @allure.step("Select scheduled delivery")
+    def select_scheduled_delivery(self):
+        self.click_by_role("radio",locators.SCHEDULE_DELIVERY_RADIO)
+    
+    @allure.step("Click cancel button")
+    def click_cancel(self):
+        self.click_by_role("button",locators.CANCEL_BUTTON)
+
+    # -----------------------------------------------------------------------
+    # Assertions — Bổ sung cho TC07-08
+    # -----------------------------------------------------------------------
+    @allure.step("Verify schedule area displayed")
+    def verify_schedule_area_displayed(self):
+        self.expect_visible(locators.SCHEDULE_AREA)
+    
+    @allure.step("Verify schedule date displayed")
+    def verify_schedule_date_displayed(self):
+        self.expect_visible(locators.SCHEDULE_DATE)
+    
+    @allure.step("Verify schedule time displayed")
+    def verify_schedule_time_displayed(self):
+        self.expect_visible(locators.SCHEDULE_TIME)
+    
+    @allure.step("Verify modal closed")
+    def verify_modal_closed(self):
+        self.expect_not_visible(locators.DRAWER)
+    
+    @allure.step("Verify title is cleared")
+    def verify_title_cleared(self):
+        self.expect_empty_placeholder(locators.TITLE_PLACEHOLDER)
+    
+    @allure.step("Verify message is cleared")
+    def verify_message_cleared(self):
+        self.expect_empty_placeholder(locators.MESSAGE_PLACEHOLDER)

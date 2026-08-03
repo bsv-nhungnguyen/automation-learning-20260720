@@ -1,9 +1,7 @@
 import allure
-
 from constants.locators import PushListLocators as locators
 from helpers import description_md
 from pages.push_list_page import PushListPage
-
 
 @allure.feature("プッシュ配信")
 @allure.story("配信する")
@@ -18,6 +16,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_001 (TC01)
     # -------------------------------------------------------------------
+
     @allure.title("配信する_001: Verify required fields are marked with (*) in push creation form")
     @description_md(
         """
@@ -30,7 +29,7 @@ class Testプッシュ配信_配信する:
         """
     )
     def test_push_create_form_required_fields_show_asterisk(
-        self, access_to_push_list_drawer: PushListPage
+    self, access_to_push_list_drawer: PushListPage
     ):
         push_list = access_to_push_list_drawer
 
@@ -70,19 +69,19 @@ class Testプッシュ配信_配信する:
         ):
             pass
 
-    # -------------------------------------------------------------------
-    # 配信する_003 (TC03)
-    # -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# 配信する_003 (TC03)
+# -------------------------------------------------------------------
     @allure.title("配信する_003: Verify submit button (配信する) is disabled when required fields are empty")
     @description_md(
-        """
+    """
 - **前提条件**: プッシュ配信作成ドロワーを表示中（各入力欄は空の状態）
 - **テスト手順**: 1. 何も入力せず、配信するボタンの状態を確認する
 - **期待する結果**: 配信するボタンがdisabled状態であること
-        """
+    """
     )
     def test_submit_button_form_empty_disabled(
-        self, access_to_push_list_drawer: PushListPage
+    self, access_to_push_list_drawer: PushListPage
     ):
         push_list = access_to_push_list_drawer
 
@@ -91,29 +90,29 @@ class Testプッシュ配信_配信する:
         with allure.step("[PASSED] Submit button is disabled when form is empty"):
             pass
 
-    # -------------------------------------------------------------------
-    # 配信する_004 (TC04)
-    # -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# 配信する_004 (TC04)
+# -------------------------------------------------------------------
     @allure.title("配信する_004: Verify submit button (配信する) becomes enabled after required fields are filled")
     @description_md(
-        """
+    """
 - **前提条件**: プッシュ配信作成ドロワーを表示中（フォームは空の状態）
 - **テスト手順**:
   1. 配信管理用タイトルを入力する
   2. セグメントルールを選択する
   3. メッセージを入力する
 - **期待する結果**: 配信するボタンがenabled状態に変わること
-        """
+    """
     )
     def test_submit_button_required_fields_filled_enabled(
-        self, access_to_push_list_drawer: PushListPage
+    self, access_to_push_list_drawer: PushListPage
     ):
         push_list = access_to_push_list_drawer
 
         push_list.fill_required_fields(
-            title="Automation Push Test",
-            segment_rule_label=locators.SEGMENT_RULE_OPTION_1_LABEL,
-            message="Nội dung tin nhắn test automation",
+        title="Automation Push Test",
+        segment_rule_label=locators.SEGMENT_RULE_OPTION_1_LABEL,
+        message="Nội dung tin nhắn test automation",
         )
         push_list.expect_submit_button_enabled()
 
@@ -160,4 +159,55 @@ class Testプッシュ配信_配信する:
         push_list.verify_title_maxlength()
 
         with allure.step("[PASSED] Title accepts maximum 255 characters"):
+            pass
+    # -------------------------------------------------------------------
+    # TC07
+    # -------------------------------------------------------------------
+    @allure.title("TC07: Verify chuyển 配信タイプ sang '予約配信する' hiển thị trường ngày giờ")
+    @description_md( """
+    - **前提条件**: Đang mở màn hình tạo Push Notification
+    - **テスト手順**:
+        1. Chọn radio 「予約配信する」
+    - **期待する結果**:
+        - Hiển thị khu vực đặt lịch
+        - Hiển thị trường 配信日
+        - Hiển thị trường 配信時刻
+            """)
+        
+    def test_verify_schedule_delivery_show_datetime_fields(self, access_to_push_list_drawer: PushListPage):
+        push_list = access_to_push_list_drawer
+        push_list.select_scheduled_delivery()
+        push_list.verify_schedule_area_displayed()
+        push_list.verify_schedule_date_displayed()
+        push_list.verify_schedule_time_displayed()
+    
+        with allure.step("[PASSED] Schedule delivery displays date and time fields"):
+            pass
+    
+    # -------------------------------------------------------------------
+    # TC08
+    # -------------------------------------------------------------------
+    @allure.title("TC08: Verify nút キャンセル,close và không lưu dữ liệu")
+    @description_md( """
+    - **前提条件**: Đang mở màn hình tạo Push Notification
+    - **テスト手順**:
+        1. Nhập Title
+        2. Nhập Message
+        3. Click 「キャンセル」hoặc 「X]
+    - **期待する結果**:
+        - Modal đóng
+        - Không lưu dữ liệu
+            """)
+        
+    def test_verify_cancel_button_cancel_drawer_without_saving(self, access_to_push_list_drawer: PushListPage):
+        push_list = access_to_push_list_drawer
+        push_list.fill_title("Automation Test")
+        push_list.fill_message("Automation Message")
+        push_list.click_cancel()
+        push_list.verify_modal_closed()
+    
+        push_list.open_create_drawer()
+        push_list.verify_title_cleared()
+        push_list.verify_message_cleared()
+        with allure.step("[PASSED] Cancel closes drawer without saving data"):
             pass

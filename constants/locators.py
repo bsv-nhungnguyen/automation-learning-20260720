@@ -8,7 +8,6 @@ class LoginLocators:
     PASSWORD_PLACEHOLDER = "パスワード"      # <input id="password" type="password">
     LOGIN_BUTTON = "#login_button"          # ログインボタン
 
-
 class PushListLocators:
     CREATE_BUTTON = "#btn_push_create"  # プッシュ配信一覧: 「新規作成」ボタン
     DRAWER = "#push_drawer"             # プッシュ配信作成ドロワー（右側スライドパネル）
@@ -36,3 +35,9 @@ class PushListLocators:
     TITLE_INPUT = "#push_title"
     SEGMENT_RULE_OPTION_1_LABEL = "セグメントタイトル_001"
     
+     # --- Thêm cho TC07-08 ---
+    SCHEDULE_DELIVERY_RADIO = "予約配信する"
+    SCHEDULE_AREA = "#schedule_area"
+    SCHEDULE_DATE = "#schedule_date"
+    SCHEDULE_TIME = "#schedule_time"
+    CANCEL_BUTTON = "キャンセル"
