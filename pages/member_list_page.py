@@ -96,7 +96,7 @@ class MemberListPage(BasePage):
 
 
     # -----------------------------------------------------------------------
-    # Table helpers (TC07)
+    # Table helpers
     # -----------------------------------------------------------------------
 
     def _status_column_index(self) -> int:
