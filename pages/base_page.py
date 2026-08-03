@@ -65,10 +65,6 @@ class BasePage:
     def fill_by_placeholder(self, placeholder: str, value: str):
         self.page.get_by_placeholder(placeholder).fill(value)
 
-    @allure.step("Click by text '{text}'")
-    def click_by_text(self, text: str, exact: bool = True):
-        self.page.get_by_text(text, exact=exact).click()
-
     # -----------------------------------------------------------------------
     # Assertions
     # -----------------------------------------------------------------------

@@ -96,13 +96,6 @@ class PushListPage(BasePage):
             name=locators.CSV_UPLOAD_RADIO
         ).click()
 
-    @allure.step("Input title")
-    def input_title(self, title: str):
-        self.fill_by_placeholder(
-            locators.TITLE_PLACEHOLDER,
-            title
-        )
-
     # -----------------------------------------------------------------------
     # Assertions — Bổ sung cho TC05-06
     # -----------------------------------------------------------------------

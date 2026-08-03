@@ -69,9 +69,9 @@ class Testプッシュ配信_配信する:
         ):
             pass
 
-# -------------------------------------------------------------------
-# 配信する_003 (TC03)
-# -------------------------------------------------------------------
+    # -------------------------------------------------------------------
+    # 配信する_003 (TC03)
+    # -------------------------------------------------------------------
     @allure.title("配信する_003: Verify submit button (配信する) is disabled when required fields are empty")
     @description_md(
     """
@@ -90,9 +90,9 @@ class Testプッシュ配信_配信する:
         with allure.step("[PASSED] Submit button is disabled when form is empty"):
             pass
 
-# -------------------------------------------------------------------
-# 配信する_004 (TC04)
-# -------------------------------------------------------------------
+    # -------------------------------------------------------------------
+    # 配信する_004 (TC04)
+    # -------------------------------------------------------------------
     @allure.title("配信する_004: Verify submit button (配信する) becomes enabled after required fields are filled")
     @description_md(
     """
@@ -155,7 +155,7 @@ class Testプッシュ配信_配信する:
     def test_verify_title_maxlength_255(self, access_to_push_list_drawer: PushListPage):
         push_list = access_to_push_list_drawer
 
-        push_list.input_title("A" * 300)
+        push_list.fill_title("A" * 300)
         push_list.verify_title_maxlength()
 
         with allure.step("[PASSED] Title accepts maximum 255 characters"):
@@ -164,16 +164,15 @@ class Testプッシュ配信_配信する:
     # TC07
     # -------------------------------------------------------------------
     @allure.title("TC07: Verify chuyển 配信タイプ sang '予約配信する' hiển thị trường ngày giờ")
-    @description_md( """
-    - **前提条件**: Đang mở màn hình tạo Push Notification
-    - **テスト手順**:
-        1. Chọn radio 「予約配信する」
-    - **期待する結果**:
-        - Hiển thị khu vực đặt lịch
-        - Hiển thị trường 配信日
-        - Hiển thị trường 配信時刻
-            """)
-        
+    @description_md("""
+- **前提条件**: Đang mở màn hình tạo Push Notification
+- **テスト手順**:
+    1. Chọn radio 「予約配信する」
+- **期待する結果**:
+    - Hiển thị khu vực đặt lịch
+    - Hiển thị trường 配信日
+    - Hiển thị trường 配信時刻
+        """)
     def test_verify_schedule_delivery_show_datetime_fields(self, access_to_push_list_drawer: PushListPage):
         push_list = access_to_push_list_drawer
         push_list.select_scheduled_delivery()
@@ -188,17 +187,16 @@ class Testプッシュ配信_配信する:
     # TC08
     # -------------------------------------------------------------------
     @allure.title("TC08: Verify nút キャンセル,close và không lưu dữ liệu")
-    @description_md( """
-    - **前提条件**: Đang mở màn hình tạo Push Notification
-    - **テスト手順**:
-        1. Nhập Title
-        2. Nhập Message
-        3. Click 「キャンセル」hoặc 「X]
-    - **期待する結果**:
-        - Modal đóng
-        - Không lưu dữ liệu
-            """)
-        
+    @description_md("""
+- **前提条件**: Đang mở màn hình tạo Push Notification
+- **テスト手順**:
+    1. Nhập Title
+    2. Nhập Message
+    3. Click 「キャンセル」hoặc 「X]
+- **期待する結果**:
+    - Modal đóng
+    - Không lưu dữ liệu
+        """)
     def test_verify_cancel_button_cancel_drawer_without_saving(self, access_to_push_list_drawer: PushListPage):
         push_list = access_to_push_list_drawer
         push_list.fill_title("Automation Test")
