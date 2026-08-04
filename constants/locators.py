@@ -71,17 +71,11 @@ class EventHomeLocators:
     REPORT_TAB = 'レポート'
 
     # Widgets
-    USAGE_LABEL = ".usage__label"
-    DAU_LABEL = "1日ごと利用者（DAU）の合計"
-    MEMBER_LABEL = "累計会員数（増加数）"
-
-
+    WIDGET_LABEL = ".usage__label"
     TOOLTIP_ICON = ".tooltip-description i"
     TOOLTIP_CONTENT = ".v-tooltip__content"
-    DAU_TOOLTIP_CONTENT = "イベントのWeb&Appへの訪問者数の合計です。「毎日の訪問者数（DAU）」の一ヶ月分の合計値です。"
-    MEMBER_TAB_TOOLTIP_CONTENT = "現時点での会員登録数と、今月の新規会員登録数です。"
 
-        # Event table / イベント一覧テーブル
+    # Event table / イベント一覧テーブル
     EVENT_TABLE_HEADERS = "table th"  # テーブルヘッダー（list view）
     EVENT_LIST_VIEW = "#event_list_view"  # リスト表示エリア
 
