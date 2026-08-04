@@ -46,11 +46,17 @@ class Test会員管理_会員リスト:
         assert member_list.is_member_list_tab_active(), (
             "会員リスト tab is not active by default"
         )
+    
+        heading_count = member_list.get_member_count()
         row_count = member_list.get_visible_member_row_count()
         member_list.expect_member_list_heading_with_count(row_count)
+        assert row_count == heading_count, (
+            f"会員リスト heading shows {heading_count} member(s) "
+            f"but the table renders {row_count} row(s)"
+        )
 
         with allure.step(
-            f"[PASSED] 会員リスト tab is active and heading matches {row_count} table rows"
+            f"[PASSED] 会員リスト tab is active and heading count matches {row_count} table rows"
         ):
             pass
 
@@ -103,8 +109,12 @@ class Test会員管理_会員リスト:
     ):
         member_list = MemberListPage(access_to_home_screen)
         member_list.open_member_list_screen(app_url)
-
+        
         member_ids_before = member_list.get_member_id_values()
+        if member_ids_before == sorted(member_ids_before):
+            member_list.sort_by_member_id()
+            member_list.sort_by_member_id()
+            member_ids_before = member_list.get_member_id_values()
         with allure.step(f"会員ID before sort: {member_ids_before}"):
             pass
         
