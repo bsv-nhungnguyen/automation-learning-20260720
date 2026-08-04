@@ -27,7 +27,11 @@ def _extract_page_from_item(item) -> "Page | None":
     # Moi team them ten fixture rieng cua man hinh minh vao tuple duoi day
     # (vi du "event_home", "portal_home", "push_list") de hook nay van chup
     # duoc screenshot/video dung cho fixture cua team.
-    for name in ("access_to_login_screen", "access_to_home_screen"):
+    for name in (
+        "access_to_login_screen",
+        "access_to_home_screen",
+        "access_to_member_list_screen"
+    ):
         fixture = item.funcargs.get(name)
         if fixture and hasattr(fixture, "page"):
             return fixture.page
@@ -174,21 +178,17 @@ def app_url() -> str:
     return url.rstrip("/")
 
 
-@pytest.fixture(scope="session")
-def login_url(app_url: str) -> str:
-    """URL man hinh login. APP_URL co the tro thang vao trang login
-    (vd .../login.html) hoac chi la base URL — truong hop sau thi them '/login'.
-    """
-    last_segment = app_url.rsplit("/", 1)[-1]
-    if "." in last_segment or last_segment.startswith("login"):
-        return app_url
+def _login_url(app_url: str) -> str:
+    """Sample UI dùng login.html; console thật dùng /login."""
+    if "sample_UI" in app_url:
+        return f"{app_url}/login.html"
     return f"{app_url}/login"
 
 
 @pytest.fixture
 def access_to_login_screen(page: Page, login_url: str) -> AccountPage:
     """Mở trang login, trả về AccountPage."""
-    page.goto(login_url)
+    page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
     return AccountPage(page)
 
@@ -206,11 +206,14 @@ def access_to_home_screen(page: Page, login_url: str) -> Page:
     của mình trong file conftest.py con (vd tests/event_home/conftest.py) nếu
     cần, theo đúng pattern trong automation_rules.md.
     """
-    page.goto(login_url)
+    page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
     login = AccountPage(page)
-    login.login(
-        os.getenv("VALID_EMAIL"),
-        os.getenv("VALID_PASSWORD"),
-    )
+    email = os.getenv("VALID_EMAIL")
+    password = os.getenv("VALID_PASSWORD")
+    if not email or not password:
+        raise RuntimeError(
+            "VALID_EMAIL / VALID_PASSWORD chưa được set — thêm vào file .env (xem .env.example)."
+        )
+    login.login(email, password)
     return page
