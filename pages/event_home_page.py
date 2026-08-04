@@ -67,8 +67,13 @@ class EventHomePage(BasePage):
                 .strip()
             )
             cleaned.append(name)
-        return cleaned
 
+        with allure.step(
+            f"Get event table header names ({len(cleaned)}): {cleaned}"
+        ):
+            pass
+
+        return cleaned
 
     def click_create_event(self) -> None:
         self.page.locator(self.locator.CREATE_EVENT_BUTTON).click()

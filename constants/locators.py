@@ -59,5 +59,4 @@ class EventHomeLocators:
     GRID_VIEW_BUTTON = "#btn_grid_view"               # グリッド
     LIST_VIEW_BUTTON = "#btn_list_view"               # リスト
     EVENT_GRID_VIEW = "#event_grid_view"              # グリッドエリア
-    EVENT_LIST_VIEW = "#event_list_view"              # リストエリア
     ACTIVE_BUTTON_CLASS = "v-btn--active"
