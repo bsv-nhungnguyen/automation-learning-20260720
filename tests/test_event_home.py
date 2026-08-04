@@ -1,6 +1,7 @@
 import allure
 from playwright.sync_api import Page
 
+from constants import messages
 from constants.locators import EventHomeLocators
 from helpers import description_md
 from pages.event_home_page import EventHomePage
@@ -55,17 +56,13 @@ class Testイベント_Event_home:
     def test_02_verify_usage_widgets_are_displayed(self, access_to_home_screen: Page):
         event_home = EventHomePage(access_to_home_screen)
 
-        assert event_home.is_usage_label_visible(EventHomeLocators.DAU_LABEL) is True
-        event_home.hover_tooltip_by_label(EventHomeLocators.DAU_LABEL)
-        assert event_home.is_tooltip_content_visible(
-            EventHomeLocators.DAU_TOOLTIP_CONTENT
-        ) is True
+        assert event_home.is_usage_label_visible(messages.TOTAL_DAU_WIDGET_LABEL) is True
+        event_home.hover_tooltip_by_label(messages.TOTAL_DAU_WIDGET_LABEL)
+        assert event_home.is_tooltip_content_visible(messages.DAU_TOOLTIP_CONTENT) is True
 
-        assert event_home.is_usage_label_visible(EventHomeLocators.MEMBER_LABEL) is True
-        event_home.hover_tooltip_by_label(EventHomeLocators.MEMBER_LABEL)
-        assert event_home.is_tooltip_content_visible(
-            EventHomeLocators.MEMBER_TAB_TOOLTIP_CONTENT
-        ) is True
+        assert event_home.is_usage_label_visible(messages.TOTAL_MEMBER_COUNT_WIDGET_LABEL) is True
+        event_home.hover_tooltip_by_label(messages.TOTAL_MEMBER_COUNT_WIDGET_LABEL)
+        assert event_home.is_tooltip_content_visible(messages.MEMBER_COUNT_TOOLTIP_CONTENT) is True
 
         with allure.step("[PASSED] Usage widget labels and tooltips are displayed"):
             pass
