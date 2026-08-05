@@ -10,6 +10,8 @@ from pages.base_page import BasePage
 class EventHomePage(BasePage):
     """ホーム画面 / Home screen."""
 
+    PAGINATION_SUMMARY_FORMAT = "{total}件中 {start} - {end}件目"  # 件数サマリーの文言フォーマット
+
     def __init__(self, page: Page):
         super().__init__(page)
         self.locator = EventHomeLocators
@@ -203,16 +205,47 @@ class EventHomePage(BasePage):
         """Cho den khi bang loc xong va van con it nhat 1 dong ket qua."""
         expect(self.page.locator(self.locator.EVENT_TABLE_ROW_VISIBLE).first).to_be_visible()
 
+    @allure.step("Collect event rows that do not match keyword: {keyword}")
+    def get_event_rows_not_matching_keyword(self, keyword: str) -> list[str]:
+        keyword_lower = keyword.lower()
+        return [
+            row
+            for row in self.get_visible_event_row_texts()
+            if keyword_lower not in row.lower()
+        ]
+
+    @allure.step("Get the number of event rows currently displayed")
+    def get_visible_event_row_count(self) -> int:
+        return self.page.locator(self.locator.EVENT_TABLE_ROW_VISIBLE).count()
+
     # -----------------------------------------------------------------------
     # イベント一覧 — ページャー / Pagination
     # -----------------------------------------------------------------------
 
+    @allure.step("Get pagination wrapper")
     def _pagination(self):
-        """Pager cua bang イベント一覧 (pager con lai tren trang khong co 表示件数)."""
         return self.page.locator(self.locator.PAGINATION_WRAPPER)
 
+    @allure.step("Get pagination summary text")
     def get_pagination_summary_text(self) -> str:
         return self._pagination().locator(self.locator.PAGINATION_SUMMARY).inner_text()
+
+    @allure.step("Get total count from pagination summary")
+    def get_pagination_total_count(self) -> int:
+        summary = self.get_pagination_summary_text()
+        matched = re.search(self.locator.PAGINATION_TOTAL_PATTERN, summary)
+        assert matched, f"Cannot read total count from pagination summary: {summary!r}"
+        return int(matched.group(1))
+
+    @allure.step("Build the expected pagination summary of the first page")
+    def build_expected_pagination_summary(self, next_button_name: str) -> str:
+        row_count = self.get_visible_event_row_count()
+        total = (
+            row_count
+            if self.is_pagination_button_disabled(next_button_name)
+            else self.get_pagination_total_count()
+        )
+        return self.PAGINATION_SUMMARY_FORMAT.format(total=total, start=1, end=row_count)
 
     @allure.step("Expect pagination button '{button_name}' is disabled")
     def expect_pagination_button_disabled(self, button_name: str) -> None:
@@ -220,5 +253,10 @@ class EventHomePage(BasePage):
             self._pagination().get_by_role("button", name=button_name)
         ).to_be_disabled()
 
+    @allure.step("Check if pagination button '{button_name}' is disabled")
+    def is_pagination_button_disabled(self, button_name: str) -> bool:
+        return self._pagination().get_by_role("button", name=button_name).is_disabled()
+
+    @allure.step("Get selected per page value")
     def get_selected_per_page(self) -> str:
         return self._pagination().locator(self.locator.PER_PAGE_SELECT).input_value()

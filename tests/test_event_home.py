@@ -5,6 +5,7 @@ from constants import messages
 from constants.locators import EventHomeLocators
 from helpers import description_md
 from pages.event_home_page import EventHomePage
+from testdata.test_data import EventHomeTestData
 
 
 @allure.feature("イベント")
@@ -162,12 +163,15 @@ class Testイベント_Event_home:
 
         event_home.search_event_by_keyword(keyword)
         event_home.expect_has_visible_event_rows()
-        visible_rows = event_home.get_visible_event_row_texts()
-        assert visible_rows, f"No event is displayed after searching keyword '{keyword}'"
-        for row in visible_rows:
-            assert keyword.lower() in row.lower(), (
-                f"Event row does not match keyword '{keyword}': {row!r}"
-            )
+        assert event_home.get_visible_event_row_count() > 0, (
+            f"No event is displayed after searching keyword '{keyword}'"
+        )
+
+        unmatched_rows = event_home.get_event_rows_not_matching_keyword(keyword)
+        assert not unmatched_rows, (
+            f"{len(unmatched_rows)} event row(s) do not match keyword '{keyword}': "
+            f"{unmatched_rows}"
+        )
 
         with allure.step("[PASSED] Event table shows only events matching the keyword"):
             pass
@@ -179,22 +183,37 @@ class Testイベント_Event_home:
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home
-- **テスト手順**: 1. Kiểm tra text phân trang
+- **テスト手順**: 1. Đếm số dòng event đang hiển thị rồi so với text phân trang
                  2. Kiểm tra nút 前へ và giá trị 表示件数 mặc định
-- **期待する結果**: Summary đúng, nút 前へ disabled, 表示件数 = mặc định
+- **期待する結果**: Summary khớp số dòng thực tế, nút 前へ disabled, 表示件数 = mặc định
         """
     )
     def test_06_verify_pagination_default_state(self, access_to_home_screen: Page):
         event_home = EventHomePage(access_to_home_screen)
 
-        assert (
-            event_home.get_pagination_summary_text()
-            == EventHomeLocators.PAGINATION_SUMMARY_TEXT
+        assert event_home.get_visible_event_row_count() > 0, (
+            "Event table has no row — test data is invalid"
         )
-        event_home.expect_pagination_button_disabled(EventHomeLocators.PREV_PAGE_BUTTON)
-        assert event_home.get_selected_per_page() == EventHomeLocators.PER_PAGE_DEFAULT
 
-        with allure.step("[PASSED] Pagination default state and 表示件数 are correct"):
+        expected_summary = event_home.build_expected_pagination_summary(
+            EventHomeTestData.NEXT_PAGE_BUTTON
+        )
+        actual_summary = event_home.get_pagination_summary_text()
+        assert actual_summary == expected_summary, (
+            f"Pagination summary mismatch.\n"
+            f"Expected: {expected_summary}\nActual: {actual_summary}"
+        )
+
+        event_home.expect_pagination_button_disabled(EventHomeTestData.PREV_PAGE_BUTTON)
+
+        actual_per_page = event_home.get_selected_per_page()
+        expected_per_page = EventHomeTestData.PER_PAGE_DEFAULT
+        assert actual_per_page == expected_per_page, (
+            f"表示件数 mismatch.\n"
+            f"Expected: {expected_per_page}\nActual: {actual_per_page}"
+        )
+
+        with allure.step(f"[PASSED] Pagination default state and 表示件数 are correct {expected_per_page}, and 前へ button is disabled"):
             pass
 
     # -------------------------------------------------------------------
