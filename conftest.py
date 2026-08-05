@@ -186,7 +186,7 @@ def _login_url(app_url: str) -> str:
 
 
 @pytest.fixture
-def access_to_login_screen(page: Page, login_url: str) -> AccountPage:
+def access_to_login_screen(page: Page, app_url: str) -> AccountPage:
     """Mở trang login, trả về AccountPage."""
     page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
@@ -194,7 +194,7 @@ def access_to_login_screen(page: Page, login_url: str) -> AccountPage:
 
 
 @pytest.fixture
-def access_to_home_screen(page: Page, login_url: str) -> Page:
+def access_to_home_screen(page: Page, app_url: str) -> Page:
     """Login thành công, dừng lại ở event-home. Trả về raw Page - mỗi team tự
     bọc lại bằng Page Object của màn hình mình (kế thừa BasePage), ví dụ:
 
