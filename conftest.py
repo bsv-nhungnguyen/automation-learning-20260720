@@ -27,7 +27,11 @@ def _extract_page_from_item(item) -> "Page | None":
     # Moi team them ten fixture rieng cua man hinh minh vao tuple duoi day
     # (vi du "event_home", "portal_home", "push_list") de hook nay van chup
     # duoc screenshot/video dung cho fixture cua team.
-    for name in ("access_to_login_screen", "access_to_home_screen"):
+    for name in (
+        "access_to_login_screen",
+        "access_to_home_screen",
+        "access_to_member_list_screen"
+    ):
         fixture = item.funcargs.get(name)
         if fixture and hasattr(fixture, "page"):
             return fixture.page
@@ -91,8 +95,6 @@ def pytest_runtest_makereport(item, call):  # `call` is required by pytest hook 
         setattr(item, "rep_call", result)
 
     if result.when == "call" and result.failed:
-        if not hasattr(item, "first_fail"):
-            setattr(item, "first_fail", True)
         page = _extract_page_from_item(item)
         if page and _is_rerun_enabled():
             try:
@@ -101,7 +103,7 @@ def pytest_runtest_makereport(item, call):  # `call` is required by pytest hook 
                 pass
 
     # ── Screenshot on every call (pass + fail) — dùng làm bằng chứng đính kèm MR ──
-    if result.when == "call" and not getattr(item, "custom_screenshot_taken", False):
+    if result.when == "call":
         page = _extract_page_from_item(item)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         status = "FAILED" if result.failed else "PASSED"
@@ -176,10 +178,17 @@ def app_url() -> str:
     return url.rstrip("/")
 
 
+def _login_url(app_url: str) -> str:
+    """Sample UI dùng login.html; console thật dùng /login."""
+    if "sample_UI" in app_url:
+        return f"{app_url}/login.html"
+    return f"{app_url}/login"
+
+
 @pytest.fixture
 def access_to_login_screen(page: Page, app_url: str) -> AccountPage:
     """Mở trang login, trả về AccountPage."""
-    page.goto(f"{app_url}/login")
+    page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
     return AccountPage(page)
 
@@ -197,11 +206,14 @@ def access_to_home_screen(page: Page, app_url: str) -> Page:
     của mình trong file conftest.py con (vd tests/event_home/conftest.py) nếu
     cần, theo đúng pattern trong automation_rules.md.
     """
-    page.goto(f"{app_url}/login")
+    page.goto(_login_url(app_url))
     page.wait_for_load_state("networkidle")
     login = AccountPage(page)
-    login.login(
-        os.getenv("VALID_EMAIL"),
-        os.getenv("VALID_PASSWORD"),
-    )
+    email = os.getenv("VALID_EMAIL")
+    password = os.getenv("VALID_PASSWORD")
+    if not email or not password:
+        raise RuntimeError(
+            "VALID_EMAIL / VALID_PASSWORD chưa được set — thêm vào file .env (xem .env.example)."
+        )
+    login.login(email, password)
     return page

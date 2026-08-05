@@ -1,5 +1,5 @@
 import allure
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from constants.locators import LoginLocators
 from pages.base_page import BasePage
@@ -34,3 +34,17 @@ class AccountPage(BasePage):
         with self.page.expect_navigation(wait_until="load"):
             self.click_login()
         self.page.wait_for_load_state("networkidle")
+
+    @allure.step("Submit login form without waiting for navigation")
+    def submit_login_expecting_failure(self):
+        """ログイン押下のみ — man hinh loi khong dieu huong nen khong cho navigation."""
+        self.click_login()
+        self.page.wait_for_load_state("networkidle")
+
+    # -----------------------------------------------------------------------
+    # Assertions
+    # -----------------------------------------------------------------------
+
+    @allure.step("Expect login error message: {message}")
+    def expect_error_message(self, message: str):
+        expect(self.page.get_by_text(message)).to_be_visible()
