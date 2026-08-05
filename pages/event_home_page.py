@@ -87,6 +87,12 @@ class EventHomePage(BasePage):
                 .strip()
             )
             cleaned.append(name)
+
+        with allure.step(
+            f"Get event table header names ({len(cleaned)}): {cleaned}"
+        ):
+            pass
+
         return cleaned
 
     @allure.step("Click create event button")
