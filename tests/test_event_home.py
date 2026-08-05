@@ -66,6 +66,9 @@ class TestEventHomePage:
         with allure.step("[PASSED] Event table has 11 correct column headers"):
             pass
 
+        with allure.step(f"[PASSED] Event table has {len(actual)} correct column headers: {actual}"):
+            pass
+
     @allure.title("Event-home_008: Verify create button and grid/list toggle")
     @description_md(
         """

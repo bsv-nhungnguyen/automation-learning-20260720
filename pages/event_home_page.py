@@ -53,6 +53,8 @@ class EventHomePage(BasePage):
                 has_text=tooltip
                 ).is_visible()
 
+
+
     def get_event_table_header_names(self) -> list[str]:
         headers = self.page.locator(
             f"{self.locator.EVENT_LIST_VIEW} {self.locator.EVENT_TABLE_HEADERS}"
@@ -67,6 +69,12 @@ class EventHomePage(BasePage):
                 .strip()
             )
             cleaned.append(name)
+
+        with allure.step(
+            f"Get event table header names ({len(cleaned)}): {cleaned}"
+        ):
+            pass
+
         return cleaned
 
 

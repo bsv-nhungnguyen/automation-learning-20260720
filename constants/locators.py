@@ -32,7 +32,7 @@ class EventHomeLocators:
     DAU_TOOLTIP_CONTENT = "イベントのWeb&Appへの訪問者数の合計です。「毎日の訪問者数（DAU）」の一ヶ月分の合計値です。"
     MEMBER_TAB_TOOLTIP_CONTENT = "現時点での会員登録数と、今月の新規会員登録数です。"
 
-        # Event table / イベント一覧テーブル
+    # Event table / イベント一覧テーブル
     EVENT_TABLE_HEADERS = "table th"  # テーブルヘッダー（list view）
     EVENT_LIST_VIEW = "#event_list_view"  # リスト表示エリア
 
@@ -59,5 +59,4 @@ class EventHomeLocators:
     GRID_VIEW_BUTTON = "#btn_grid_view"               # グリッド
     LIST_VIEW_BUTTON = "#btn_list_view"               # リスト
     EVENT_GRID_VIEW = "#event_grid_view"              # グリッドエリア
-    EVENT_LIST_VIEW = "#event_list_view"              # リストエリア
     ACTIVE_BUTTON_CLASS = "v-btn--active"
