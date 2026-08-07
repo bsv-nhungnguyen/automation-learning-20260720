@@ -65,12 +65,10 @@ class PortalLocators:
     # --- ポータル名 ---
     PORTAL_NAME_TITLE = ".submit__name .submit__title"  # ポータル名ラベル
     REQUIRED_MARK = ".submit__name span.required"  # ※必須（赤）
-    PORTAL_NAME_PLACEHOLDER = "ポータル名を入力してください"  # ポータル名入力欄（placeholder）
     PORTAL_NAME_INPUT = "#portal_name"  # ポータル名入力欄
 
     # --- 保存する ---
     SAVE_BUTTON = "#portal_save_button"  # 保存するボタン
-    SAVE_BUTTON_NAME = "保存する"  # 保存する（role name）
     DISABLED_BUTTON_CLASS = "disabled-button"  # 無効時のグレー表示class
 
     # --- ポータルアイコン ---
@@ -82,12 +80,10 @@ class PortalLocators:
     ICON_FILENAME = "#portal_icon_filename"  # アップロード後のファイル名表示
     REMOVE_FILE_BUTTON = "#btn_remove_file"  # 画像を削除ボタン
     ICON_PREVIEW = "#portal_icon_placeholder img"  # アップロード後のプレビュー画像
-    ICON_GUIDE_TEXT = ".submit__icon .text__size"  # サイズ案内テキスト
 
     # --- ツールチップ (?) ---
     TOOLTIP_NAME_ARIA = "ポータル名の説明"  # ポータル名の(?)ボタン
     TOOLTIP_ICON_ARIA = "ポータルアイコンの説明"  # ポータルアイコンの(?)ボタン
-    TOOLTIP_ACTIVE = ".v-tooltip__content--active"  # 表示中のツールチップ
     TOOLTIP_MESSAGE = ".v-tooltip__content--active .tooltip-message"  # ツールチップ本文
 
     # --- ヘッダーナビ ---
