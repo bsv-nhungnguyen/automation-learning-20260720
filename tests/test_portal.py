@@ -2,16 +2,21 @@ import os
 from pathlib import Path
 
 import allure
+from playwright.sync_api import Page
 
 from helpers import description_md
 from pages.portal_page import PortalPage
 
 PORTAL_ICON_PNG = Path(__file__).resolve().parents[1] / "testdata" / "portal_icon_100x100.png"
+PORTAL_HOME_PATH = "/portal_home.html"
 
 
 @allure.feature("ポータル")
 @allure.story("ポータルホーム")
-@allure.link(os.getenv("PORTAL_URL") or "", name="Portal home")
+@allure.link(
+    f"{os.getenv('APP_URL', '').rstrip('/')}{PORTAL_HOME_PATH}",
+    name="Portal home",
+)
 @description_md(
     "Test cases ポータル_001 – ポータル_006 in file portal home — "
     "verify portal name validation and portal icon upload section."
@@ -30,9 +35,10 @@ class Testポータル_ホーム:
         """
     )
     def test_portal_name_required_mark_is_displayed(
-        self, access_to_portal_screen: PortalPage
+        self, page: Page, app_url: str
     ):
-        portal = access_to_portal_screen
+        portal = PortalPage(page)
+        portal.open_portal_screen(app_url)
         portal.expect_required_mark_visible()
         portal.expect_required_mark_color()
         with allure.step("[PASSED] Required mark ※必須 is displayed in red next to ポータル名"):
@@ -50,9 +56,10 @@ class Testポータル_ホーム:
         """
     )
     def test_save_button_is_disabled_when_form_empty(
-        self, access_to_portal_screen: PortalPage
+        self, page: Page, app_url: str
     ):
-        portal = access_to_portal_screen
+        portal = PortalPage(page)
+        portal.open_portal_screen(app_url)
         portal.expect_save_button_disabled()
         with allure.step("[PASSED] Save button is disabled when form is empty"):
             pass
@@ -73,9 +80,10 @@ class Testポータル_ホーム:
         """
     )
     def test_save_button_is_enabled_after_entering_portal_name(
-        self, access_to_portal_screen: PortalPage
+        self, page: Page, app_url: str
     ):
-        portal = access_to_portal_screen
+        portal = PortalPage(page)
+        portal.open_portal_screen(app_url)
 
         portal.expect_save_button_disabled()
         portal.enter_portal_name("Automation Portal Test")
@@ -102,9 +110,10 @@ class Testポータル_ホーム:
         """
     )
     def test_portal_name_value_is_preserved(
-        self, access_to_portal_screen: PortalPage
+        self, page: Page, app_url: str
     ):
-        portal = access_to_portal_screen
+        portal = PortalPage(page)
+        portal.open_portal_screen(app_url)
 
         portal_name = "自動化テスト Cổng thông tin"
         portal.enter_portal_name(portal_name)
@@ -127,9 +136,10 @@ class Testポータル_ホーム:
         """
     )
     def test_portal_icon_section_content_is_displayed(
-        self, access_to_portal_screen: PortalPage
+        self, page: Page, app_url: str
     ):
-        portal = access_to_portal_screen
+        portal = PortalPage(page)
+        portal.open_portal_screen(app_url)
         portal.expect_icon_section_content()
         with allure.step("[PASSED] Portal icon section content is displayed"):
             pass
@@ -146,16 +156,17 @@ class Testポータル_ホーム:
         """
     )
     def test_file_input_accepts_png_and_jpg(
-        self, access_to_portal_screen: PortalPage
+        self, page: Page, app_url: str
     ):
-        portal = access_to_portal_screen
+        portal = PortalPage(page)
+        portal.open_portal_screen(app_url)
         portal.expect_file_input_accepts_png_jpg()
         portal.upload_portal_icon(str(PORTAL_ICON_PNG))
         portal.expect_portal_icon_uploaded(PORTAL_ICON_PNG.name)
         with allure.step("[PASSED] File input accepts PNG/JPG and upload works"):
             pass
 
-        # -------------------------------------------------------------------
+    # -------------------------------------------------------------------
     # ポータル_007
     # -------------------------------------------------------------------
     @allure.title(
@@ -171,11 +182,14 @@ class Testポータル_ホーム:
         """
     )
     def test_portal_help_tooltips_show_guide_content_on_hover(
-        self, access_to_portal_screen: PortalPage
+        self, page: Page, app_url: str
     ):
-        portal = access_to_portal_screen
-        portal.expect_portal_name_tooltip_on_hover()
-        portal.expect_portal_icon_tooltip_on_hover()
+        portal = PortalPage(page)
+        portal.open_portal_screen(app_url)
+        portal.hover_portal_name_tooltip_button()
+        portal.expect_portal_name_tooltip_content()
+        portal.hover_portal_icon_tooltip_button()
+        portal.expect_portal_icon_tooltip_content()
         with allure.step(
             "[PASSED] Portal name and icon tooltips show guide content on hover"
         ):
@@ -195,9 +209,10 @@ class Testポータル_ホーム:
         """
     )
     def test_portal_nav_tab_is_active_on_portal_home(
-        self, access_to_portal_screen: PortalPage
+        self, page: Page, app_url: str
     ):
-        portal = access_to_portal_screen
+        portal = PortalPage(page)
+        portal.open_portal_screen(app_url)
         portal.expect_portal_tab_active()
         with allure.step(
             "[PASSED] ポータル tab is active with orange underline; other tabs are not"
