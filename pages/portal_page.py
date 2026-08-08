@@ -14,13 +14,11 @@ from constants.messages import (
     REQUIRED_MARK_TEXT,
     TOOLTIP_PORTAL_ICON_TEXT,
     TOOLTIP_PORTAL_NAME_TEXT,
-    NAV_TAB_ACTIVE_CLASS,
     NAV_TAB_ACTIVE_COLOR_ORANGE,
-    NAV_TAB_PORTAL,
 )
 from pages.base_page import BasePage
 
-NAV_OTHER_TABS = ("イベント", "会員管理", "配信する", "レポート")
+ALL_NAV_TABS = ("ポータル", "イベント", "会員管理", "配信する", "レポート")
 
 
 class PortalPage(BasePage):
@@ -119,20 +117,19 @@ class PortalPage(BasePage):
         expect(tooltip).to_be_visible()
         expect(tooltip).to_contain_text(TOOLTIP_PORTAL_ICON_TEXT)
 
-    @allure.step("Expect nav tab ポータル is active (orange underline)")
-    def expect_portal_tab_active(self) -> None:
-        active = self.page.locator(locators.NAV_ACTIVE_TAB)
-        expect(active).to_be_visible()
-        expect(active).to_have_text(NAV_TAB_PORTAL)
-        expect(active).to_have_class(NAV_TAB_ACTIVE_CLASS)
-        expect(active).to_have_css("color", NAV_TAB_ACTIVE_COLOR_ORANGE)
-        expect(active).to_have_css(
+    @allure.step("Expect nav tab '{name}' is active (orange underline)")
+    def expect_nav_tab_active(self, name: str) -> None:
+        tabs = self.page.locator(locators.NAV_TABS)
+        target = tabs.filter(has_text=name)
+        expect(target).to_be_visible()
+        expect(target).to_have_class("active")
+        expect(target).to_have_css("color", NAV_TAB_ACTIVE_COLOR_ORANGE)
+        expect(target).to_have_css(
             "border-bottom-color", NAV_TAB_ACTIVE_COLOR_ORANGE
         )
-
-        tabs = self.page.locator(locators.NAV_TABS)
-        expect(tabs.filter(has_text=NAV_TAB_PORTAL)).to_have_class(NAV_TAB_ACTIVE_CLASS)
-        for tab_name in NAV_OTHER_TABS:
+        for tab_name in ALL_NAV_TABS:
+            if tab_name == name:
+                continue
             other = tabs.filter(has_text=tab_name)
             expect(other).to_be_visible()
-            expect(other).not_to_have_class(NAV_TAB_ACTIVE_CLASS)
+            expect(other).not_to_have_class("active")

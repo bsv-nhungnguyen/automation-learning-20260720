@@ -219,7 +219,7 @@ class Testポータル_ホーム:
     ):
         portal = PortalPage(page)
         portal.open_portal_screen(app_url)
-        portal.expect_portal_tab_active()
+        portal.expect_nav_tab_active("ポータル")
         with allure.step(
             "[PASSED] ポータル tab is active with orange underline; other tabs are not"
         ):
