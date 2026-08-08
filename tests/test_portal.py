@@ -7,7 +7,9 @@ from playwright.sync_api import Page
 from helpers import description_md
 from pages.portal_page import PortalPage
 
-PORTAL_ICON_PNG = Path(__file__).resolve().parents[1] / "testdata" / "portal_icon_100x100.png"
+TESTDATA_DIR = Path(__file__).resolve().parents[1] / "testdata"
+PORTAL_ICON_PNG = TESTDATA_DIR / "portal_icon_100x100.png"
+PORTAL_ICON_JPG = TESTDATA_DIR / "portal_icon_100x100.jpg"
 PORTAL_HOME_PATH = "/portal_home.html"
 
 
@@ -18,7 +20,7 @@ PORTAL_HOME_PATH = "/portal_home.html"
     name="Portal home",
 )
 @description_md(
-    "Test cases ポータル_001 – ポータル_006 in file portal home — "
+    "Test cases ポータル_001 – ポータル_008 in file portal home — "
     "verify portal name validation and portal icon upload section."
 )
 class Testポータル_ホーム:
@@ -151,8 +153,11 @@ class Testポータル_ホーム:
     @description_md(
         """
 - **前提条件**: Đang ở màn hình portal
-- **テスト手順**: 1. Kiểm tra input #portal_icon tồn tại / accept  2. Upload ảnh PNG
-- **期待する結果**: type=file, accept chứa .png/.jpg, upload thành công (preview + filename)
+- **テスト手順**:
+  1. Kiểm tra input #portal_icon tồn tại / accept chứa .png/.jpg
+  2. Upload ảnh PNG từ testdata/portal_icon_100x100.png
+  3. Upload ảnh JPG từ testdata/portal_icon_100x100.jpg
+- **期待する結果**: type=file, accept chứa .png/.jpg; upload PNG và JPG đều thành công (preview + filename)
         """
     )
     def test_file_input_accepts_png_and_jpg(
@@ -160,10 +165,11 @@ class Testポータル_ホーム:
     ):
         portal = PortalPage(page)
         portal.open_portal_screen(app_url)
-        portal.expect_file_input_accepts_png_jpg()
-        portal.upload_portal_icon(str(PORTAL_ICON_PNG))
-        portal.expect_portal_icon_uploaded(PORTAL_ICON_PNG.name)
-        with allure.step("[PASSED] File input accepts PNG/JPG and upload works"):
+        portal.expect_file_input_accepts_png_jpg(PORTAL_ICON_PNG)
+        portal.expect_file_input_accepts_png_jpg(PORTAL_ICON_JPG)
+        with allure.step(
+            "[PASSED] File input accepts PNG/JPG and upload works for both"
+        ):
             pass
 
     # -------------------------------------------------------------------
