@@ -86,18 +86,18 @@ class PushListPage(BasePage):
         expect(self.submit_button()).to_be_enabled()
         
     # -----------------------------------------------------------------------
-    # Actions — Bổ sung cho TC05-06
+    # Actions
     # -----------------------------------------------------------------------
 
     @allure.step("Select CSV upload")
-    def select_csv_upload(self):
+    def select_csv_upload(self, radio_label: str):
         self.page.get_by_role(
             "radio",
-            name=locators.CSV_UPLOAD_RADIO
+            name=radio_label,
         ).click()
 
     # -----------------------------------------------------------------------
-    # Assertions — Bổ sung cho TC05-06
+    # Assertions
     # -----------------------------------------------------------------------
 
     @allure.step("Verify segment area hidden")

@@ -8,7 +8,6 @@ class LoginLocators:
     PASSWORD_PLACEHOLDER = "パスワード"      # <input id="password" type="password">
     LOGIN_BUTTON = "#login_button"          # ログインボタン
 
-<<<<<<< HEAD
 class PushListLocators:
     CREATE_BUTTON = "#btn_push_create"  # プッシュ配信一覧: 「新規作成」ボタン
     DRAWER = "#push_drawer"             # プッシュ配信作成ドロワー（右側スライドパネル）
@@ -29,11 +28,10 @@ class PushListLocators:
     SUBMIT_BUTTON = "#push_drawer #push_submit"
     SEGMENT_RULE_OPTION_1_LABEL = "セグメントタイトル_001"
     
-    # --- Thêm cho TC05-06 ---
-    CSV_UPLOAD_RADIO = "CSVからアップロードする"
-    SEGMENT_AREA = "#segment_area"
-    CSV_AREA = "#csv_area"
-    TITLE_INPUT = "#push_title"
+
+    SEGMENT_AREA = "#segment_area"  # セグメントルール入力エリア
+    CSV_AREA = "#csv_area"  # CSVアップロードエリア
+    TITLE_INPUT = "#push_title"  # 配信管理用タイトル入力欄
 
      # --- Thêm cho TC07-08 ---
     SCHEDULE_DELIVERY_RADIO = "予約配信する"
@@ -41,7 +39,6 @@ class PushListLocators:
     SCHEDULE_DATE = "#schedule_date"
     SCHEDULE_TIME = "#schedule_time"
     CANCEL_BUTTON = "キャンセル"
-=======
 
 class MemberListPageLocators:
     
@@ -93,4 +90,3 @@ class MemberListPageLocators:
     ROW_CHECKBOX = "input.member-row__check"  # 会員行選択チェックボックス
 
     # テーブル下部の一括操作
->>>>>>> develop

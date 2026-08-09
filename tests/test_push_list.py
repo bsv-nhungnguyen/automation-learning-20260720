@@ -2,6 +2,7 @@ import allure
 from constants.locators import PushListLocators as locators
 from helpers import description_md
 from pages.push_list_page import PushListPage
+from testdata.test_data import CSV_UPLOAD_RADIO_LABEL, TITLE_OVERFLOW_INPUT
 
 @allure.feature("プッシュ配信")
 @allure.story("配信する")
@@ -120,21 +121,23 @@ class Testプッシュ配信_配信する:
             pass
     
     # -------------------------------------------------------------------
-    # TC05
+    # 配信する_005 (TC05)
     # -------------------------------------------------------------------
-    @allure.title("TC05: Verify chuyển đổi phương thức tạo đối tượng sang 'CSVからアップロードする'")
-    @description_md("""
-- **前提条件**: Đang mở màn hình tạo Push Notification
+    @allure.title("Verify display when selecting 'CSVからアップロードする'")
+    @description_md(
+        """
+- **前提条件**: プッシュ配信作成ドロワーを表示中
 - **テスト手順**:
-    1. Chọn radio 「CSVからアップロードする」
+  1. 「CSVからアップロードする」を選択する
 - **期待する結果**:
-    - Khu vực セグメントルール không hiển thị
-    - Hiển thị khu vực upload CSV
-        """)
+  - セグメントルール入力エリアが表示されないこと
+  - CSVアップロードエリアが表示されること
+        """
+    )
     def test_verify_switch_to_csv_upload(self, access_to_push_list_drawer: PushListPage):
         push_list = access_to_push_list_drawer
 
-        push_list.select_csv_upload()
+        push_list.select_csv_upload(CSV_UPLOAD_RADIO_LABEL)
         push_list.verify_segment_area_hidden()
         push_list.verify_csv_area_displayed()
 
@@ -142,24 +145,27 @@ class Testプッシュ配信_配信する:
             pass
 
     # -------------------------------------------------------------------
-    # TC06
+    # 配信する_006 (TC06)
     # -------------------------------------------------------------------
-    @allure.title("TC06: Verify giới hạn ký tự (255) của trường 配信管理用タイトル")
-    @description_md("""
-- **前提条件**: Đang mở màn hình tạo Push Notification
+    @allure.title("Verify maximum length of 配信管理用タイトル is 255 characters")
+    @description_md(
+        """
+- **前提条件**: プッシュ配信作成ドロワーを表示中
 - **テスト手順**:
-    1. Nhập chuỗi vượt quá 255 ký tự vào trường 配信管理用タイトル
+  1. 配信管理用タイトルに255文字を超える文字列を入力する
 - **期待する結果**:
-    - Chỉ nhập tối đa 255 ký tự
-        """)
+  - 配信管理用タイトルには最大255文字まで入力できること
+       """
+   )
     def test_verify_title_maxlength_255(self, access_to_push_list_drawer: PushListPage):
         push_list = access_to_push_list_drawer
 
-        push_list.fill_title("A" * 300)
+        push_list.fill_title(TITLE_OVERFLOW_INPUT)
         push_list.verify_title_maxlength()
 
         with allure.step("[PASSED] Title accepts maximum 255 characters"):
             pass
+
     # -------------------------------------------------------------------
     # TC07
     # -------------------------------------------------------------------
