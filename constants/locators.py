@@ -8,7 +8,6 @@ class LoginLocators:
     PASSWORD_PLACEHOLDER = "パスワード"      # <input id="password" type="password">
     LOGIN_BUTTON = "#login_button"          # ログインボタン
 
-<<<<<<< HEAD
 class PushListLocators:
     CREATE_BUTTON = "#btn_push_create"  # プッシュ配信一覧: 「新規作成」ボタン
     DRAWER = "#push_drawer"             # プッシュ配信作成ドロワー（右側スライドパネル）
@@ -41,7 +40,6 @@ class PushListLocators:
     SCHEDULE_DATE = "#schedule_date"
     SCHEDULE_TIME = "#schedule_time"
     CANCEL_BUTTON = "キャンセル"
-=======
 
 class MemberListPageLocators:
     
@@ -93,4 +91,3 @@ class MemberListPageLocators:
     ROW_CHECKBOX = "input.member-row__check"  # 会員行選択チェックボックス
 
     # テーブル下部の一括操作
->>>>>>> develop

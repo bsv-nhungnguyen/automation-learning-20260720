@@ -18,43 +18,10 @@ class PushListPage(BasePage):
         self.click(locators.CREATE_BUTTON)
         expect(self.page.locator(locators.DRAWER)).to_be_visible()
 
-
-    # -----------------------------------------------------------------------
-    # Assertions
-    # -----------------------------------------------------------------------
-
-
-    @allure.step("Expect required mark visible next to 配信管理用タイトル")
-    def expect_title_required_mark_visible(self):
-        expect(self.page.locator(locators.TITLE_REQUIRED_MARK)).to_be_visible()
-
-    @allure.step("Expect required mark visible next to セグメントルールを選択する")
-    def expect_segment_required_mark_visible(self):
-        expect(self.page.locator(locators.SEGMENT_REQUIRED_MARK)).to_be_visible()
-
     @allure.step("Navigate to push notification list screen")
-    def navigate_to_push_list(self, app_url: str):
-        self.navigate_to(f"{app_url}/push_list/push_list.html")
-
-    @allure.step("Expect required mark visible next to メッセージ")
-    def expect_message_required_mark_visible(self):
-        expect(self.page.locator(locators.MESSAGE_REQUIRED_MARK)).to_be_visible()
-
-    @allure.step("Expect 配信する対象の作成方法 defaults to セグメントルールから選ぶ")
-    def expect_target_method_defaults_to_segment(self):
-        expect(
-            self.page.get_by_role("radio", name=locators.TARGET_SEGMENT_RADIO_LABEL)
-        ).to_be_checked()
-
-    @allure.step("Expect 配信タイプ defaults to 即時配信する")
-    def expect_send_type_defaults_to_immediate(self):
-        expect(
-            self.page.get_by_role("radio", name=locators.SEND_IMMEDIATE_RADIO_LABEL)
-        ).to_be_checked()
-
-    # -----------------------------------------------------------------------
-    # Actions — bổ sung cho TC03-04
-    # -----------------------------------------------------------------------
+    def navigate_to_push_list(self, app_url: str) -> None:
+        self.page.goto(f"{app_url.rstrip('/')}/push_list/push_list.html")
+        self.page.wait_for_load_state("networkidle")
 
     def submit_button(self):
         return self.page.locator(locators.SUBMIT_BUTTON)
@@ -73,9 +40,48 @@ class PushListPage(BasePage):
         self.select_segment_rule(segment_rule_label)
         self.fill_message(message)
 
+    @allure.step("Select CSV upload")
+    def select_csv_upload(self):
+        self.page.get_by_role(
+            "radio",
+            name=locators.CSV_UPLOAD_RADIO
+        ).click()
+
+    @allure.step("Select scheduled delivery")
+    def select_scheduled_delivery(self):
+        self.click_by_role("radio", locators.SCHEDULE_DELIVERY_RADIO)
+
+    @allure.step("Click cancel button")
+    def click_cancel(self):
+        self.click_by_role("button", locators.CANCEL_BUTTON)
+
     # -----------------------------------------------------------------------
-    # Assertions — bổ sung cho TC03-04
+    # Assertions
     # -----------------------------------------------------------------------
+
+    @allure.step("Expect required mark visible next to 配信管理用タイトル")
+    def expect_title_required_mark_visible(self):
+        expect(self.page.locator(locators.TITLE_REQUIRED_MARK)).to_be_visible()
+
+    @allure.step("Expect required mark visible next to セグメントルールを選択する")
+    def expect_segment_required_mark_visible(self):
+        expect(self.page.locator(locators.SEGMENT_REQUIRED_MARK)).to_be_visible()
+
+    @allure.step("Expect required mark visible next to メッセージ")
+    def expect_message_required_mark_visible(self):
+        expect(self.page.locator(locators.MESSAGE_REQUIRED_MARK)).to_be_visible()
+
+    @allure.step("Expect 配信する対象の作成方法 defaults to セグメントルールから選ぶ")
+    def expect_target_method_defaults_to_segment(self):
+        expect(
+            self.page.get_by_role("radio", name=locators.TARGET_SEGMENT_RADIO_LABEL)
+        ).to_be_checked()
+
+    @allure.step("Expect 配信タイプ defaults to 即時配信する")
+    def expect_send_type_defaults_to_immediate(self):
+        expect(
+            self.page.get_by_role("radio", name=locators.SEND_IMMEDIATE_RADIO_LABEL)
+        ).to_be_checked()
 
     @allure.step("Expect submit button disabled")
     def expect_submit_button_disabled(self):
@@ -84,21 +90,6 @@ class PushListPage(BasePage):
     @allure.step("Expect submit button enabled")
     def expect_submit_button_enabled(self):
         expect(self.submit_button()).to_be_enabled()
-        
-    # -----------------------------------------------------------------------
-    # Actions — Bổ sung cho TC05-06
-    # -----------------------------------------------------------------------
-
-    @allure.step("Select CSV upload")
-    def select_csv_upload(self):
-        self.page.get_by_role(
-            "radio",
-            name=locators.CSV_UPLOAD_RADIO
-        ).click()
-
-    # -----------------------------------------------------------------------
-    # Assertions — Bổ sung cho TC05-06
-    # -----------------------------------------------------------------------
 
     @allure.step("Verify segment area hidden")
     def verify_segment_area_hidden(self):
@@ -120,42 +111,26 @@ class PushListPage(BasePage):
 
         assert len(value) == 255
 
-    # -----------------------------------------------------------------------
-    # Actions — Bổ sung cho TC07-08
-    # -----------------------------------------------------------------------
-    
-
-    @allure.step("Select scheduled delivery")
-    def select_scheduled_delivery(self):
-        self.click_by_role("radio",locators.SCHEDULE_DELIVERY_RADIO)
-    
-    @allure.step("Click cancel button")
-    def click_cancel(self):
-        self.click_by_role("button",locators.CANCEL_BUTTON)
-
-    # -----------------------------------------------------------------------
-    # Assertions — Bổ sung cho TC07-08
-    # -----------------------------------------------------------------------
     @allure.step("Verify schedule area displayed")
     def verify_schedule_area_displayed(self):
         self.expect_visible(locators.SCHEDULE_AREA)
-    
+
     @allure.step("Verify schedule date displayed")
     def verify_schedule_date_displayed(self):
         self.expect_visible(locators.SCHEDULE_DATE)
-    
+
     @allure.step("Verify schedule time displayed")
     def verify_schedule_time_displayed(self):
         self.expect_visible(locators.SCHEDULE_TIME)
-    
+
     @allure.step("Verify modal closed")
     def verify_modal_closed(self):
         self.expect_not_visible(locators.DRAWER)
-    
+
     @allure.step("Verify title is cleared")
     def verify_title_cleared(self):
         self.expect_empty_placeholder(locators.TITLE_PLACEHOLDER)
-    
+
     @allure.step("Verify message is cleared")
     def verify_message_cleared(self):
         self.expect_empty_placeholder(locators.MESSAGE_PLACEHOLDER)
