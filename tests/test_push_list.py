@@ -136,8 +136,12 @@ class Testプッシュ配信_配信する:
   - CSVアップロードエリアが表示されること
         """
     )
-    def test_verify_switch_to_csv_upload(self, access_to_push_list_drawer: PushListPage):
-        push_list = access_to_push_list_drawer
+    def test_verify_switch_to_csv_upload(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
 
         push_list.select_csv_upload(CSV_UPLOAD_RADIO_LABEL)
         push_list.verify_segment_area_hidden()
@@ -159,8 +163,12 @@ class Testプッシュ配信_配信する:
   - 配信管理用タイトルには最大255文字まで入力できること
        """
    )
-    def test_verify_title_maxlength_255(self, access_to_push_list_drawer: PushListPage):
-        push_list = access_to_push_list_drawer
+    def test_verify_title_maxlength_255(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
 
         push_list.fill_title(TITLE_OVERFLOW_INPUT)
         push_list.verify_title_maxlength()
