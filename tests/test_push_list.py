@@ -1,4 +1,5 @@
 import allure
+from playwright.sync_api import Page
 from constants.locators import PushListLocators as locators
 from helpers import description_md
 from pages.push_list_page import PushListPage
@@ -7,10 +8,7 @@ from testdata.test_data import CSV_UPLOAD_RADIO_LABEL, TITLE_OVERFLOW_INPUT
 @allure.feature("プッシュ配信")
 @allure.story("配信する")
 @description_md(
-    "Test cases 配信する_001 - 配信する_002 trong file "
-    "'Training_Automation_Sprint1 - 04_Push-list.csv' (TC01-02, phu trach: Phi) - "
-    "verify cac truong bat buoc (*) va gia tri mac dinh cua 2 nhom radio button "
-    "trong form/drawer tao chien dich day tin (プッシュ配信新規作成)."
+    "Test cases 配信する_001 - 配信する_008"
 )
 class Testプッシュ配信_配信する:
 
@@ -18,7 +16,7 @@ class Testプッシュ配信_配信する:
     # 配信する_001 (TC01)
     # -------------------------------------------------------------------
 
-    @allure.title("配信する_001: Verify required fields are marked with (*) in push creation form")
+    @allure.title("配信する_001: プッシュ配信作成フォームの必須項目に(*)マークが表示されることを確認")
     @description_md(
         """
 - **前提条件**: プッシュ配信一覧画面を表示中
@@ -30,9 +28,11 @@ class Testプッシュ配信_配信する:
         """
     )
     def test_push_create_form_required_fields_show_asterisk(
-    self, access_to_push_list_drawer: PushListPage
+    self, access_to_home_screen: Page, app_url: str
     ):
-        push_list = access_to_push_list_drawer
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
 
         push_list.expect_title_required_mark_visible()
         push_list.expect_segment_required_mark_visible()
@@ -47,7 +47,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_002 (TC02)
     # -------------------------------------------------------------------
-    @allure.title("配信する_002: Verify default radio selections in push creation form")
+    @allure.title("配信する_002: プッシュ配信作成フォームのラジオボタンのデフォルト選択を確認")
     @description_md(
         """
 - **前提条件**: プッシュ配信作成ドロワーを表示中（初期状態）
@@ -58,9 +58,11 @@ class Testプッシュ配信_配信する:
         """
     )
     def test_push_create_form_default_radios_are_preselected(
-        self, access_to_push_list_drawer: PushListPage
+        self, access_to_home_screen: Page, app_url: str
     ):
-        push_list = access_to_push_list_drawer
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
 
         push_list.expect_target_method_defaults_to_segment()
         push_list.expect_send_type_defaults_to_immediate()
@@ -73,7 +75,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_003 (TC03)
     # -------------------------------------------------------------------
-    @allure.title("配信する_003: Verify submit button (配信する) is disabled when required fields are empty")
+    @allure.title("配信する_003: 必須項目が未入力の場合、配信するボタンがdisabled状態になることを確認")
     @description_md(
     """
 - **前提条件**: プッシュ配信作成ドロワーを表示中（各入力欄は空の状態）
@@ -94,7 +96,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_004 (TC04)
     # -------------------------------------------------------------------
-    @allure.title("配信する_004: Verify submit button (配信する) becomes enabled after required fields are filled")
+    @allure.title("配信する_004: 必須項目入力後、配信するボタンがenabled状態になることを確認")
     @description_md(
     """
 - **前提条件**: プッシュ配信作成ドロワーを表示中（フォームは空の状態）
@@ -167,9 +169,9 @@ class Testプッシュ配信_配信する:
             pass
 
     # -------------------------------------------------------------------
-    # TC07
+    # 配信する_007 (TC07)
     # -------------------------------------------------------------------
-    @allure.title("TC07: Verify chuyển 配信タイプ sang '予約配信する' hiển thị trường ngày giờ")
+    @allure.title("配信する_007: 配信タイプを「予約配信する」に切り替えた場合、日時項目が表示されることを確認")
     @description_md("""
 - **前提条件**: Đang mở màn hình tạo Push Notification
 - **テスト手順**:
@@ -190,9 +192,9 @@ class Testプッシュ配信_配信する:
             pass
     
     # -------------------------------------------------------------------
-    # TC08
+    # 配信する_008 (TC08)
     # -------------------------------------------------------------------
-    @allure.title("TC08: Verify nút キャンセル,close và không lưu dữ liệu")
+    @allure.title("配信する_008: キャンセル/クローズボタン押下時にデータが保存されないことを確認")
     @description_md("""
 - **前提条件**: Đang mở màn hình tạo Push Notification
 - **テスト手順**:
