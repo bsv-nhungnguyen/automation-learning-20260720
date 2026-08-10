@@ -87,5 +87,5 @@ class PortalLocators:
     TOOLTIP_MESSAGE = ".v-tooltip__content--active .tooltip-message"  # ツールチップ本文
 
     # --- ヘッダーナビ ---
-    NAV_ACTIVE_TAB = "ul.navigation .navigation__item__name .active"  # アクティブタブ
+    
     NAV_TABS = "ul.navigation .navigation__item__name > div"  # 全タブ

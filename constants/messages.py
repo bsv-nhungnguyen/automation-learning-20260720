@@ -21,6 +21,4 @@ TOOLTIP_PORTAL_NAME_TEXT = (
     "ポータルの管理用タイトルを入力します。アプリやWEBサイトには表示されません"
 )
 TOOLTIP_PORTAL_ICON_TEXT = "ポータルの管理用アイコンを指定します"
-NAV_TAB_PORTAL = "ポータル"
-NAV_TAB_ACTIVE_CLASS = "active"
 NAV_TAB_ACTIVE_COLOR_ORANGE = "rgb(238, 120, 0)"  # #ee7800

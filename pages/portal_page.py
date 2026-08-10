@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 import allure
 from playwright.sync_api import expect
@@ -13,13 +14,11 @@ from constants.messages import (
     REQUIRED_MARK_TEXT,
     TOOLTIP_PORTAL_ICON_TEXT,
     TOOLTIP_PORTAL_NAME_TEXT,
-    NAV_TAB_ACTIVE_CLASS,
     NAV_TAB_ACTIVE_COLOR_ORANGE,
-    NAV_TAB_PORTAL,
 )
 from pages.base_page import BasePage
 
-NAV_OTHER_TABS = ("イベント", "会員管理", "配信する", "レポート")
+ALL_NAV_TABS = ("ポータル", "イベント", "会員管理", "配信する", "レポート")
 
 
 class PortalPage(BasePage):
@@ -76,14 +75,17 @@ class PortalPage(BasePage):
         for line in lines:
             self.expect_text(locators.ICON_SECTION, line)
 
-    @allure.step("Expect file input accepts PNG and JPG")
-    def expect_file_input_accepts_png_jpg(self) -> None:
+    @allure.step("Expect file input accepts PNG/JPG and upload works: {file_path}")
+    def expect_file_input_accepts_png_jpg(self, file_path: str | Path) -> None:
+        path = Path(file_path)
         file_input = self.page.locator(locators.FILE_INPUT)
         expect(file_input).to_be_attached()
         expect(file_input).to_have_attribute("type", "file")
         accept = file_input.get_attribute("accept") or ""
         assert ".png" in accept, f"File input accept is missing .png: {accept!r}"
         assert ".jpg" in accept, f"File input accept is missing .jpg: {accept!r}"
+        self.upload_portal_icon(str(path))
+        self.expect_portal_icon_uploaded(path.name)
 
     @allure.step("Upload portal icon: {file_path}")
     def upload_portal_icon(self, file_path: str) -> None:
@@ -115,20 +117,19 @@ class PortalPage(BasePage):
         expect(tooltip).to_be_visible()
         expect(tooltip).to_contain_text(TOOLTIP_PORTAL_ICON_TEXT)
 
-    @allure.step("Expect nav tab ポータル is active (orange underline)")
-    def expect_portal_tab_active(self) -> None:
-        active = self.page.locator(locators.NAV_ACTIVE_TAB)
-        expect(active).to_be_visible()
-        expect(active).to_have_text(NAV_TAB_PORTAL)
-        expect(active).to_have_class(NAV_TAB_ACTIVE_CLASS)
-        expect(active).to_have_css("color", NAV_TAB_ACTIVE_COLOR_ORANGE)
-        expect(active).to_have_css(
+    @allure.step("Expect nav tab '{name}' is active (orange underline)")
+    def expect_nav_tab_active(self, name: str) -> None:
+        tabs = self.page.locator(locators.NAV_TABS)
+        target = tabs.filter(has_text=name)
+        expect(target).to_be_visible()
+        expect(target).to_have_class("active")
+        expect(target).to_have_css("color", NAV_TAB_ACTIVE_COLOR_ORANGE)
+        expect(target).to_have_css(
             "border-bottom-color", NAV_TAB_ACTIVE_COLOR_ORANGE
         )
-
-        tabs = self.page.locator(locators.NAV_TABS)
-        expect(tabs.filter(has_text=NAV_TAB_PORTAL)).to_have_class(NAV_TAB_ACTIVE_CLASS)
-        for tab_name in NAV_OTHER_TABS:
+        for tab_name in ALL_NAV_TABS:
+            if tab_name == name:
+                continue
             other = tabs.filter(has_text=tab_name)
             expect(other).to_be_visible()
-            expect(other).not_to_have_class(NAV_TAB_ACTIVE_CLASS)
+            expect(other).not_to_have_class("active")
