@@ -36,9 +36,14 @@ class EventHomePage(BasePage):
 
     @allure.step("Check if tab is active")
     def is_tab_active(self, tab_name: str) -> bool:
-        tab = self.page.get_by_role("link", name=tab_name).locator("div")
-        class_name = tab.get_attribute("class") or ""
-        return "active" in class_name
+        tab = self.page.get_by_role("link", name=tab_name).first
+        class_name = (tab.get_attribute("class") or "").lower()
+        if any(active_class in class_name for active_class in self.locator.ACTIVE_TAB_CLASSES):
+            return True
+
+        aria_current = (tab.get_attribute("aria-current") or "").lower()
+        aria_selected = (tab.get_attribute("aria-selected") or "").lower()
+        return aria_current in {"page", "true"} or aria_selected == "true"
 
     @allure.step("Check if section title is displayed")
     def is_section_title_displayed(self, title: str) -> bool:

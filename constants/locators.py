@@ -69,6 +69,7 @@ class EventHomeLocators:
     MEMBER_TAB = '会員管理'
     MAIL_TAB = '配信する'
     REPORT_TAB = 'レポート'
+    ACTIVE_TAB_CLASSES = ("v-tabs__item--active", "router-link-active", "is-active")
 
     # Widgets
     WIDGET_LABEL = ".usage__label"
