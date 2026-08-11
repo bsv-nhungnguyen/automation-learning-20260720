@@ -40,10 +40,6 @@ class EventHomePage(BasePage):
         class_name = tab.get_attribute("class") or ""
         return "active" in class_name
 
-    @allure.step("Check if section title is displayed")
-    def is_section_title_displayed(self, title: str) -> bool:
-        return self.page.get_by_role("heading", name=title).is_visible()
-
     # -----------------------------------------------------------------------
     # ウィジェット / Widgets
     # -----------------------------------------------------------------------
