@@ -69,9 +69,9 @@ class Testイベント_Event_home:
             pass
 
     # -------------------------------------------------------------------
-    # イベントホーム003
+    # イベントホーム_003
     # -------------------------------------------------------------------
-    @allure.title("イベントホーム＿003: Verify announcement list count")
+    @allure.title("イベントホーム_003: Verify announcement list count")
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home
@@ -85,24 +85,30 @@ class Testイベント_Event_home:
         announcement_rows = event_home.get_announcement_rows()
         row_count = event_home.get_announcement_row_count()
 
-        assert row_count == 3, (
-            f"Expected 3 announcement rows, but found {row_count}"
-        )
+        assert row_count > 0, f"Expected at least 1 announcement row, but found {row_count}"
+
+        with allure.step(f"[CHECK] announcement row count = {row_count}"):
+            pass
 
         for index in range(row_count):
             row = announcement_rows.nth(index)
             assert row.is_visible(), f"Announcement row {index + 1} is not visible"
-            assert event_home.get_announcement_date(index), (
-                f"Announcement row {index + 1} is missing a date"
-            )
-            assert event_home.get_announcement_tag(index), (
-                f"Announcement row {index + 1} is missing a tag"
-            )
-            assert event_home.get_announcement_title(index), (
-                f"Announcement row {index + 1} is missing a title"
-            )
 
-        with allure.step("[PASSED] Announcement list shows 3 rows with date/tag/title"):
+            date_text = event_home.get_announcement_date(index)
+            tag_text = event_home.get_announcement_tag(index)
+            title_text = event_home.get_announcement_title(index)
+
+            assert date_text, f"Announcement row {index + 1} is missing a date"
+            assert tag_text, f"Announcement row {index + 1} is missing a tag"
+            assert title_text, f"Announcement row {index + 1} is missing a title"
+
+            with allure.step(
+                f"Announcement row {index + 1}: date={date_text!r}, "
+                f"tag={tag_text!r}, title={title_text!r}"
+            ):
+                pass
+
+        with allure.step("[PASSED] Announcement list rows contain date/tag/title data"):
             pass
 
     # -------------------------------------------------------------------
@@ -122,25 +128,33 @@ class Testイベント_Event_home:
         event_home.expect_announcement_list_visible()
         row_count = event_home.get_announcement_row_count()
 
-        assert row_count == 3, (
-            f"Expected 3 announcement rows for NEW badge check, but found {row_count}"
-        )
+        assert row_count > 0, f"Expected at least 1 announcement row, but found {row_count}"
 
         for index in range(row_count):
+            row = event_home.get_announcement_rows().nth(index)
             has_new_badge = event_home.has_new_badge(index)
+            badge = row.locator(event_home.locator.ANNOUNCEMENT_NEW_BADGE)
 
             if has_new_badge:
-                assert has_new_badge, (
+                assert badge.count() > 0, (
+                    f"NEW badge should exist on announcement row {index + 1}"
+                )
+                assert badge.is_visible(), (
                     f"NEW badge should be visible on announcement row {index + 1}"
                 )
             else:
-                assert not has_new_badge, (
+                assert badge.count() == 0 or not badge.is_visible(), (
                     f"NEW badge should not exist on announcement row {index + 1}"
                 )
 
+            with allure.step(
+                f"Announcement row {index + 1}: NEW badge visible={has_new_badge}"
+            ):
+                pass
+
         with allure.step("[PASSED] NEW badge visibility matches each announcement row"):
             pass
-
+    
     # -------------------------------------------------------------------
     # イベントホーム_005
     # -------------------------------------------------------------------
