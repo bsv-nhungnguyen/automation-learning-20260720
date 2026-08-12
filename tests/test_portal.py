@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 
@@ -11,6 +12,10 @@ TESTDATA_DIR = Path(__file__).resolve().parents[1] / "testdata"
 PORTAL_ICON_PNG = TESTDATA_DIR / "portal_icon_100x100.png"
 PORTAL_ICON_JPG = TESTDATA_DIR / "portal_icon_100x100.jpg"
 PORTAL_HOME_PATH = "/portal_home.html"
+PORTAL_TEST_DATA = TESTDATA_DIR / "portal_test_data.json"
+
+with PORTAL_TEST_DATA.open(encoding="utf-8") as file:
+    PORTAL_DATA = json.load(file)
 
 
 @allure.feature("ポータル")
@@ -88,7 +93,10 @@ class Testポータル_ホーム:
         portal.open_portal_screen(app_url)
 
         portal.expect_save_button_disabled()
-        portal.enter_portal_name("Automation Portal Test")
+
+        portal_name = PORTAL_DATA["tc03_portal_name"]
+        portal.enter_portal_name(portal_name)
+
         portal.expect_save_button_enabled()
 
         with allure.step(
@@ -117,7 +125,10 @@ class Testポータル_ホーム:
         portal = PortalPage(page)
         portal.open_portal_screen(app_url)
 
-        portal_name = "自動化テスト Cổng thông tin"
+        portal_name = portal.random_data_input_field_with_prefix(
+            length=25
+        )
+
         portal.enter_portal_name(portal_name)
         portal.expect_portal_name_value(portal_name)
 

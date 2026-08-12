@@ -1,3 +1,4 @@
+import random
 import time
 from collections.abc import Callable
 
@@ -90,3 +91,32 @@ class BasePage:
 
     def text_count(self, text: str) -> int:
         return self.page.get_by_text(text).count()
+    
+    @allure.step(
+    "Generate random input data with Japanese, Vietnamese and spaces "
+    "(total length={length})"
+)
+    def random_data_input_field_with_prefix(
+        self,
+        length: int = 25,
+    ) -> str:
+        prefix = "Automationtest"
+
+        japanese_chars = "自動化テストあいうえおかきくけこ"
+        vietnamese_chars = "Cổng thông tin tự động hóa đê"
+        characters = japanese_chars + vietnamese_chars
+
+        remaining_length = length - len(prefix)
+
+        if remaining_length <= 0:
+            return prefix[:length]
+
+        random_part = "".join(
+            random.choice(characters)
+            for _ in range(remaining_length - 2)
+        )
+
+        random_part = random_part + " " + random.choice(japanese_chars)
+        random_part = random_part + " " + random.choice(vietnamese_chars)
+
+        return (prefix + random_part)[:length]
