@@ -29,15 +29,16 @@ class PushListPage(BasePage):
     def fill_title(self, title: str):
         self.fill_by_placeholder(locators.TITLE_PLACEHOLDER, title)
 
-    def select_segment_rule(self, option_label: str):
-        self.page.locator(locators.SEGMENT_SELECT).select_option(label=option_label)
+    def select_segment_rule(self):
+        option_value = self.page.locator(locators.SEGMENT_FIRST_OPTION).get_attribute("value")
+        self.page.locator(locators.SEGMENT_SELECT).select_option(value=option_value)
 
     def fill_message(self, message: str):
         self.fill_by_placeholder(locators.MESSAGE_PLACEHOLDER, message)
 
-    def fill_required_fields(self, title: str, segment_rule_label: str, message: str):
+    def fill_required_fields(self, title: str, message: str):
         self.fill_title(title)
-        self.select_segment_rule(segment_rule_label)
+        self.select_segment_rule()
         self.fill_message(message)
 
     @allure.step("Select CSV upload")
