@@ -82,6 +82,11 @@ class BasePage:
     def expect_text(self, selector: str, text: str) -> None:
         expect(self.page.locator(selector)).to_contain_text(text)
 
+    @allure.step("Expect input '{placeholder}' is empty")
+    def expect_empty_placeholder(self, placeholder: str):
+        expect(self.page.get_by_placeholder(placeholder)).to_have_value("")
+
+
     # -----------------------------------------------------------------------
     # Helpers
     # -----------------------------------------------------------------------
