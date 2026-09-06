@@ -30,7 +30,7 @@ def _extract_page_from_item(item) -> "Page | None":
     for name in (
         "access_to_login_screen",
         "access_to_home_screen",
-        "access_to_member_list_screen"
+        "access_to_member_list_screen",
     ):
         fixture = item.funcargs.get(name)
         if fixture and hasattr(fixture, "page"):
