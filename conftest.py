@@ -95,8 +95,6 @@ def pytest_runtest_makereport(item, call):  # `call` is required by pytest hook 
         setattr(item, "rep_call", result)
 
     if result.when == "call" and result.failed:
-        if not hasattr(item, "first_fail"):
-            setattr(item, "first_fail", True)
         page = _extract_page_from_item(item)
         if page and _is_rerun_enabled():
             try:
@@ -105,7 +103,7 @@ def pytest_runtest_makereport(item, call):  # `call` is required by pytest hook 
                 pass
 
     # ── Screenshot on every call (pass + fail) — dùng làm bằng chứng đính kèm MR ──
-    if result.when == "call" and not getattr(item, "custom_screenshot_taken", False):
+    if result.when == "call":
         page = _extract_page_from_item(item)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         status = "FAILED" if result.failed else "PASSED"
