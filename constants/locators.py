@@ -22,11 +22,11 @@ class PushListLocators:
     SEND_IMMEDIATE_RADIO_LABEL = "即時配信する"              # 配信タイプ: ラジオ（デフォルト選択）
     
     # --- Thêm cho 配信する_003 / 配信する_004 (TC03-04) ---
-    TITLE_PLACEHOLDER = "管理用タイトルを入力してください（ユーザーには送信されません）"
-    MESSAGE_PLACEHOLDER = "配信内容を入力してください"
-    SEGMENT_SELECT = "#segment_select"
-    SUBMIT_BUTTON = "#push_drawer #push_submit"
-    SEGMENT_RULE_OPTION_1_LABEL = "セグメントタイトル_001"
+    TITLE_PLACEHOLDER = "管理用タイトルを入力してください（ユーザーには送信されません）"  # 配信管理用タイトル入力欄
+    MESSAGE_PLACEHOLDER = "配信内容を入力してください"  # メッセージ入力欄
+    SEGMENT_SELECT = "#segment_select"  # セグメントルールを選択するセレクトボックス
+    SUBMIT_BUTTON = "#push_submit"  # 配信するボタン（id はユニークなので画面 id 不要）
+    SEGMENT_FIRST_OPTION = "#segment_select option:nth-child(2)"  # セグメントルール: 1番目の選択肢（プレースホルダーの次）
     
 
     SEGMENT_AREA = "#segment_area"  # セグメントルール入力エリア

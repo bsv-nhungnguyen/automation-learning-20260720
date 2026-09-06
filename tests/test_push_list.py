@@ -1,6 +1,5 @@
 import allure
 from playwright.sync_api import Page
-from constants.locators import PushListLocators as locators
 from helpers import description_md
 from pages.push_list_page import PushListPage
 from testdata.test_data import CSV_UPLOAD_RADIO_LABEL, TITLE_OVERFLOW_INPUT
@@ -84,9 +83,11 @@ class Testプッシュ配信_配信する:
     """
     )
     def test_submit_button_form_empty_disabled(
-    self, access_to_push_list_drawer: PushListPage
+    self, access_to_home_screen: Page, app_url: str
     ):
-        push_list = access_to_push_list_drawer
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
 
         push_list.expect_submit_button_disabled()
 
@@ -108,13 +109,14 @@ class Testプッシュ配信_配信する:
     """
     )
     def test_submit_button_required_fields_filled_enabled(
-    self, access_to_push_list_drawer: PushListPage
+    self, access_to_home_screen: Page, app_url: str
     ):
-        push_list = access_to_push_list_drawer
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
 
         push_list.fill_required_fields(
         title="Automation Push Test",
-        segment_rule_label=locators.SEGMENT_RULE_OPTION_1_LABEL,
         message="Nội dung tin nhắn test automation",
         )
         push_list.expect_submit_button_enabled()
