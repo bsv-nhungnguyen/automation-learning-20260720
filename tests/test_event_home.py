@@ -9,7 +9,7 @@ from testdata.test_data import EventHomeTestData
 
 
 @allure.feature("イベント")
-@allure.story("Event-home")
+@allure.story("イベントホーム")
 @description_md(
     "Test cases イベントホーム_001 – イベントホーム_008 - xac nhan cac thanh phan "
     "chinh tren man hinh Event-home (nav, widget, oshirase, table, search, pagination)."
@@ -18,7 +18,7 @@ class Testイベント_Event_home:
     # -------------------------------------------------------------------
     # イベントホーム_001
     # -------------------------------------------------------------------
-    @allure.title("イベントホーム_001: Verify navigation tabs are displayed")
+    @allure.title("イベントホーム_001: Verify các navigation tabs được hiển thị")
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home
@@ -45,7 +45,7 @@ class Testイベント_Event_home:
     # -------------------------------------------------------------------
     # イベントホーム_002
     # -------------------------------------------------------------------
-    @allure.title("イベント002: Verify usage widgets are displayed")
+    @allure.title("イベントホーム_002: Verify các usage widgets được hiển thị")
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home
@@ -71,7 +71,7 @@ class Testイベント_Event_home:
     # -------------------------------------------------------------------
     # イベントホーム_003
     # -------------------------------------------------------------------
-    @allure.title("イベントホーム_003: Verify announcement list count")
+    @allure.title("イベントホーム_003: Verify số lượng dòng trong danh sách お知らせ")
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home
@@ -114,7 +114,7 @@ class Testイベント_Event_home:
     # -------------------------------------------------------------------
     # イベントホーム_004
     # -------------------------------------------------------------------
-    @allure.title("イベントホーム_004: Verify NEW badge visibility")
+    @allure.title("イベントホーム_004: Verify badge NEW hiển thị đúng")
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home
@@ -158,7 +158,7 @@ class Testイベント_Event_home:
     # -------------------------------------------------------------------
     # イベントホーム_005
     # -------------------------------------------------------------------
-    @allure.title("イベントホーム_005: Search event by keyword shows only matching events")
+    @allure.title("イベントホーム_005: Verify search theo keyword chỉ hiện event khớp")
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home, bảng event có ít nhất 1 dòng
@@ -193,7 +193,7 @@ class Testイベント_Event_home:
     # -------------------------------------------------------------------
     # イベントホーム_006
     # -------------------------------------------------------------------
-    @allure.title("イベントホーム_006: Verify pagination default state and 表示件数")
+    @allure.title("イベントホーム_006: Verify trạng thái mặc định pagination và 表示件数")
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home
@@ -233,7 +233,7 @@ class Testイベント_Event_home:
     # -------------------------------------------------------------------
     # イベントホーム_007
     # -------------------------------------------------------------------
-    @allure.title("イベントホーム_007: Verify event table column headers")
+    @allure.title("イベントホーム_007: Verify header cột của bảng event")
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home
@@ -256,7 +256,7 @@ class Testイベント_Event_home:
     # -------------------------------------------------------------------
     # イベントホーム_008
     # -------------------------------------------------------------------
-    @allure.title("イベントホーム_008: Verify create button and grid/list toggle")
+    @allure.title("イベントホーム_008: Verify nút tạo event và chuyển đổi grid/list")
     @description_md(
         """
 - **前提条件**: Đã login, đang ở Event-home
