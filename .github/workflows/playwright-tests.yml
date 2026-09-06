@@ -1,0 +1,544 @@
+name: Playwright Automation Tests
+on:
+  workflow_dispatch:
+    inputs:
+      preset_target:
+        description: "Preset: choose folder/file to run (ignored if custom_target is set)"
+        required: false
+        type: choice
+        default: ""
+        options:
+          - ""
+          - "all"
+          - test_login.py
+          - test_event_home.py
+          - test_member_list.py
+          - test_portal.py
+          - test_push_list.py
+      custom_target:
+        description: "Custom: folder/file under tests/ (overrides preset if set)"
+        required: false
+        type: string
+        default: ""
+      pytest_args:
+        description: "Keyword filter: @allure.title substring (e.g. イベントホーム_001, 配信する_007)"
+        required: false
+        type: string
+        default: ""
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  CI: "true"
+  HEADED: "false"
+  APP_URL: ${{ secrets.APP_URL }}
+  VALID_EMAIL: ${{ secrets.VALID_EMAIL }}
+  VALID_PASSWORD: ${{ secrets.VALID_PASSWORD }}
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # 1. Validate inputs
+  # ──────────────────────────────────────────────────────────────────────────
+  validate:
+    runs-on: ubuntu-latest
+    outputs:
+      pytest_target: ${{ steps.scope.outputs.pytest_target }}
+      artifact_slug: ${{ steps.scope.outputs.artifact_slug }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - id: scope
+        run: |
+          CUSTOM="${{ inputs.custom_target }}"
+          PRESET="${{ inputs.preset_target }}"
+          KEYWORD="${{ inputs.pytest_args }}"
+
+          # ── Check rỗng TRƯỚC (lúc này "all" vẫn còn → không rỗng → pass)
+          if [ -z "$CUSTOM" ] && [ -z "$PRESET" ] && [ -z "$KEYWORD" ]; then
+            echo "::error::No input provided. Please fill in at least one of: preset_target, custom_target, or pytest_args."
+            exit 1
+          fi
+
+          # ── Coi "all" tương đương để trống preset → run toàn bộ tests/
+          [ "$PRESET" = "all" ] && PRESET=""
+
+          if [ -n "$CUSTOM" ]; then
+            TARGET="${CUSTOM#tests/}"
+          elif [ -n "$PRESET" ]; then
+            TARGET="${PRESET#tests/}"
+          else
+            TARGET=""
+          fi
+
+          if [ -n "$TARGET" ]; then
+            FULL="tests/$TARGET"
+            if [ ! -e "$FULL" ]; then
+              echo "::error::Target not found: $FULL"
+              exit 1
+            fi
+            SLUG="$(echo "$TARGET" | tr '/.' '--')"
+          else
+            FULL="tests"
+            SLUG="all"
+          fi
+
+          echo "pytest_target=$FULL" >> "$GITHUB_OUTPUT"
+          echo "artifact_slug=$SLUG" >> "$GITHUB_OUTPUT"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 2. Run tests
+  # ──────────────────────────────────────────────────────────────────────────
+  run-tests:
+    needs: validate
+    runs-on: ubuntu-latest
+    outputs:
+      pytest_exit: ${{ steps.run_tests.outputs.pytest_exit }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+
+      - run: playwright install --with-deps chromium
+
+      - id: run_tests
+        run: |
+          set +e
+          TARGET="${{ needs.validate.outputs.pytest_target }}"
+          EXTRA_ARGS="${{ inputs.pytest_args }}"
+          export TARGET EXTRA_ARGS
+          python - <<'PYEOF'
+          import os, re, shlex, subprocess, sys
+          from pathlib import Path
+
+          target = os.environ.get("TARGET", "")
+          extra  = os.environ.get("EXTRA_ARGS", "").strip()
+
+          # Support Japanese class names (Testプッシュ配信_配信する, Testイベント_Event_home, ...)
+          title_inline = re.compile(r"^\s*@allure\.title\(\s*(['\"])(.*?)\1\s*\)\s*$")
+          title_open   = re.compile(r"^\s*@allure\.title\(\s*$")
+          title_str    = re.compile(r"^\s*(['\"])(.*?)\1")
+          class_pat    = re.compile(r"^\s*class\s+([^\s(:]+)\s*[\(:]")
+          def_pat      = re.compile(r"^\s*def\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(")
+
+          def resolve_by_title(keywords: list, scope_path: Path) -> list:
+              py_files = (sorted(scope_path.rglob("*.py"))
+                          if scope_path.is_dir()
+                          else [scope_path] if scope_path.suffix == ".py"
+                          else [])
+              matched = []
+              for path in py_files:
+                  current_class = pending_title = None
+                  waiting_title = False
+                  try:
+                      lines = path.read_text(encoding="utf-8").splitlines()
+                  except Exception:
+                      continue
+                  for line in lines:
+                      if mc := class_pat.match(line):
+                          current_class, pending_title = mc.group(1), None
+                          waiting_title = False
+                      elif mt := title_inline.match(line):
+                          pending_title = mt.group(2)
+                          waiting_title = False
+                      elif title_open.match(line):
+                          waiting_title = True
+                          pending_title = None
+                      elif waiting_title and (ms := title_str.match(line)):
+                          pending_title = ms.group(2)
+                          waiting_title = False
+                      elif md := def_pat.match(line):
+                          func = md.group(1)
+                          if pending_title and any(k in pending_title for k in keywords):
+                              nodeid = str(path)
+                              if current_class:
+                                  nodeid += f"::{current_class}"
+                              nodeid += f"::{func}"
+                              matched.append(nodeid)
+                          pending_title = None
+                          waiting_title = False
+              return matched
+
+          pytest_targets = [target]
+          extra_args     = []
+
+          if extra:
+              keywords = [k.strip() for k in extra.split(",") if k.strip()]
+              matched  = resolve_by_title(keywords, Path(target))
+              if matched:
+                  pytest_targets = matched
+                  print(f"Resolved {len(matched)} test(s) from @allure.title containing: {keywords!r}")
+              else:
+                  k_expr     = " or ".join(keywords)
+                  extra_args = ["-k", k_expr]
+                  print(f"No @allure.title match → fallback: -k '{k_expr}'")
+
+          cmd = [
+              sys.executable, "-m", "pytest",
+              *pytest_targets,
+              "--alluredir=allure-results",
+              "--clean-alluredir",
+              "-v", "-s",
+              *extra_args,
+          ]
+          print("Resolved command:")
+          print(" ".join(shlex.quote(a) for a in cmd))
+          rc = subprocess.run(cmd).returncode
+          if rc == 5:
+              print("::error::Pytest exit=5 (no tests collected). Check target/pytest_args/-k filter.")
+          sys.exit(rc)
+          PYEOF
+          EXIT_CODE=$?
+          echo "pytest_exit=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit $EXIT_CODE
+
+      - name: Cache allure-results
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: allure-results/
+          key: allure-results-${{ github.run_id }}-${{ github.run_attempt }}
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 3. Generate report + deploy to gh-pages
+  # ──────────────────────────────────────────────────────────────────────────
+  report:
+    needs: [validate, run-tests]
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Restore allure-results
+        uses: actions/cache/restore@v5
+        with:
+          path: allure-results/
+          key: allure-results-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline --save-dev
+
+      - name: Write Allure metadata
+        run: |
+          {
+            echo "Browser=Chrome"
+            echo "Base_URL=${{ secrets.APP_URL }}"
+            echo "Tester=${{ github.actor }}"
+            echo "Target=${{ inputs.custom_target || inputs.preset_target }}"
+            [ -n "${{ inputs.pytest_args }}" ] && echo "Keyword=${{ inputs.pytest_args }}"
+          } >> allure-results/environment.properties
+
+          cat <<'EOF' > allure-results/categories.json
+          [
+            {"name": "Timeout Errors",    "matchedStatuses": ["failed"], "messageRegex": ".*TimeoutError.*"},
+            {"name": "Assertion Failures","matchedStatuses": ["failed"], "messageRegex": ".*AssertionError.*"},
+            {"name": "Playwright Errors", "matchedStatuses": ["failed"], "messageRegex": ".*playwright.*"}
+          ]
+          EOF
+
+      - name: Generate Allure report
+        run: allure generate allure-results -o allure-report --clean
+
+      # ── Artifact download ────────────────────────────────────────────────
+      - name: Upload allure-report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          retention-days: 30
+
+      # ── Checkout gh-pages (bootstrap nếu chưa có) ────────────────────────
+      - name: Checkout gh-pages branch
+        id: checkout_pages
+        continue-on-error: true
+        uses: actions/checkout@v6
+        with:
+          ref: gh-pages
+          path: gh-pages-branch
+          fetch-depth: 0
+
+      - name: Bootstrap gh-pages if missing
+        if: steps.checkout_pages.outcome != 'success'
+        run: |
+          mkdir -p gh-pages-branch
+          cd gh-pages-branch
+          git init
+          git checkout -b gh-pages
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          echo "<!DOCTYPE html><html><body><h1>Allure Report History</h1></body></html>" > index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "chore: init gh-pages"
+          git push -u origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Deploy + cleanup + rebuild index (orphan push) ───────────────────
+      - name: Deploy report, cleanup old runs, rebuild index
+        run: |
+          RUN_NUM="${{ github.run_number }}"
+          ACTOR="${{ github.actor }}"
+          PRESET="${{ inputs.preset_target }}"
+          CUSTOM="${{ inputs.custom_target }}"
+          KEYWORD="${{ inputs.pytest_args }}"
+          TARGET="${CUSTOM:-${PRESET:-tests/ (all)}}"
+          DATE_JST=$(TZ='Asia/Tokyo' date '+%Y-%m-%d %H:%M JST')
+          PYTEST_EXIT="${{ needs.run-tests.outputs.pytest_exit }}"
+
+          # 1. Copy report mới vào subfolder
+          mkdir -p "gh-pages-branch/$RUN_NUM"
+          cp -r allure-report/. "gh-pages-branch/$RUN_NUM/"
+
+          # 2. Ghi metadata cho run này
+          cat > "gh-pages-branch/$RUN_NUM/run-meta.json" <<METAEOF
+          {
+            "run_number": $RUN_NUM,
+            "run_id": "${{ github.run_id }}",
+            "actor": "$ACTOR",
+            "target": "$TARGET",
+            "keyword": "$KEYWORD",
+            "date": "$DATE_JST",
+            "pytest_exit": "$PYTEST_EXIT"
+          }
+          METAEOF
+
+          # 3. Cleanup (giữ 50 run gần nhất) + rebuild index
+          python - <<'PYEOF'
+          import json, os, shutil
+          from pathlib import Path
+
+          KEEP = 50
+          base = Path("gh-pages-branch")
+
+          # ── Cleanup: giữ 50 run gần nhất ─────────────────────────────────
+          run_dirs = sorted(
+              [d for d in base.iterdir() if d.is_dir() and d.name.isdigit()],
+              key=lambda d: int(d.name),
+              reverse=True
+          )
+          to_delete = run_dirs[KEEP:]
+          if to_delete:
+              for d in to_delete:
+                  print(f"🗑️  Removing old run: #{d.name}")
+                  shutil.rmtree(d)
+              print(f"✅ Kept {KEEP} runs, deleted {len(to_delete)} old run(s).")
+          else:
+              print(f"✅ Total runs ({len(run_dirs)}) within limit ({KEEP}). Nothing to delete.")
+
+          # ── Rebuild index sau khi cleanup ─────────────────────────────────
+          run_dirs_after = sorted(
+              [d for d in base.iterdir() if d.is_dir() and d.name.isdigit()],
+              key=lambda d: int(d.name),
+              reverse=True
+          )
+          runs = []
+          for d in run_dirs_after:
+              meta_file = d / "run-meta.json"
+              try:
+                  data = json.loads(meta_file.read_text(encoding="utf-8"))
+                  runs.append(data)
+              except Exception:
+                  continue
+
+          rows = ""
+          for r in runs:
+              num     = r.get("run_number", "?")
+              actor   = r.get("actor", "?")
+              target  = r.get("target", "?")
+              keyword = r.get("keyword", "")
+              date    = r.get("date", "?")
+              exit_c  = str(r.get("pytest_exit", "0"))
+              status_text  = "✅ Passed" if exit_c == "0" else "❌ Failed"
+              status_class = "passed" if exit_c == "0" else "failed"
+              kw_cell = f"<code>{keyword}</code>" if keyword else "—"
+              rows += f"""
+                <tr>
+                  <td><a href="./{num}/" target="_blank">#{num}</a></td>
+                  <td class="{status_class}">{status_text}</td>
+                  <td>{date}</td>
+                  <td>{actor}</td>
+                  <td><code>{target}</code></td>
+                  <td>{kw_cell}</td>
+                </tr>"""
+
+          html = f"""<!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Allure Report History</title>
+            <style>
+              * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+              body {{
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                background: #f6f8fa; color: #24292f; padding: 32px 24px;
+              }}
+              .header {{ margin-bottom: 24px; }}
+              .header h1 {{ font-size: 1.4rem; margin-bottom: 4px; }}
+              .header p  {{ color: #57606a; font-size: 0.875rem; }}
+              .badge {{
+                display: inline-block; font-size: 0.75rem; padding: 2px 8px;
+                border-radius: 12px; background: #ddf4ff; color: #0550ae;
+                margin-left: 8px; vertical-align: middle;
+              }}
+              table {{
+                width: 100%; border-collapse: collapse; background: white;
+                border-radius: 8px; overflow: hidden;
+                box-shadow: 0 1px 3px rgba(0,0,0,.1);
+              }}
+              thead th {{
+                background: #f6f8fa; padding: 10px 16px; text-align: left;
+                font-size: 0.78rem; color: #57606a; font-weight: 600;
+                border-bottom: 1px solid #d0d7de; white-space: nowrap;
+              }}
+              tbody td {{
+                padding: 10px 16px; font-size: 0.875rem;
+                border-bottom: 1px solid #f0f0f0;
+              }}
+              tbody tr:last-child td {{ border-bottom: none; }}
+              tbody tr:hover td {{ background: #f6f8fa; }}
+              a {{ color: #0969da; text-decoration: none; font-weight: 600; }}
+              a:hover {{ text-decoration: underline; }}
+              code {{
+                background: #eaeef2; padding: 2px 6px;
+                border-radius: 4px; font-size: 0.8rem;
+              }}
+              .passed {{ color: #1a7f37; font-weight: 600; }}
+              .failed {{ color: #cf222e; font-weight: 600; }}
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>🎭 Allure Report History
+                <span class="badge">latest {len(runs)} runs</span>
+              </h1>
+              <p>Click a run number to open the full Allure report. Latest runs shown first.</p>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Run</th>
+                  <th>Status</th>
+                  <th>Date (JST)</th>
+                  <th>Triggered by</th>
+                  <th>Target</th>
+                  <th>Keyword</th>
+                </tr>
+              </thead>
+              <tbody>{rows}</tbody>
+            </table>
+          </body>
+          </html>"""
+
+          (base / "index.html").write_text(html, encoding="utf-8")
+          print(f"✅ Rebuilt index with {len(runs)} run(s).")
+          PYEOF
+
+          # ── 4. Orphan push: không có Git history → storage không tích lũy ──
+          cd gh-pages-branch
+
+          # Lấy nội dung hiện tại ra thư mục tạm
+          TEMP_DIR=$(mktemp -d)
+          cp -r . "$TEMP_DIR/"
+          rm -rf "$TEMP_DIR/.git"
+
+          # Tạo orphan branch mới hoàn toàn (không có commit cha)
+          git checkout --orphan gh-pages-orphan
+
+          # Xóa toàn bộ index cũ
+          git rm -rf . --quiet || true
+
+          # Copy nội dung mới vào
+          cp -r "$TEMP_DIR/." .
+          rm -rf "$TEMP_DIR"
+
+          # Commit duy nhất — không có history
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "report: run #$RUN_NUM by $ACTOR ($DATE_JST) [orphan]"
+
+          # Force push lên gh-pages → ghi đè hoàn toàn, không giữ history cũ
+          git push origin gh-pages-orphan:gh-pages --force
+
+          echo "✅ Orphan push done — Git history reset, storage sẽ không tích lũy."
+
+      # ── Write Step Summary ────────────────────────────────────────────────
+      - name: Write run summary
+        run: |
+          python - <<'PYEOF'
+          import os, json
+          from pathlib import Path
+
+          preset  = "${{ inputs.preset_target }}"
+          custom  = "${{ inputs.custom_target }}"
+          keyword = "${{ inputs.pytest_args }}"
+          actor   = "${{ github.actor }}"
+          sha     = "${{ github.sha }}"
+          run_num = "${{ github.run_number }}"
+          repo    = "${{ github.repository }}"
+          owner   = "${{ github.repository_owner }}"
+          repo_name = repo.split("/")[-1]
+          pages_url = f"https://{owner}.github.io/{repo_name}"
+
+          target_label = custom if custom else (preset if preset else "tests/ (all)")
+
+          results_dir = Path("allure-results")
+          titles = []
+          for jf in sorted(results_dir.glob("*-result.json")):
+              try:
+                  data = json.loads(jf.read_text(encoding="utf-8"))
+              except Exception:
+                  continue
+              name   = data.get("name", "")
+              status = data.get("status", "unknown")
+              icon   = {"passed": "✅", "failed": "❌", "broken": "⚠️",
+                        "skipped": "⏭️"}.get(status, "❓")
+              titles.append((icon, status, name))
+
+          passed  = sum(1 for _, s, _ in titles if s == "passed")
+          failed  = sum(1 for _, s, _ in titles if s == "failed")
+          broken  = sum(1 for _, s, _ in titles if s == "broken")
+          skipped = sum(1 for _, s, _ in titles if s == "skipped")
+          total   = len(titles)
+
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/null")
+          with open(summary_path, "w", encoding="utf-8") as f:
+              f.write("## 🎭 Playwright – Allure Test Run Summary\n\n")
+              f.write("| | |\n|---|---|\n")
+              f.write(f"| **Triggered by** | `{actor}` |\n")
+              f.write(f"| **Target** | `{target_label}` |\n")
+              if keyword:
+                  f.write(f"| **Keyword filter** | `{keyword}` |\n")
+              f.write(f"| **Commit** | `{sha[:7]}` |\n\n")
+              f.write(f"### 📊 Results: {total} tests\n\n")
+              f.write(f"✅ Passed **{passed}** &nbsp;|&nbsp; ")
+              f.write(f"❌ Failed **{failed}** &nbsp;|&nbsp; ")
+              f.write(f"⚠️ Broken **{broken}** &nbsp;|&nbsp; ")
+              f.write(f"⏭️ Skipped **{skipped}**\n\n")
+              if titles:
+                  f.write("### 📋 Test Cases\n\n")
+                  f.write("| # | Status | Testcase |\n")
+                  f.write("|---|--------|----------|\n")
+                  for idx, (icon, status, name) in enumerate(titles, 1):
+                      f.write(f"| {idx} | {icon} {status} | {name} |\n")
+              else:
+                  f.write("_No test results found in allure-results/_\n")
+
+              f.write("\n---\n")
+              f.write("### 🌐 Allure Report Links\n\n")
+              f.write("| | |\n|---|---|\n")
+              f.write(f"| **This run** | 👉 [{pages_url}/{run_num}/]({pages_url}/{run_num}/) |\n")
+              f.write(f"| **All runs** | 📋 [{pages_url}/]({pages_url}/) |\n")
+          PYEOF
+
+      - name: Propagate test failure
+        if: needs.run-tests.outputs.pytest_exit != '0'
+        run: |
+          echo "::error::Pytest failed (exit=${{ needs.run-tests.outputs.pytest_exit }})."
+          exit 1

@@ -15,7 +15,7 @@ class Testプッシュ配信_配信する:
     # 配信する_001 (TC01)
     # -------------------------------------------------------------------
 
-    @allure.title("配信する_001: プッシュ配信作成フォームの必須項目に(*)マークが表示されることを確認")
+    @allure.title("配信する_001: Verify các trường bắt buộc có dấu (*) trên form tạo push")
     @description_md(
         """
 - **前提条件**: プッシュ配信一覧画面を表示中
@@ -46,7 +46,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_002 (TC02)
     # -------------------------------------------------------------------
-    @allure.title("配信する_002: プッシュ配信作成フォームのラジオボタンのデフォルト選択を確認")
+    @allure.title("配信する_002: Verify radio mặc định trên form tạo push")
     @description_md(
         """
 - **前提条件**: プッシュ配信作成ドロワーを表示中（初期状態）
@@ -74,7 +74,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_003 (TC03)
     # -------------------------------------------------------------------
-    @allure.title("配信する_003: 必須項目が未入力の場合、配信するボタンがdisabled状態になることを確認")
+    @allure.title("配信する_003: Verify nút 配信する disabled khi form trống")
     @description_md(
     """
 - **前提条件**: プッシュ配信作成ドロワーを表示中（各入力欄は空の状態）
@@ -97,7 +97,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_004 (TC04)
     # -------------------------------------------------------------------
-    @allure.title("配信する_004: 必須項目入力後、配信するボタンがenabled状態になることを確認")
+    @allure.title("配信する_004: Verify nút 配信する enabled sau khi nhập đủ trường bắt buộc")
     @description_md(
     """
 - **前提条件**: プッシュ配信作成ドロワーを表示中（フォームは空の状態）
@@ -127,7 +127,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_005 (TC05)
     # -------------------------------------------------------------------
-    @allure.title("Verify display when selecting 'CSVからアップロードする'")
+    @allure.title("配信する_005: Verify hiển thị khi chọn 'CSVからアップロードする'")
     @description_md(
         """
 - **前提条件**: プッシュ配信作成ドロワーを表示中
@@ -155,7 +155,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_006 (TC06)
     # -------------------------------------------------------------------
-    @allure.title("Verify maximum length of 配信管理用タイトル is 255 characters")
+    @allure.title("配信する_006: Verify độ dài tối đa của 配信管理用タイトル là 255 ký tự")
     @description_md(
         """
 - **前提条件**: プッシュ配信作成ドロワーを表示中
@@ -181,7 +181,7 @@ class Testプッシュ配信_配信する:
     # -------------------------------------------------------------------
     # 配信する_007 (TC07)
     # -------------------------------------------------------------------
-    @allure.title("配信する_007: 配信タイプを「予約配信する」に切り替えた場合、日時項目が表示されることを確認")
+    @allure.title("配信する_007: Verify chọn 「予約配信する」 thì hiện trường ngày giờ")
     @description_md("""
 - **前提条件**: Đang mở màn hình tạo Push Notification
 - **テスト手順**:
@@ -191,20 +191,25 @@ class Testプッシュ配信_配信する:
     - Hiển thị trường 配信日
     - Hiển thị trường 配信時刻
         """)
-    def test_verify_schedule_delivery_show_datetime_fields(self, access_to_push_list_drawer: PushListPage):
-        push_list = access_to_push_list_drawer
+    def test_verify_schedule_delivery_show_datetime_fields(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
+
         push_list.select_scheduled_delivery()
         push_list.verify_schedule_area_displayed()
         push_list.verify_schedule_date_displayed()
         push_list.verify_schedule_time_displayed()
-    
+
         with allure.step("[PASSED] Schedule delivery displays date and time fields"):
             pass
-    
+
     # -------------------------------------------------------------------
     # 配信する_008 (TC08)
     # -------------------------------------------------------------------
-    @allure.title("配信する_008: キャンセル/クローズボタン押下時にデータが保存されないことを確認")
+    @allure.title("配信する_008: Verify nhấn キャンセル/đóng thì không lưu dữ liệu")
     @description_md("""
 - **前提条件**: Đang mở màn hình tạo Push Notification
 - **テスト手順**:
@@ -215,13 +220,18 @@ class Testプッシュ配信_配信する:
     - Modal đóng
     - Không lưu dữ liệu
         """)
-    def test_verify_cancel_button_cancel_drawer_without_saving(self, access_to_push_list_drawer: PushListPage):
-        push_list = access_to_push_list_drawer
+    def test_verify_cancel_button_cancel_drawer_without_saving(
+        self, access_to_home_screen: Page, app_url: str
+    ):
+        push_list = PushListPage(access_to_home_screen)
+        push_list.navigate_to_push_list(app_url)
+        push_list.open_create_drawer()
+
         push_list.fill_title("Automation Test")
         push_list.fill_message("Automation Message")
         push_list.click_cancel()
         push_list.verify_modal_closed()
-    
+
         push_list.open_create_drawer()
         push_list.verify_title_cleared()
         push_list.verify_message_cleared()
