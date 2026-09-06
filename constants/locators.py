@@ -28,11 +28,10 @@ class PushListLocators:
     SUBMIT_BUTTON = "#push_drawer #push_submit"
     SEGMENT_RULE_OPTION_1_LABEL = "セグメントタイトル_001"
     
-    # --- Thêm cho TC05-06 ---
-    CSV_UPLOAD_RADIO = "CSVからアップロードする"
-    SEGMENT_AREA = "#segment_area"
-    CSV_AREA = "#csv_area"
-    TITLE_INPUT = "#push_title"
+
+    SEGMENT_AREA = "#segment_area"  # セグメントルール入力エリア
+    CSV_AREA = "#csv_area"  # CSVアップロードエリア
+    TITLE_INPUT = "#push_title"  # 配信管理用タイトル入力欄
 
      # --- Thêm cho TC07-08 ---
     SCHEDULE_DELIVERY_RADIO = "予約配信する"

@@ -41,10 +41,10 @@ class PushListPage(BasePage):
         self.fill_message(message)
 
     @allure.step("Select CSV upload")
-    def select_csv_upload(self):
+    def select_csv_upload(self, radio_label: str):
         self.page.get_by_role(
             "radio",
-            name=locators.CSV_UPLOAD_RADIO
+            name=radio_label,
         ).click()
 
     @allure.step("Select scheduled delivery")
@@ -76,6 +76,28 @@ class PushListPage(BasePage):
         expect(
             self.page.get_by_role("radio", name=locators.TARGET_SEGMENT_RADIO_LABEL)
         ).to_be_checked()
+        
+    @allure.step("Expect segment area hidden")
+    def verify_segment_area_hidden(self):
+        expect(
+            self.page.locator(locators.SEGMENT_AREA)
+        ).not_to_be_visible()
+
+
+    @allure.step("Expect CSV upload area displayed")
+    def verify_csv_area_displayed(self):
+        expect(
+            self.page.locator(locators.CSV_AREA)
+        ).to_be_visible()
+
+
+    @allure.step("Expect 配信管理用タイトル maximum length to be 255 characters")
+    def verify_title_maxlength(self):
+        value = self.page.locator(
+            locators.TITLE_INPUT
+        ).input_value()
+
+        assert len(value) == 255
 
     @allure.step("Expect 配信タイプ defaults to 即時配信する")
     def expect_send_type_defaults_to_immediate(self):
@@ -90,26 +112,6 @@ class PushListPage(BasePage):
     @allure.step("Expect submit button enabled")
     def expect_submit_button_enabled(self):
         expect(self.submit_button()).to_be_enabled()
-
-    @allure.step("Verify segment area hidden")
-    def verify_segment_area_hidden(self):
-        expect(
-            self.page.locator(locators.SEGMENT_AREA)
-        ).not_to_be_visible()
-
-    @allure.step("Verify CSV area displayed")
-    def verify_csv_area_displayed(self):
-        expect(
-            self.page.locator(locators.CSV_AREA)
-        ).to_be_visible()
-
-    @allure.step("Verify title maxlength is 255")
-    def verify_title_maxlength(self):
-        value = self.page.locator(
-            locators.TITLE_INPUT
-        ).input_value()
-
-        assert len(value) == 255
 
     @allure.step("Verify schedule area displayed")
     def verify_schedule_area_displayed(self):
