@@ -196,7 +196,7 @@ jobs:
 
       - name: Cache allure-results
         if: always()
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: allure-results/
           key: allure-results-${{ github.run_id }}-${{ github.run_attempt }}
@@ -214,16 +214,17 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Restore allure-results
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: allure-results/
           key: allure-results-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Install Allure CLI
-        run: npm install -g allure-commandline --save-dev
+        run: npm install -g allure-commandline
 
       - name: Write Allure metadata
         run: |
+          mkdir -p allure-results
           {
             echo "Browser=Chrome"
             echo "Base_URL=${{ secrets.APP_URL }}"
@@ -241,46 +242,54 @@ jobs:
           EOF
 
       - name: Generate Allure report
-        run: allure generate allure-results -o allure-report --clean
+        run: |
+          if ! ls allure-results/*-result.json >/dev/null 2>&1; then
+            echo "::warning::No allure result files found — generating empty report shell."
+          fi
+          allure generate allure-results -o allure-report --clean
 
       # ── Artifact download ────────────────────────────────────────────────
       - name: Upload allure-report artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: allure-report
           path: allure-report/
           retention-days: 30
 
-      # ── Checkout gh-pages (bootstrap nếu chưa có) ────────────────────────
-      - name: Checkout gh-pages branch
-        id: checkout_pages
-        continue-on-error: true
-        uses: actions/checkout@v6
-        with:
-          ref: gh-pages
-          path: gh-pages-branch
-          fetch-depth: 0
-
-      - name: Bootstrap gh-pages if missing
-        if: steps.checkout_pages.outcome != 'success'
-        run: |
-          mkdir -p gh-pages-branch
-          cd gh-pages-branch
-          git init
-          git checkout -b gh-pages
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          echo "<!DOCTYPE html><html><body><h1>Allure Report History</h1></body></html>" > index.html
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git commit -m "chore: init gh-pages"
-          git push -u origin gh-pages
+      # ── Prepare gh-pages working tree (create branch if missing) ─────────
+      - name: Prepare gh-pages branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          rm -rf gh-pages-branch
+          mkdir -p gh-pages-branch
+
+          if git ls-remote --exit-code --heads "$REPO_URL" gh-pages >/dev/null 2>&1; then
+            echo "gh-pages exists — cloning..."
+            git clone --branch gh-pages --single-branch "$REPO_URL" gh-pages-branch
+          else
+            echo "gh-pages missing — creating orphan branch..."
+            cd gh-pages-branch
+            git init
+            git checkout --orphan gh-pages
+            git remote add origin "$REPO_URL"
+            echo "<!DOCTYPE html><html><body><h1>Allure Report History</h1></body></html>" > index.html
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add index.html
+            git commit -m "chore: init gh-pages"
+            git push -u origin gh-pages
+            cd ..
+          fi
 
       # ── Deploy + cleanup + rebuild index (orphan push) ───────────────────
       - name: Deploy report, cleanup old runs, rebuild index
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           RUN_NUM="${{ github.run_number }}"
           ACTOR="${{ github.actor }}"
           PRESET="${{ inputs.preset_target }}"
@@ -289,6 +298,7 @@ jobs:
           TARGET="${CUSTOM:-${PRESET:-tests/ (all)}}"
           DATE_JST=$(TZ='Asia/Tokyo' date '+%Y-%m-%d %H:%M JST')
           PYTEST_EXIT="${{ needs.run-tests.outputs.pytest_exit }}"
+          REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
           # 1. Copy report mới vào subfolder
           mkdir -p "gh-pages-branch/$RUN_NUM"
@@ -441,6 +451,9 @@ jobs:
 
           # ── 4. Orphan push: không có Git history → storage không tích lũy ──
           cd gh-pages-branch
+
+          # Ensure remote uses token
+          git remote set-url origin "$REPO_URL" || git remote add origin "$REPO_URL"
 
           # Lấy nội dung hiện tại ra thư mục tạm
           TEMP_DIR=$(mktemp -d)
