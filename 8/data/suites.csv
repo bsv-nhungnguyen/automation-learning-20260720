@@ -1,0 +1,151 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"- **前提条件**: Đã login, đang ở Event-home
+- **テスト手順**: 1. Quan sát thanh navigation tabs
+                 2. Kiểm tra tên tab, thứ tự và tab đang active
+- **期待する結果**: Hiển thị đủ 5 tab theo đúng thứ tự; tab イベント đang active","59","イベントホーム_001: Verify các navigation tabs được hiển thị","tests","2026-09-14","passed","2026-09-14","Testイベント_Event_home","test_event_home","",""
+"- **前提条件**: Mở trang portal home
+- **テスト手順**: 1. Kiểm tra label ポータル名 và dấu ※必須
+- **期待する結果**: Dấu ※必須 màu đỏ hiển thị đúng cạnh label ポータル名","777","ポータル_001: Verify dấu ※必須 cạnh ポータル名","tests","2026-09-14","passed","2026-09-14","Testポータル_ホーム","test_portal","",""
+"- **前提条件**: 会員リスト画面を表示中
+- **テスト手順**:
+  - 1. サブタブ「会員属性の設定」を押下する
+  - 2. サブタブ「会員登録フォーム」を押下する
+  - 3. サブタブ「アプリ利用者」を押下する
+  - 4. サブタブ「会員退会設定」を押下する
+- **期待する結果**:
+  - 各サブタブ押下後に URL / パネル内容が切り替わること
+  - 押下したサブタブがアクティブ状態になること","722","会員リスト_008: Verify chuyển đổi giữa các sub-tab (会員属性の設定, 会員登録フォーム, アプリ利用者, 会員退会設定)","tests","2026-09-14","passed","2026-09-14","Test会員管理_会員リスト","test_member_list","",""
+"- **前提条件**: Đang mở màn hình tạo Push Notification
+- **テスト手順**:
+    1. Nhập Title
+    2. Nhập Message
+    3. Click 「キャンセル」hoặc 「X]
+- **期待する結果**:
+    - Modal đóng
+    - Không lưu dữ liệu","687","配信する_008: Verify nhấn キャンセル/đóng thì không lưu dữ liệu","tests","2026-09-14","passed","2026-09-14","Testプッシュ配信_配信する","test_push_list","",""
+"- **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+        - **テスト手順**: 1. Click header 会員ID (có mũi tên ↑)
+        - **期待する結果**: Dữ liệu bảng được sắp xếp tăng dần theo 会員ID","667","会員リスト_003: Verify sắp xếp theo 会員ID sau khi click header","tests","2026-09-14","failed","2026-09-14","Test会員管理_会員リスト","test_member_list","",""
+"- **前提条件**: Đã login, đang ở Event-home
+- **テスト手順**: 1. Đếm số dòng event đang hiển thị rồi so với text phân trang
+                 2. Kiểm tra nút 前へ và giá trị 表示件数 mặc định
+- **期待する結果**: Summary khớp số dòng thực tế, nút 前へ disabled, 表示件数 = mặc định","56","イベントホーム_006: Verify trạng thái mặc định pagination và 表示件数","tests","2026-09-14","passed","2026-09-14","Testイベント_Event_home","test_event_home","",""
+"- **前提条件**: Mở trang portal home
+- **テスト手順**:
+  1. Hover (hoặc click) icon (?) cạnh ポータル名
+  2. Hover (hoặc click) icon (?) cạnh ポータルアイコン
+- **期待する結果**: Tooltip/popup xuất hiện với nội dung hướng dẫn tương ứng","743","ポータル_007: Verify icon tooltip (?) hiển thị nội dung khi hover/click","tests","2026-09-14","passed","2026-09-14","Testポータル_ホーム","test_portal","",""
+"- **前提条件**: Đã đăng nhập và đang hiển thị màn hình danh sách thành viên
+        - **テスト手順**: 1. Nhấn nút ""Đăng ký thành viên mới"" (新規会員登録)
+        - **期待する結果**: Chuyển hướng sang màn hình đăng ký thành viên mới","1193","会員リスト_006: Verify new member registration navigation","tests","2026-09-14","passed","2026-09-14","Test会員管理_会員リスト","test_member_list","",""
+"- **前提条件**: Mở trang portal home, ô ポータル名 đang trống
+- **テスト手順**:
+  1. Kiểm tra nút 保存する đang disabled
+  2. Nhập「Automation Portal Test」vào ô ポータル名
+- **期待する結果**: Nút 保存する chuyển từ disabled sang enabled","779","ポータル_003: Verify nhập ポータル名 hợp lệ làm enable nút 保存する","tests","2026-09-14","passed","2026-09-14","Testポータル_ホーム","test_portal","",""
+"- **前提条件**: Điều hướng tới trang portal-home
+- **テスト手順**: 1. Kiểm tra tab navigation trên header
+- **期待する結果**: Tab ポータル có class/màu active (gạch cam); các tab khác không active","671","ポータル_008: Verify tab 'ポータル' ở trạng thái active khi đang ở trang này","tests","2026-09-14","passed","2026-09-14","Testポータル_ホーム","test_portal","",""
+"- **前提条件**: Đang ở màn hình portal
+- **テスト手順**: 1. Xác nhận khu vực ポータルアイコン
+- **期待する結果**: Hiển thị placeholder, nút ファイルを選択 và 3 dòng hướng dẫn kích thước/format","648","ポータル_005: Portal icon section hiển thị đúng nội dung hướng dẫn","tests","2026-09-14","passed","2026-09-14","Testポータル_ホーム","test_portal","",""
+"- **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+        - **テスト手順**: 1. Click nút 検索 (màu đen)
+        - **期待する結果**: Panel tìm kiếm xuất hiện với các trường lọc: 会員ID, ログインID, 状態","603","会員リスト_004: Verify nút 検索 mở panel tìm kiếm","tests","2026-09-14","passed","2026-09-14","Test会員管理_会員リスト","test_member_list","",""
+"- **前提条件**: Đã login, đang ở Event-home, bảng event có ít nhất 1 dòng
+- **テスト手順**: 1. Lấy tên event dòng đầu làm keyword
+                 2. Nhập keyword vào ô search
+- **期待する結果**: Chỉ các event khớp keyword được hiển thị","64","イベントホーム_005: Verify search theo keyword chỉ hiện event khớp","tests","2026-09-14","passed","2026-09-14","Testイベント_Event_home","test_event_home","",""
+"- **前提条件**: プッシュ配信作成ドロワーを表示中
+- **テスト手順**:
+  1. 配信管理用タイトルに255文字を超える文字列を入力する
+- **期待する結果**:
+  - 配信管理用タイトルには最大255文字まで入力できること","599","配信する_006: Verify độ dài tối đa của 配信管理用タイトル là 255 ký tự","tests","2026-09-14","passed","2026-09-14","Testプッシュ配信_配信する","test_push_list","",""
+"- **前提条件**: Đang ở màn hình login, chưa nhập gì vào 2 ô メールアドレス / パスワード
+- **テスト手順**: 1. Không nhập メールアドレス và パスワード
+                 2. Nhấn nút ログイン
+- **期待する結果**: Vẫn ở màn hình login và hiển thị message
+  「メールアドレスまたはパスワードが正しくありません。」","50","ログイン_002: Click ログイン with empty email and password shows error message","tests","2026-09-14","passed","2026-09-14","Testアカウント_ログイン","test_login","",""
+"- **前提条件**: プッシュ配信一覧画面を表示中
+- **テスト手順**: 1. 「新規作成」ボタンを押下し、プッシュ配信作成ドロワーを開く
+- **期待する結果**:
+  - 配信管理用タイトルのラベル横に必須マーク（*）が表示されること
+  - セグメントルールを選択するのラベル横に必須マーク（*）が表示されること
+  - メッセージのラベル横に必須マーク（*）が表示されること","685","配信する_001: Verify các trường bắt buộc có dấu (*) trên form tạo push","tests","2026-09-14","passed","2026-09-14","Testプッシュ配信_配信する","test_push_list","",""
+"- **前提条件**: Đã login, đang ở Event-home
+- **テスト手順**: 1. Click 新規イベント作成 rồi đóng form
+                 2. Chuyển grid view rồi list view
+- **期待する結果**: Form tạo event mở/đóng được; grid/list toggle đổi layout đúng","188","イベントホーム_008: Verify nút tạo event và chuyển đổi grid/list","tests","2026-09-14","passed","2026-09-14","Testイベント_Event_home","test_event_home","",""
+"- **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+    - **テスト手順**: 1. Quan sát header các cột của bảng 会員リスト
+    - **期待する結果**: Hiển thị đúng 7 cột theo thứ tự
+        会員ID / ユーザーID / 外部連携用ユーザーID / ログインID / 管理用メモ / 状態 / 登録日","599","会員リスト_002: Verify header cột của bảng 会員リスト","tests","2026-09-14","passed","2026-09-14","Test会員管理_会員リスト","test_member_list","",""
+"- **前提条件**: Đã đăng nhập và đang hiển thị màn hình danh sách thành viên
+        - **テスト手順**: 1. Chọn checkbox ở dòng thành viên đầu tiên
+        - **期待する結果**: Checkbox chuyển sang trạng thái đã chọn (checked)","570","会員リスト_005: Verify first member row checkbox is selected","tests","2026-09-14","passed","2026-09-14","Test会員管理_会員リスト","test_member_list","",""
+"- **前提条件**: Đang ở màn hình login, đã có VALID_EMAIL/VALID_PASSWORD trong .env
+- **テスト手順**: 1. Nhập email/password hợp lệ rồi nhấn ログイン
+- **期待する結果**: Chuyển vào màn hình Event-home (console) thành công","632","ログイン_001: Login với thông tin hợp lệ vào được Event-home","tests","2026-09-14","passed","2026-09-14","Testアカウント_ログイン","test_login","",""
+"- **前提条件**: プッシュ配信作成ドロワーを表示中
+- **テスト手順**:
+  1. 「CSVからアップロードする」を選択する
+- **期待する結果**:
+  - セグメントルール入力エリアが表示されないこと
+  - CSVアップロードエリアが表示されること","655","配信する_005: Verify hiển thị khi chọn 'CSVからアップロードする'","tests","2026-09-14","passed","2026-09-14","Testプッシュ配信_配信する","test_push_list","",""
+"- **前提条件**: Đã login, đang ở Event-home
+- **テスト手順**: 1. Quan sát danh sách お知らせ 2. Đếm số dòng hiển thị
+- **期待する結果**: Danh sách hiển thị đúng 3 dòng thông báo, mỗi dòng có ngày/tag/tiêu đề","49","イベントホーム_003: Verify số lượng dòng trong danh sách お知らせ","tests","2026-09-14","passed","2026-09-14","Testイベント_Event_home","test_event_home","",""
+"- **前提条件**: Đã login, đang ở Event-home
+- **テスト手順**: 1. Kiểm tra từng dòng thông báo
+                 2. Xác nhận badge NEW chỉ xuất hiện trên dòng có nhãn
+- **期待する結果**: Badge NEW hiển thị đúng vị trí; không xuất hiện trên dòng không có nhãn","39","イベントホーム_004: Verify badge NEW hiển thị đúng","tests","2026-09-14","passed","2026-09-14","Testイベント_Event_home","test_event_home","",""
+"- **前提条件**: Mở trang portal home
+- **テスト手順**:
+  1. Nhập chuỗi có tiếng Nhật, tiếng Việt và khoảng trắng vào ô ポータル名
+  2. Lấy giá trị thực tế của input bằng input_value()
+- **期待する結果**: Giá trị được giữ nguyên, không bị cắt hoặc sai encoding","653","ポータル_004: Verify giá trị nhập vào ô ポータル名 được giữ đúng","tests","2026-09-14","passed","2026-09-14","Testポータル_ホーム","test_portal","",""
+"- **前提条件**: Mở trang portal home, chưa nhập gì
+- **テスト手順**: 1. Kiểm tra trạng thái nút 保存する
+- **期待する結果**: Nút 保存する ở trạng thái disabled (màu xám)","651","ポータル_002: Verify nút 保存する disable khi form trống","tests","2026-09-14","passed","2026-09-14","Testポータル_ホーム","test_portal","",""
+"- **前提条件**: プッシュ配信作成ドロワーを表示中（フォームは空の状態）
+- **テスト手順**:
+  1. 配信管理用タイトルを入力する
+  2. セグメントルールを選択する
+  3. メッセージを入力する
+- **期待する結果**: 配信するボタンがenabled状態に変わること","619","配信する_004: Verify nút 配信する enabled sau khi nhập đủ trường bắt buộc","tests","2026-09-14","passed","2026-09-14","Testプッシュ配信_配信する","test_push_list","",""
+"- **前提条件**: Đã login, đang ở Event-home
+- **テスト手順**: 1. Đọc danh sách header cột của bảng event
+- **期待する結果**: Header cột khớp danh sách expected trong locators","19","イベントホーム_007: Verify header cột của bảng event","tests","2026-09-14","passed","2026-09-14","Testイベント_Event_home","test_event_home","",""
+"- **前提条件**: Đang ở màn hình portal
+- **テスト手順**:
+  1. Kiểm tra input #portal_icon tồn tại / accept chứa .png/.jpg
+  2. Upload ảnh PNG từ testdata/portal_icon_100x100.png
+  3. Upload ảnh JPG từ testdata/portal_icon_100x100.jpg
+- **期待する結果**: type=file, accept chứa .png/.jpg; upload PNG và JPG đều thành công (preview + filename)","674","ポータル_006: File input tương tác được và accept PNG/JPG","tests","2026-09-14","passed","2026-09-14","Testポータル_ホーム","test_portal","",""
+"- **前提条件**: Đã login, đang ở Event-home
+- **テスト手順**: 1. Kiểm tra label DAU và MEMBER
+                 2. Hover icon ? của từng label và đọc tooltip
+- **期待する結果**: Label và tooltip content của DAU / MEMBER hiển thị đúng","119","イベントホーム_002: Verify các usage widgets được hiển thị","tests","2026-09-14","passed","2026-09-14","Testイベント_Event_home","test_event_home","",""
+"- **前提条件**: プッシュ配信作成ドロワーを表示中（初期状態）
+- **テスト手順**: 1. 「新規作成」ボタンを押下し、プッシュ配信作成ドロワーを開いた直後の各ラジオボタングループの選択状態を確認する
+- **期待する結果**:
+  - 「配信する対象の作成方法」で「セグメントルールから選ぶ」がデフォルトで選択されていること
+  - 「配信タイプ」で「即時配信する」がデフォルトで選択されていること","596","配信する_002: Verify radio mặc định trên form tạo push","tests","2026-09-14","passed","2026-09-14","Testプッシュ配信_配信する","test_push_list","",""
+"- **前提条件**: 会員リスト画面を表示中
+- **テスト手順**: 1. テーブルの各行について状態列の値を確認する
+- **期待する結果**: 各行の状態が「有効」または「無効」であり、空欄でないこと","642","会員リスト_007: Verify cột 状態 hiển thị giá trị hợp lệ cho từng dòng","tests","2026-09-14","passed","2026-09-14","Test会員管理_会員リスト","test_member_list","",""
+"- **前提条件**: Đã login (account bất kỳ) và đang ở màn hình 会員リスト
+        - **テスト手順**: 1. Quan sát tab 会員リスト và số lượng 会員
+        - **期待する結果**:
+            - Tab 会員リスト đang active mặc định
+            - Text 会員リスト（3） hiển thị đúng số lượng 会員 hiện tại","632","会員リスト_001: Verify tab '会員リスト' active mặc định và đúng số lượng","tests","2026-09-14","passed","2026-09-14","Test会員管理_会員リスト","test_member_list","",""
+"- **前提条件**: Đang mở màn hình tạo Push Notification
+- **テスト手順**:
+    1. Chọn radio 「予約配信する」
+- **期待する結果**:
+    - Hiển thị khu vực đặt lịch
+    - Hiển thị trường 配信日
+    - Hiển thị trường 配信時刻","638","配信する_007: Verify chọn 「予約配信する」 thì hiện trường ngày giờ","tests","2026-09-14","passed","2026-09-14","Testプッシュ配信_配信する","test_push_list","",""
+"- **前提条件**: プッシュ配信作成ドロワーを表示中（各入力欄は空の状態）
+- **テスト手順**: 1. 何も入力せず、配信するボタンの状態を確認する
+- **期待する結果**: 配信するボタンがdisabled状態であること","725","配信する_003: Verify nút 配信する disabled khi form trống","tests","2026-09-14","passed","2026-09-14","Testプッシュ配信_配信する","test_push_list","",""

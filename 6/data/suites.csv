@@ -1,0 +1,9 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"- **前提条件**: Đang ở màn hình login, đã có VALID_EMAIL/VALID_PASSWORD trong .env
+- **テスト手順**: 1. Nhập email/password hợp lệ rồi nhấn ログイン
+- **期待する結果**: Chuyển vào màn hình Event-home (console) thành công","718","ログイン_001: Login với thông tin hợp lệ vào được Event-home","tests","2026-09-13","passed","2026-09-13","Testアカウント_ログイン","test_login","",""
+"- **前提条件**: Đang ở màn hình login, chưa nhập gì vào 2 ô メールアドレス / パスワード
+- **テスト手順**: 1. Không nhập メールアドレス và パスワード
+                 2. Nhấn nút ログイン
+- **期待する結果**: Vẫn ở màn hình login và hiển thị message
+  「メールアドレスまたはパスワードが正しくありません。」","54","ログイン_002: Click ログイン with empty email and password shows error message","tests","2026-09-13","passed","2026-09-13","Testアカウント_ログイン","test_login","",""
